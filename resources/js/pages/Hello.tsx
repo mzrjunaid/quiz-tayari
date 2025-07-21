@@ -1,15 +1,14 @@
-interface props {
-    quiz: {
-        q_statement: string;
-    }[];
-}
+// interface props {
+//     quiz: string;
+//     result: string;
+// }
 
-export default function Hello({ quiz }: props) {
+export default function Hello() {
     return (
         <div>
             <h1>Hello</h1>
-            <p>Welcome to the Quiz Tayari application. {quiz[0].q_statement}</p>
-            <pre>{JSON.stringify(quiz[0], null, 2)}</pre>
+            <p>Welcome to the Quiz Tayari application.</p>
+            {/* <p>Quiz Result: {result}</p> */}
         </div>
     );
 }
