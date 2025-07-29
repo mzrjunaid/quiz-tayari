@@ -3,7 +3,7 @@ import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, ScrollText } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavUser } from './nav-user';
 
@@ -12,6 +12,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'MCQs Rephrase',
+        href: '/mcqs-rephrase',
+        icon: ScrollText,
     },
 ];
 
@@ -44,9 +49,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
-            </SidebarContent>
+            <SidebarContent>{auth.user && <NavMain items={mainNavItems} />}</SidebarContent>
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
