@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 
 import {
     ColumnDef,
@@ -29,107 +29,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import React from 'react';
+import { useState } from 'react';
 
-// const data: Payment[] = [
-//     {
-//         id: 'm5gr84i9',
-//         amount: 316,
-//         status: 'success',
-//         email: 'ken99@example.com',
-//     },
-//     {
-//         id: '3u1reuv4',
-//         amount: 242,
-//         status: 'success',
-//         email: 'Abe45@example.com',
-//     },
-//     {
-//         id: 'derv1ws0',
-//         amount: 837,
-//         status: 'processing',
-//         email: 'Monserrat44@example.com',
-//     },
-//     {
-//         id: '5kma53ae',
-//         amount: 874,
-//         status: 'success',
-//         email: 'Silas22@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-//     {
-//         id: 'bhqecj4p',
-//         amount: 721,
-//         status: 'failed',
-//         email: 'carmella@example.com',
-//     },
-// ];
-
-// export type Payment = {
-//     id: string;
-//     amount: number;
-//     status: 'pending' | 'processing' | 'success' | 'failed';
-//     email: string;
-// };
+export type Mcq_data = {
+    data: Mcqs[];
+    current_page: number;
+    last_page: number;
+    total: number;
+};
 
 export type Mcqs = {
     q_id: string;
@@ -161,7 +68,7 @@ export const columns: ColumnDef<Mcqs>[] = [
     {
         accessorKey: 'q_id',
         header: 'Id',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('q_id')}</div>,
+        cell: ({ row }) => <div className="max-w-xs capitalize">{row.getValue('q_id')}</div>,
     },
     {
         accessorKey: 'q_statement',
@@ -173,12 +80,12 @@ export const columns: ColumnDef<Mcqs>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue('q_statement')}</div>,
+        cell: ({ row }) => <div className="max-w-sm break-words whitespace-normal">{row.getValue('q_statement')}</div>,
     },
     {
         accessorKey: 'option_A',
         header: () => <div className="capitalize">Option A</div>,
-        cell: ({ row }) => <div className="lowercase">{row.getValue('option_A')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_A')}</div>,
         // cell: ({ row }) => {
         //     const amount = parseFloat(row.getValue('amount'));
 
@@ -193,13 +100,18 @@ export const columns: ColumnDef<Mcqs>[] = [
     },
     {
         accessorKey: 'option_B',
-        header: () => <div className="capitalize">Option A</div>,
-        cell: ({ row }) => <div className="lowercase">{row.getValue('option_B')}</div>,
+        header: () => <div className="capitalize">Option B</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_B')}</div>,
     },
     {
         accessorKey: 'option_C',
         header: () => <div className="capitalize">Option C</div>,
-        cell: ({ row }) => <div className="lowercase">{row.getValue('option_C')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_C')}</div>,
+    },
+    {
+        accessorKey: 'right_choice',
+        header: () => <div className="capitalize">Right</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('right_choice')}</div>,
     },
     {
         id: 'actions',
@@ -235,14 +147,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function McqsRephrase({ mcqs }: { mcqs: Mcqs[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
-    const [data] = React.useState<Mcqs[]>(mcqs);
+export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
+    const [data] = useState<Mcqs[]>(mcq_data.data);
 
-    console.log(data);
+    const handlePageChange = (pageIndex: number) => {
+        router.get('mcqs-rephrase', {
+            page: pageIndex, // Adjust for zero-based index
+        });
+    };
 
     const table = useReactTable({
         data,
@@ -261,6 +177,10 @@ export default function McqsRephrase({ mcqs }: { mcqs: Mcqs[] }) {
             columnFilters,
             columnVisibility,
             rowSelection,
+            pagination: {
+                pageIndex: 0, // Start at the first page
+                pageSize: 50, // Assuming a default page size of 10
+            },
         },
     });
 
@@ -340,20 +260,54 @@ export default function McqsRephrase({ mcqs }: { mcqs: Mcqs[] }) {
                             {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
                         </div>
                         <div className="space-x-2">
-                            <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePageChange(mcq_data.current_page - 1)}
+                                disabled={mcq_data.current_page <= 1}
+                            >
                                 Previous
                             </Button>
                             <span className="text-sm">
-                                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                                {mcq_data.current_page} of {mcq_data.last_page}
                             </span>
-                            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePageChange(mcq_data.current_page + 1)}
+                                disabled={mcq_data.current_page >= mcq_data.last_page}
+                            >
                                 Next
                             </Button>
                         </div>
+                        <div>
+                            <Input
+                                type="number"
+                                placeholder="Go to Page"
+                                min={1}
+                                max={mcq_data.last_page}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        const pageIndex = Number((e.target as HTMLInputElement).value);
+                                        if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                                            handlePageChange(pageIndex);
+                                        }
+                                    }
+                                }}
+                                onBlur={(e) => {
+                                    const pageIndex = Number(e.target.value);
+                                    if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                                        handlePageChange(pageIndex);
+                                    } else {
+                                        e.target.value = String(mcq_data.current_page); // Reset to current page if invalid
+                                    }
+                                }}
+                                defaultValue={mcq_data.current_page}
+                                className="w-24"
+                            />
+                        </div>
                     </div>
                 </div>
-
-                <pre>{JSON.stringify(mcqs, null, 2)}</pre>
             </div>
         </AppLayout>
     );
