@@ -18,7 +18,10 @@ class McqsRephraseController extends Controller
         // Note: The 'all' method is not used here as it retrieves all records without
         // $mcqs = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'created_at')->paginate(50); // Ensure 'all' method is us ed to retrieve all records
 
+
         $data = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'created_at')->paginate(50)->withQueryString();; // Ensure 'all' method is used to retrieve all records
+
+
 
         // Return the view with the MCQs data
         return Inertia::render('McqsRephrase/Index', [

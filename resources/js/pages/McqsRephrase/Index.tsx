@@ -155,9 +155,16 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
     const [data] = useState<Mcqs[]>(mcq_data.data);
 
     const handlePageChange = (pageIndex: number) => {
-        router.get('mcqs-rephrase', {
-            page: pageIndex, // Adjust for zero-based index
-        });
+        router.get(
+            'mcqs-rephrase',
+            {
+                page: pageIndex, // Adjust for zero-based index
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
     };
 
     const table = useReactTable({
@@ -191,9 +198,9 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
                     <div className="flex items-center py-4">
                         <Input
-                            placeholder="Filter emails..."
-                            value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-                            onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
+                            placeholder="Filter mcq"
+                            defaultValue={(table.getColumn('q_statement')?.getFilterValue() as string) ?? ''}
+                            onChange={(event) => table.getColumn('q_statement')?.setFilterValue(event.target.value)}
                             className="max-w-sm"
                         />
                         <DropdownMenu>
@@ -302,7 +309,6 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
                                         e.target.value = String(mcq_data.current_page); // Reset to current page if invalid
                                     }
                                 }}
-                                defaultValue={mcq_data.current_page}
                                 className="w-24"
                             />
                         </div>
