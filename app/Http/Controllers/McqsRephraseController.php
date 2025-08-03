@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\McqsRephrase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class McqsRephraseController extends Controller
@@ -48,9 +49,31 @@ class McqsRephraseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(McqsRephrase $mcqsRephrase)
+    public function show($mcqsRephrase)
     {
-        //
+
+        try {
+            $mcq = McqsRephrase::where('q_id', $mcqsRephrase)->first();
+
+            if (!$mcq) {
+                return Inertia::render('McqsRephrase/Show', [
+                    'error' => 'MCQ not found',
+                    'mcq' => null,
+                ]);
+            }
+
+            return Inertia::render('McqsRephrase/Show', [
+                'mcq' => $mcq,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('MCQ Show Error: ' . $e->getMessage());
+
+            return Inertia::render('McqsRephrase/Show', [
+                'error' => 'Something went wrong. Please try again later.',
+                'mcq' => null,
+            ]);
+        }
+        // Return the view with the specific MCQ data
     }
 
     /**

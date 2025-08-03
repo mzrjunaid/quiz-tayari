@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 import {
@@ -38,15 +38,8 @@ export type Mcq_data = {
     total: number;
 };
 
-export type Mcqs = {
-    q_id: string;
-    q_statement: string;
-    option_A: string;
-    option_B: string;
-    option_C: string;
-    option_D: string;
-    right_choice: string;
-    created_at: string;
+const handleShowPage = (q_id: number) => {
+    router.get(`/mcqs-rephrase/${q_id}`, {}, { preserveState: true, replace: true });
 };
 
 export const columns: ColumnDef<Mcqs>[] = [
@@ -86,17 +79,6 @@ export const columns: ColumnDef<Mcqs>[] = [
         accessorKey: 'option_A',
         header: () => <div className="capitalize">Option A</div>,
         cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_A')}</div>,
-        // cell: ({ row }) => {
-        //     const amount = parseFloat(row.getValue('amount'));
-
-        //     // Format the amount as a dollar amount
-        //     const formatted = new Intl.NumberFormat('en-US', {
-        //         style: 'currency',
-        //         currency: 'USD',
-        //     }).format(amount);
-
-        //     return <div className="text-right font-medium">{formatted}</div>;
-        // },
     },
     {
         accessorKey: 'option_B',
@@ -129,6 +111,7 @@ export const columns: ColumnDef<Mcqs>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => handleShowPage(Number(mcq.q_id))}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.q_id)}>Copy payment ID</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View customer</DropdownMenuItem>

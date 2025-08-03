@@ -41,3 +41,14 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Mcqs {
+    q_id: string;
+    q_statement: string;
+    option_A: string;
+    option_B: string;
+    option_C: string;
+    option_D: string;
+    right_choice: string;
+    created_at: string;
+}
