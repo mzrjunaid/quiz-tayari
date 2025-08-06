@@ -12,11 +12,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Show() {
-    const { mcq, error, rephrased, success } = usePage().props as {
+    const { mcq, error, rephrased, explanation, success } = usePage().props as {
         mcq?: Mcqs;
         error?: string;
         success?: string;
         rephrased?: string;
+        explanation?: string;
     };
 
     const handleRephrase = () => {
@@ -100,7 +101,10 @@ export default function Show() {
                         </div>
                         <div className="relative rounded-xl border border-sidebar-border/70 px-2 py-4 dark:border-sidebar-border">
                             {rephrased ? (
-                                <h1 className="text-xl font-bold text-gray-800">{rephrased}</h1>
+                                <>
+                                    <h1 className="text-xl font-bold text-gray-800">{rephrased}</h1>
+                                    <p className="text-sm font-semibold">{explanation}</p>
+                                </>
                             ) : (
                                 <h1 className="text-gray-500">Rephrased MCQ will be displayed here!</h1>
                             )}

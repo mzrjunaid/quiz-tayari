@@ -65,6 +65,7 @@ class McqsRephraseController extends Controller
             return Inertia::render('McqsRephrase/Show', [
                 'mcq' => $mcq,
                 'rephrased' => session('rephrased'),
+                'explanation' => session('explanation'),
                 'success' => session('success'),
                 'error' => session('error'),
             ]);
@@ -105,28 +106,114 @@ class McqsRephraseController extends Controller
     /**
      * Rephrase the specified MCQ.
      */
+    // public function rephrase(Request $request, $id)
+    // {
+    //     $q_statement = $request->input('q_statement');
+
+    //     if (!$q_statement) {
+    //         return $this->redirectWithError($id, 'No question statement provided.');
+    //     }
+
+    //     try {
+    //         $model = Gemini::generativeModel(model: 'gemini-2.0-flash');
+
+    //         // Option 1: Sequential calls (current approach)
+    //         $rephraseResult = $model->generateContent(
+    //             "Rephrase the statement without changing the context. Don't answer it: ",
+    //             $q_statement
+    //         );
+
+    //         $explanationResult = $model->generateContent(
+    //             "Explain the statement with answer in 2 line details: ",
+    //             $q_statement
+    //         );
+
+    //         // Option 2: Single API call (more efficient)
+    //         // $combinedResult = $model->generateContent(
+    //         //     "1. Rephrase this statement without changing context (don't answer): {$q_statement}\n\n" .
+    //         //     "2. Then explain the statement with answer in 2 lines."
+    //         // );
+
+    //         $rephrased = $rephraseResult->candidates[0]->content->parts[0]->text ?? null;
+    //         $explanation = $explanationResult->candidates[0]->content->parts[0]->text ?? null;
+
+    //         if (!$rephrased) {
+    //             return $this->redirectWithError($id, 'No rephrased statement returned.');
+    //         }
+
+    //         return redirect()
+    //             ->route('mcqs-rephrase.show', $id)
+    //             ->with([
+    //                 'success' => 'Rephrased successfully.',
+    //                 'rephrased' => $rephrased,
+    //                 'explanation' => $explanation
+    //             ]);
+    //     } catch (\Exception $e) {
+    //         return $this->redirectWithError($id, 'Failed to generate content: ' . $e->getMessage());
+    //     }
+    // }
+
+    // private function redirectWithError($id, $message)
+    // {
+    //     return redirect()->route('mcqs-rephrase.show', $id)->with('error', $message);
+    // }
+
     public function rephrase(Request $request, $id)
     {
         $q_statement = $request->input('q_statement');
 
         if (!$q_statement) {
-            return redirect()->route('mcqs-rephrase.show', $id)->with('error', 'No question statement provided.');
+            return $this->redirectWithError($id, 'No question statement provided.');
         }
 
-        // Replace with actual Gemini logic later
-        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')
-            ->generateContent("rephrase the statement without changing the context also don't answer it, ", $q_statement);
+        try {
+            $model = Gemini::generativeModel(model: 'gemini-2.0-flash');
 
-        if ($result) {
-            // In real use, extract from Gemini's response
-            $rephrased = $result->candidates[0]->content->parts[0]->text ?? null;
+            // Single API call for better efficiency
+            $combinedResult = $model->generateContent(
+                "Please perform two tasks for this statement: '{$q_statement}'\n\n" .
+                    "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
+                    "2. EXPLANATION: Explain the asnwer in 2 lines with details\n\n" .
+                    "Format your response as:\n" .
+                    "REPHRASED: [your rephrased version]\n" .
+                    "EXPLANATION: [your explanation]"
+            );
+
+            $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
+
+            if (!$response) {
+                return $this->redirectWithError($id, 'No response received from AI service.');
+            }
+
+            // Parse the structured response
+            $rephrased = $this->extractContent($response, 'REPHRASED:');
+            $explanation = $this->extractContent($response, 'EXPLANATION:');
+
+            if (!$rephrased) {
+                return $this->redirectWithError($id, 'No rephrased statement returned.');
+            }
 
             return redirect()
                 ->route('mcqs-rephrase.show', $id)
-                ->with('success', 'Rephrased successfully.')
-                ->with('rephrased', $rephrased);
+                ->with([
+                    'success' => 'Rephrased successfully.',
+                    'rephrased' => $rephrased,
+                    'explanation' => $explanation
+                ]);
+        } catch (\Exception $e) {
+            return $this->redirectWithError($id, 'Failed to generate content: ' . $e->getMessage());
         }
+    }
 
-        return redirect()->route('mcqs-rephrase.show', $id)->with('error', 'No rephrased statement returned.');
+    private function redirectWithError($id, $message)
+    {
+        return redirect()->route('mcqs-rephrase.show', $id)->with('error', $message);
+    }
+
+    private function extractContent($text, $marker)
+    {
+        $pattern = '/' . preg_quote($marker, '/') . '\s*(.+?)(?=\n[A-Z]+:|$)/s';
+        preg_match($pattern, $text, $matches);
+        return isset($matches[1]) ? trim($matches[1]) : null;
     }
 }
