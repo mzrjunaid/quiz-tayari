@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\McqsRephrase;
+use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -49,11 +50,10 @@ class McqsRephraseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($mcqsRephrase)
+    public function show($id)
     {
-
         try {
-            $mcq = McqsRephrase::where('q_id', $mcqsRephrase)->first();
+            $mcq = McqsRephrase::where('q_id', $id)->first();
 
             if (!$mcq) {
                 return Inertia::render('McqsRephrase/Show', [
@@ -64,6 +64,9 @@ class McqsRephraseController extends Controller
 
             return Inertia::render('McqsRephrase/Show', [
                 'mcq' => $mcq,
+                'rephrased' => session('rephrased'),
+                'success' => session('success'),
+                'error' => session('error'),
             ]);
         } catch (\Exception $e) {
             Log::error('MCQ Show Error: ' . $e->getMessage());
@@ -73,7 +76,6 @@ class McqsRephraseController extends Controller
                 'mcq' => null,
             ]);
         }
-        // Return the view with the specific MCQ data
     }
 
     /**
@@ -98,5 +100,33 @@ class McqsRephraseController extends Controller
     public function destroy(McqsRephrase $mcqsRephrase)
     {
         //
+    }
+
+    /**
+     * Rephrase the specified MCQ.
+     */
+    public function rephrase(Request $request, $id)
+    {
+        $q_statement = $request->input('q_statement');
+
+        if (!$q_statement) {
+            return redirect()->route('mcqs-rephrase.show', $id)->with('error', 'No question statement provided.');
+        }
+
+        // Replace with actual Gemini logic later
+        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')
+            ->generateContent("rephrase the statement without changing the context also don't answer it, ", $q_statement);
+
+        if ($result) {
+            // In real use, extract from Gemini's response
+            $rephrased = $result->candidates[0]->content->parts[0]->text ?? null;
+
+            return redirect()
+                ->route('mcqs-rephrase.show', $id)
+                ->with('success', 'Rephrased successfully.')
+                ->with('rephrased', $rephrased);
+        }
+
+        return redirect()->route('mcqs-rephrase.show', $id)->with('error', 'No rephrased statement returned.');
     }
 }

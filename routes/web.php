@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::group(['prefix' => 'mcqs-rephrase'], function () {
         Route::get('/', [McqsRephraseController::class, 'index'])->name('mcqs-rephrase.index');
-        Route::get('/{mcqsRephrase}', [McqsRephraseController::class, 'show'])->name('mcqs-rephrase.show');
+        Route::get('/{id}', [McqsRephraseController::class, 'show'])->name('mcqs-rephrase.show');
         Route::get('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('mcqs-rephrase.edit');
         Route::get('/{mcqsRephrase}/delete', [McqsRephraseController::class, 'destroy'])->name('mcqs-rephrase.delete');
         Route::get('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'rephrase'])->name('mcqs-rephrase.rephrase');

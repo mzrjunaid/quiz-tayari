@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Mcqs } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 import {
     ColumnDef,
@@ -73,7 +73,13 @@ export const columns: ColumnDef<Mcqs>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="max-w-sm break-words whitespace-normal">{row.getValue('q_statement')}</div>,
+        cell: ({ row }) => (
+            <div className="max-w-sm break-words whitespace-normal">
+                <Link href={`/mcqs-rephrase/${row.getValue('q_id')}`} className=" hover:underline">
+                    {row.getValue('q_statement')}
+                </Link>
+            </div>
+        ),
     },
     {
         accessorKey: 'option_A',
