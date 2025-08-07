@@ -66,6 +66,9 @@ class McqsRephraseController extends Controller
                 'mcq' => $mcq,
                 'rephrased' => session('rephrased'),
                 'explanation' => session('explanation'),
+                'subject' => session('subject'),
+                'current_affair' => session('current_affair'),
+                'general_knowledge' => session('general_knowledge'),
                 'success' => session('success'),
                 'error' => session('error'),
             ]);
@@ -174,13 +177,13 @@ class McqsRephraseController extends Controller
                 "Please perform three tasks for this statement: '{$q_statement}'\n\n" .
                     "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
                     "2. EXPLANATION: Explain the asnwer in 2 lines with details\n\n" .
-                    "3. SUBJECT: Get a statment's subject from which book or subject it could be. It can be from academic book or can be current affairs or General Knowledge\n\n" .
+                    "3. SUBJECT: Get a statment's subject from which book or subject it could be.\n\n" .
                     "Format your response as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
                     "EXPLANATION: [your explanation]\n" .
-                    "SUBJECT: [your subject]\n" .
-                    "CURRENT AFFAIR: [TRUE / FALSE]\n" .
-                    "GENERAL KNOWLEDGE: [TRUE / FALSE]\n"
+                    "SUBJECT: [your subject\n" .
+                    "CURRENT AFFAIR: [your response true or false]\n" .
+                    "GENERAL KNOWLEDGE: [your response true or false]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
@@ -192,6 +195,8 @@ class McqsRephraseController extends Controller
             // Parse the structured response
             $rephrased = $this->extractContent($response, 'REPHRASED:');
             $explanation = $this->extractContent($response, 'EXPLANATION:');
+            $subject = $this->extractContent($response, 'SUBJECT:');
+            // Extract current affairs and general knowledge sections
             $current_affair = $this->extractContent($response, 'CURRENT AFFAIR:');
             $general_knowledge = $this->extractContent($response, 'GENERAL KNOWLEDGE:');
 
@@ -205,6 +210,7 @@ class McqsRephraseController extends Controller
                     'success' => 'Rephrased successfully.',
                     'rephrased' => $rephrased,
                     'explanation' => $explanation,
+                    'subject' => $subject,
                     'current_affair' => $current_affair,
                     'general_knowledge' => $general_knowledge
                 ]);
