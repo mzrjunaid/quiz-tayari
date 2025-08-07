@@ -171,12 +171,16 @@ class McqsRephraseController extends Controller
 
             // Single API call for better efficiency
             $combinedResult = $model->generateContent(
-                "Please perform two tasks for this statement: '{$q_statement}'\n\n" .
+                "Please perform three tasks for this statement: '{$q_statement}'\n\n" .
                     "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
                     "2. EXPLANATION: Explain the asnwer in 2 lines with details\n\n" .
+                    "3. SUBJECT: Get a statment's subject from which book or subject it could be. It can be from academic book or can be current affairs or General Knowledge\n\n" .
                     "Format your response as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
-                    "EXPLANATION: [your explanation]"
+                    "EXPLANATION: [your explanation]\n" .
+                    "SUBJECT: [your subject]\n" .
+                    "CURRENT AFFAIR: [TRUE / FALSE]\n" .
+                    "GENERAL KNOWLEDGE: [TRUE / FALSE]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
@@ -188,6 +192,8 @@ class McqsRephraseController extends Controller
             // Parse the structured response
             $rephrased = $this->extractContent($response, 'REPHRASED:');
             $explanation = $this->extractContent($response, 'EXPLANATION:');
+            $current_affair = $this->extractContent($response, 'CURRENT AFFAIR:');
+            $general_knowledge = $this->extractContent($response, 'GENERAL KNOWLEDGE:');
 
             if (!$rephrased) {
                 return $this->redirectWithError($id, 'No rephrased statement returned.');
@@ -198,7 +204,9 @@ class McqsRephraseController extends Controller
                 ->with([
                     'success' => 'Rephrased successfully.',
                     'rephrased' => $rephrased,
-                    'explanation' => $explanation
+                    'explanation' => $explanation,
+                    'current_affair' => $current_affair,
+                    'general_knowledge' => $general_knowledge
                 ]);
         } catch (\Exception $e) {
             return $this->redirectWithError($id, 'Failed to generate content: ' . $e->getMessage());
