@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, OldMcqs } from '@/types';
+import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 
 import {
@@ -31,18 +31,42 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState } from 'react';
 
-export type Mcq_data = {
-    data: OldMcqs[];
+export interface Filters {
+    search?: string;
+    is_active?: string;
+    is_verified?: string;
+    sort_by?: string;
+    sort_order?: string;
+    per_page?: number;
+    page?: number;
+}
+
+export type PaginatedData = {
+    data: Mcqs[];
     current_page: number;
     last_page: number;
     total: number;
+    per_page: number;
+    from: number;
+    to: number;
 };
 
-const handleShowPage = (q_id: number) => {
-    router.get(`/mcqs-rephrase/${q_id}`, {}, { preserveState: true, replace: true });
+export interface DataTableProps {
+    mcqs: PaginatedData;
+    filters: Filters;
+    url: string;
+    stats?: {
+        total: number;
+        active: number;
+        verified: number;
+    };
+}
+
+const handleShowPage = (id: number) => {
+    router.get(`/mcqs/${id}`, {}, { preserveState: true, replace: true });
 };
 
-export const columns: ColumnDef<OldMcqs>[] = [
+export const columns: ColumnDef<Mcqs>[] = [
     {
         id: 'select',
         header: ({ table }) => (
@@ -59,12 +83,12 @@ export const columns: ColumnDef<OldMcqs>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'q_id',
+        accessorKey: 'id',
         header: 'Id',
-        cell: ({ row }) => <div className="max-w-xs capitalize">{row.getValue('q_id')}</div>,
+        cell: ({ row }) => <div className="max-w-xs capitalize">{row.getValue('id')}</div>,
     },
     {
-        accessorKey: 'q_statement',
+        accessorKey: 'question',
         header: ({ column }) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
@@ -75,36 +99,36 @@ export const columns: ColumnDef<OldMcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/mcqs-rephrase/${row.getValue('q_id')}`} className="hover:underline">
-                    {row.getValue('q_statement')}
+                <Link href={`/mcqs/${row.getValue('id')}`} className="hover:underline">
+                    {row.getValue('question')}
                 </Link>
             </div>
         ),
     },
     {
-        accessorKey: 'option_A',
+        accessorKey: 'option_a',
         header: () => <div className="capitalize">Option A</div>,
-        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_A')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_a')}</div>,
     },
     {
-        accessorKey: 'option_B',
+        accessorKey: 'option_b',
         header: () => <div className="capitalize">Option B</div>,
-        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_B')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_b')}</div>,
     },
     {
-        accessorKey: 'option_C',
+        accessorKey: 'option_c',
         header: () => <div className="capitalize">Option C</div>,
-        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_C')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_c')}</div>,
     },
     {
-        accessorKey: 'option_D',
+        accessorKey: 'option_d',
         header: () => <div className="capitalize">Option D</div>,
-        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_D')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('option_d')}</div>,
     },
     {
-        accessorKey: 'right_choice',
+        accessorKey: 'correct_answer',
         header: () => <div className="capitalize">Right</div>,
-        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('right_choice')}</div>,
+        cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('correct_answer')}</div>,
     },
     {
         id: 'actions',
@@ -122,8 +146,8 @@ export const columns: ColumnDef<OldMcqs>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleShowPage(Number(mcq.q_id))}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.q_id)}>Copy payment ID</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShowPage(Number(mcq.id))}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.id)}>Copy payment ID</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View customer</DropdownMenuItem>
                         <DropdownMenuItem>View payment details</DropdownMenuItem>
@@ -141,22 +165,22 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
+export default function McqsIndex({ mcqs }: DataTableProps) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [data] = useState<OldMcqs[]>(mcq_data.data);
+    const [data] = useState<Mcqs[]>(mcqs.data);
 
     const handlePageChange = (pageIndex: number) => {
         router.get(
-            '/mcqs-rephrase',
+            '/mcqs',
             {
                 page: pageIndex, // Adjust for zero-based index
             },
             {
-                preserveState: true,
-                replace: true,
+                preserveScroll: true,
+
             },
         );
     };
@@ -264,19 +288,19 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handlePageChange(mcq_data.current_page - 1)}
-                                disabled={mcq_data.current_page <= 1}
+                                onClick={() => handlePageChange(mcqs.current_page - 1)}
+                                disabled={mcqs.current_page <= 1}
                             >
                                 Previous
                             </Button>
                             <span className="text-sm">
-                                {mcq_data.current_page} of {mcq_data.last_page}
+                                {mcqs.current_page} of {mcqs.last_page}
                             </span>
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handlePageChange(mcq_data.current_page + 1)}
-                                disabled={mcq_data.current_page >= mcq_data.last_page}
+                                onClick={() => handlePageChange(mcqs.current_page + 1)}
+                                disabled={mcqs.current_page >= mcqs.last_page}
                             >
                                 Next
                             </Button>
@@ -286,21 +310,21 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
                                 type="number"
                                 placeholder="Go to Page"
                                 min={1}
-                                max={mcq_data.last_page}
+                                max={mcqs.last_page}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         const pageIndex = Number((e.target as HTMLInputElement).value);
-                                        if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                                        if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
                                             handlePageChange(pageIndex);
                                         }
                                     }
                                 }}
                                 onBlur={(e) => {
                                     const pageIndex = Number(e.target.value);
-                                    if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                                    if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
                                         handlePageChange(pageIndex);
                                     } else {
-                                        e.target.value = String(mcq_data.current_page); // Reset to current page if invalid
+                                        e.target.value = String(mcqs.current_page); // Reset to current page if invalid
                                     }
                                 }}
                                 className="w-24"

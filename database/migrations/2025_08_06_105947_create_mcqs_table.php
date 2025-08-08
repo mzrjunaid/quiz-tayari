@@ -27,7 +27,6 @@ return new class extends Migration
 
             // Categorization
             $table->string('subject')->nullable();
-            $table->string('topic')->nullable();
 
             // Question metadata
             $table->enum('question_type', ['single_correct', 'multiple_correct', 'true_false'])->default('single_correct');
@@ -47,7 +46,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes for better query performance
-            $table->index(['subject', 'topic']);
+            $table->index('subject');
             $table->index(['question_type', 'is_active']);
             $table->index(['created_by', 'is_active']);
         });

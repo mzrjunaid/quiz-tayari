@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mcq extends Model
 {
+    protected $casts = [
+        'tags' => 'array',
+        'reference' => 'array',
+    ];
+
     /** @use HasFactory<\Database\Factories\McqFactory> */
     use HasFactory;
+
 }

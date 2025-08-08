@@ -42,7 +42,7 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Mcqs {
+export interface OldMcqs {
     q_id: string;
     q_statement: string;
     option_A: string;
@@ -51,4 +51,23 @@ export interface Mcqs {
     option_D: string;
     right_choice: string;
     created_at: string;
+}
+
+export interface Mcqs {
+    id: string;
+    question: string;
+    option_a: string;
+    option_b: string;
+    option_c: string;
+    option_d?: string;
+    correct_answer: string;
+    is_active: boolean;
+    is_verified: boolean;
+    created_at: string;
+    updated_at: string;
+
+    question_type?: string;
+    subject?: string;
+    tags?: string[] | null;
+    reference?: string[] | null;
 }

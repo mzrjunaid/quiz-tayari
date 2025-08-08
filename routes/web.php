@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\McqController;
 use App\Http\Controllers\McqsRephraseController;
 use App\Http\Controllers\SampleQuiz;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{mcqsRephrase}/rephrase/confirm', [McqsRephraseController::class, 'confirmRephrase'])->name('mcqs-rephrase.confirm-rephrase');
         Route::post('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'storeRephrase'])->name('mcqs-rephrase.store-rephrase');
         Route::post('/{mcqsRephrase}/update', [McqsRephraseController::class, 'update'])->name('mcqs-rephrase.update');
+    });
+    Route::group(['prefix' => 'mcqs'], function () {
+        Route::get('/', [McqController::class, 'index'])->name('mcqs.index');
     });
 });
 

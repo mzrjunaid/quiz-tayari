@@ -13,11 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Call the McqSeeder to populate the MCQs table
+
+        $this->call(McqSeeder::class);
+
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Junaid Mazhar',
+            'email' => 'mzrjunaid@gmail.com',
+            'password'=> bcrypt('123.321A'),
         ]);
     }
 }

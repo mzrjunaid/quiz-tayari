@@ -174,16 +174,18 @@ class McqsRephraseController extends Controller
 
             // Single API call for better efficiency
             $combinedResult = $model->generateContent(
-                "Please perform three tasks for this statement: '{$q_statement}'\n\n" .
+                "Please perform four tasks for this statement: '{$q_statement}'\n\n" .
                     "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
                     "2. EXPLANATION: Explain the asnwer in 2 lines with details\n\n" .
                     "3. SUBJECT: Get a statment's subject from which book or subject it could be.\n\n" .
+                    "4. CURRENT AFFAIR: Check the statement if this is related to current affairs 2023-25 then response CA: with true or false.\n\n".
+                    "4. GENERAL KNOWLEDGE: check the statement if this is related to General Knowledge then response GK: with true or false.\n\n".
                     "Format your response as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
                     "EXPLANATION: [your explanation]\n" .
-                    "SUBJECT: [your subject\n" .
-                    "CURRENT AFFAIR: [your response true or false]\n" .
-                    "GENERAL KNOWLEDGE: [your response true or false]\n"
+                    "SUBJECT: [only mention subject here]\n" .
+                    "CA: [your response true or false]\n" .
+                    "GK: [your response true or false]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
@@ -197,8 +199,8 @@ class McqsRephraseController extends Controller
             $explanation = $this->extractContent($response, 'EXPLANATION:');
             $subject = $this->extractContent($response, 'SUBJECT:');
             // Extract current affairs and general knowledge sections
-            $current_affair = $this->extractContent($response, 'CURRENT AFFAIR:');
-            $general_knowledge = $this->extractContent($response, 'GENERAL KNOWLEDGE:');
+            $current_affair = $this->extractContent($response, 'CA:');
+            $general_knowledge = $this->extractContent($response, 'GK:');
 
             if (!$rephrased) {
                 return $this->redirectWithError($id, 'No rephrased statement returned.');
