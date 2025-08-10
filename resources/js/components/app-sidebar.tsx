@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'MCQs Rephrase',
-        href: '/mcqs-rephrase',
+        href: '/rephrase',
         icon: ScrollText,
     },
     {

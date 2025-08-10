@@ -38,6 +38,7 @@ class McqController extends Controller
                 'option_b',
                 'option_c',
                 'option_d',
+                'correct_answer',
                 'is_active',
                 'is_verified',
                 'created_at',
@@ -58,12 +59,12 @@ class McqController extends Controller
             })
 
             // Active status filter
-            ->when($isActive !== null, function ($query) use ($isActive) {
-                $query->where('is_active', (bool) $isActive);
+            ->when($isActive && $isActive !== 'all', function ($query) use ($isActive) {
+                $query->where('is_active', $isActive === '1');
             })
             // Verified status filter
-            ->when($isVerified !== null, function ($query) use ($isVerified) {
-                $query->where('is_verified', (bool) $isVerified);
+            ->when($isVerified && $isVerified !== 'all', function ($query) use ($isVerified) {
+                $query->where('is_verified', $isVerified === '1');
             })
             // Sorting
             ->orderBy($sortBy, $sortOrder)
@@ -75,6 +76,7 @@ class McqController extends Controller
             ->withQueryString(); // Preserves all query parameters
 
 
+
         return Inertia::render('Mcqs/Index', [
             'mcqs' => $mcqs,
             'filters' => [
@@ -83,7 +85,8 @@ class McqController extends Controller
                 'is_verified' => $isVerified,
                 'sort_by' => $sortBy,
                 'sort_order' => $sortOrder,
-                'per_page' => $perPage,
+                'per_page' => (int) $perPage, // Ensure it's an integer
+                'page' => $mcqs->currentPage(), // Add current page to filters
             ],
             'stats' => [
                 'total' => $mcqs->total(),

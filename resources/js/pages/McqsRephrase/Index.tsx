@@ -39,7 +39,7 @@ export type Mcq_data = {
 };
 
 const handleShowPage = (q_id: number) => {
-    router.get(`/mcqs-rephrase/${q_id}`, {}, { preserveState: true, replace: true });
+    router.get(`/rephrase/${q_id}`, {}, { preserveState: true, replace: true });
 };
 
 export const columns: ColumnDef<OldMcqs>[] = [
@@ -75,7 +75,7 @@ export const columns: ColumnDef<OldMcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/mcqs-rephrase/${row.getValue('q_id')}`} className="hover:underline">
+                <Link href={`/rephrase/${row.getValue('q_id')}`} className="hover:underline">
                     {row.getValue('q_statement')}
                 </Link>
             </div>
@@ -137,7 +137,7 @@ export const columns: ColumnDef<OldMcqs>[] = [
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Mcqs Rephrase',
-        href: 'mcqs-rephrase',
+        href: 'rephrase',
     },
 ];
 
@@ -150,7 +150,7 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
 
     const handlePageChange = (pageIndex: number) => {
         router.get(
-            '/mcqs-rephrase',
+            '/rephrase',
             {
                 page: pageIndex, // Adjust for zero-based index
             },

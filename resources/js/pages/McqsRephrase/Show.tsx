@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Mcqs } from '@/types';
+import { BreadcrumbItem, OldMcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Edit, RotateCcw, Save } from 'lucide-react';
 
@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Show() {
     const { mcq, error, rephrased, explanation, subject, current_affair, general_knowledge, success } = usePage().props as {
-        mcq?: Mcqs;
+        mcq?: OldMcqs;
         error?: string;
         success?: string;
         rephrased?: string;
@@ -25,7 +25,7 @@ export default function Show() {
 
     const handleRephrase = () => {
         router.get(
-            `/mcqs-rephrase/${mcq?.q_id}/rephrase`,
+            `/rephrase/${mcq?.q_id}/rephrase`,
             {
                 q_id: mcq?.q_id,
                 q_statement: mcq?.q_statement,
@@ -39,7 +39,7 @@ export default function Show() {
 
     const handleEdit = () => {
         router.get(
-            `/mcqs-rephrase/${mcq?.q_id}/edit`,
+            `/rephrase/${mcq?.q_id}/edit`,
             {
                 q_id: mcq?.q_id,
                 rephrased: rephrased,
@@ -116,7 +116,6 @@ export default function Show() {
                             )}
                         </div>
                     </div>
-                    {/* <div className="flex items-center py-4">{JSON.stringify(props, null, 2)}</div> */}
                 </div>
             </div>
         </AppLayout>

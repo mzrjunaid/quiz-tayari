@@ -1,90 +1,292 @@
-import { Mcqs } from '@/types';
-import { router } from '@inertiajs/react';
+import { Filters, Mcqs, PaginatedData, SerializableFilterValue } from '@/types';
 
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from '@tanstack/react-table';
-import { ChevronDown } from 'lucide-react';
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table';
+import { ChevronDown, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useState } from 'react';
+import { router } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 
-export type Mcq_data = {
-    data: Mcqs[];
-    current_page: number;
-    last_page: number;
-    total: number;
-};
+import { useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
-export interface dataTableProps {
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { X } from 'lucide-react';
+
+export interface DataTableProps {
+    mcqs: PaginatedData;
+    filters: Filters;
+    url: string | URL;
+    stats?: {
+        total: number;
+        active: number;
+        verified: number;
+    };
     columns: ColumnDef<Mcqs>[];
-    url: string;
-    setData: (data: Mcqs[]) => void;
 }
 
-export default function DataTable({ setData, columns, url }: dataTableProps) {
+export default function DataTable({ mcqs, columns, filters, url, stats }: DataTableProps) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
-    const [data] = useState<Mcqs[]>(); // Replace with actual data fetching logic
 
-    const handlePageChange = (pageIndex: number) => {
-        router.get(
-            url,
-            {
-                page: pageIndex, // Adjust for zero-based index
-            },
-            {
-                preserveState: true,
-                replace: true,
-            },
-        );
+    const [pagination, setPagination] = useState({
+        pageIndex: mcqs.current_page - 1,
+        pageSize: mcqs.per_page,
+    });
+
+    // Local filter states
+    const [searchValue, setSearchValue] = useState(filters.search || '');
+    const [activeFilter, setActiveFilter] = useState(filters.is_active || '');
+    const [verifiedFilter, setVerifiedFilter] = useState(filters.is_verified || '');
+
+    // Debounced search to avoid too many requests
+    const debouncedSearch = useDebouncedCallback((value: string) => {
+        updateFilters({ search: value || undefined });
+    }, 300);
+
+    // Update filters and navigate
+    const updateFilters = (newFilters: Partial<Record<keyof Filters, SerializableFilterValue>>) => {
+        const updatedFilters: Partial<Record<keyof Filters, SerializableFilterValue>> = { ...filters, ...newFilters };
+
+        // Remove values that would break Inertia's serialization
+        (Object.keys(updatedFilters) as Array<keyof Filters>).forEach((key) => {
+            const value = updatedFilters[key];
+            if (value === undefined || value === '' || (typeof value === 'number' && Number.isNaN(value))) {
+                delete updatedFilters[key];
+            }
+        });
+
+        // If page size changed, reset to first page
+        if ('per_page' in newFilters) {
+            updatedFilters.page = 1;
+            setPagination((prev) => ({
+                ...prev,
+                pageIndex: 0,
+                pageSize: newFilters.per_page as number,
+            }));
+        }
+
+        console.log(updatedFilters);
+
+        router.get(url, updatedFilters, {
+            only: ['mcqs', 'filters'],
+            preserveState: true,
+            replace: true,
+            preserveScroll: true,
+        });
     };
 
+    const handlePageChange = (page: number) => {
+        setPagination((prev) => ({
+            ...prev,
+            pageIndex: page - 1, // zero-based index
+        }));
+        updateFilters({ page });
+    };
+
+    const handleSortChange = (sortBy: string, sortOrder: 'asc' | 'desc') => {
+        updateFilters({ sort_by: sortBy, sort_order: sortOrder });
+    };
+
+    const handlePerPageChange = (perPage: string) => {
+        const perPageNum = Number(perPage);
+
+        if (Number.isNaN(perPageNum)) {
+            return; // Skip if invalid
+        }
+
+        updateFilters({ per_page: perPageNum, page: 1 });
+    };
+
+    const clearFilters = () => {
+        setSearchValue('');
+        setActiveFilter('');
+        setVerifiedFilter('');
+        router.get(url, {}, { preserveState: true, replace: true });
+    };
+
+    // Initialize sorting from URL
+    useEffect(() => {
+        if (filters.sort_by && filters.sort_order) {
+            setSorting([{ id: filters.sort_by, desc: filters.sort_order === 'desc' }]);
+        }
+    }, [filters.sort_by, filters.sort_order]);
+
     const table = useReactTable({
-        data,
+        data: mcqs.data || [],
         columns,
-        onSortingChange: setSorting,
+        manualPagination: true, // Important: We handle pagination server-side
+        manualSorting: true, // Important: We handle sorting server-side
+        manualFiltering: true, // Important: We handle filtering server-side
+        pageCount: mcqs.last_page,
+        onPaginationChange: setPagination, // Add this handler
+        onSortingChange: (updater) => {
+            const newSorting = typeof updater === 'function' ? updater(sorting) : updater;
+            setSorting(newSorting);
+            if (newSorting.length > 0) {
+                const sort = newSorting[0];
+                handleSortChange(sort.id, sort.desc ? 'desc' : 'asc');
+            }
+        },
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        pageCount: Math.ceil(data.length / 10), // Assuming 10 rows per page
         state: {
             sorting,
             columnFilters,
             columnVisibility,
             rowSelection,
-            pagination: {
-                pageIndex: 0, // Start at the first page
-                pageSize: 50, // Assuming a default page size of 10
-            },
+            pagination,
         },
     });
 
+    const hasActiveFilters = useMemo(() => {
+        return searchValue || activeFilter || verifiedFilter;
+    }, [searchValue, activeFilter, verifiedFilter]);
+
+    // const handlePageChange = (pageIndex: number) => {
+    //     router.get(
+    //         '/mcqs',
+    //         {
+    //             page: pageIndex, // Adjust for zero-based index
+    //         },
+    //         {
+    //             preserveScroll: true,
+    //         },
+    //     );
+    // };
+
     return (
         <>
-            <div className="flex items-center py-4">
+            {/* Stats Section */}
+            {stats && (
+                <div className="flex gap-4">
+                    <div className="text-sm">
+                        <span className="font-medium">Total:</span> {stats.total}
+                    </div>
+                    <div className="text-sm">
+                        <span className="font-medium">Active:</span> {stats.active}
+                    </div>
+                    <div className="text-sm">
+                        <span className="font-medium">Verified:</span> {stats.verified}
+                    </div>
+                </div>
+            )}
+
+            {/* Filters Section */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                {/* Search Input */}
+                <div className="relative max-w-sm flex-1">
+                    <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search MCQs..."
+                        value={searchValue}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchValue(value);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                setSearchValue(e.currentTarget.value);
+                                debouncedSearch(e.currentTarget.value);
+                            }
+                        }}
+                        onBlur={(e) => {
+                            setSearchValue(e.currentTarget.value);
+                            debouncedSearch(e.currentTarget.value);
+                        }}
+                        className="pl-10"
+                    />
+                </div>
+
+                {/* Status Filters */}
+                <Select
+                    value={activeFilter ?? ''}
+                    onValueChange={(value) => {
+                        setActiveFilter(value);
+                        updateFilters({ is_active: value || undefined });
+                    }}
+                >
+                    <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="1">Active</SelectItem>
+                        <SelectItem value="0">Inactive</SelectItem>
+                    </SelectContent>
+                </Select>
+
+                <Select
+                    value={verifiedFilter ?? ''}
+                    onValueChange={(value) => {
+                        setVerifiedFilter(value);
+                        updateFilters({ is_verified: value || undefined });
+                    }}
+                >
+                    <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Verified" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="1">Verified</SelectItem>
+                        <SelectItem value="0">Unverified</SelectItem>
+                    </SelectContent>
+                </Select>
+
+                {/* Clear Filters */}
+                {hasActiveFilters && (
+                    <Button variant="outline" size="sm" onClick={clearFilters}>
+                        <X className="mr-2 h-4 w-4" />
+                        Clear
+                    </Button>
+                )}
+
+                {/* Column Visibility */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            Columns <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .map((column) => (
+                                <DropdownMenuCheckboxItem
+                                    key={column.id}
+                                    className="capitalize"
+                                    checked={column.getIsVisible()}
+                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                >
+                                    {column.id}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
+            {/* Active Filters Display */}
+            {hasActiveFilters && (
+                <div className="flex flex-wrap gap-2">
+                    {searchValue && <Badge variant="secondary">Search: {searchValue}</Badge>}
+                    {activeFilter && <Badge variant="secondary">Status: {activeFilter === '1' ? 'Active' : 'Inactive'}</Badge>}
+                    {verifiedFilter && <Badge variant="secondary">Verified: {verifiedFilter === '1' ? 'Yes' : 'No'}</Badge>}
+                </div>
+            )}
+            {/* <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter mcq"
-                    defaultValue={(table.getColumn('q_statement')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('q_statement')?.setFilterValue(event.target.value)}
+                    defaultValue={(table.getColumn('question')?.getFilterValue() as string) ?? ''}
+                    onChange={(event) => table.getColumn('question')?.setFilterValue(event.target.value)}
                     className="max-w-sm"
                 />
                 <DropdownMenu>
@@ -111,8 +313,8 @@ export default function DataTable({ setData, columns, url }: dataTableProps) {
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
-            </div>
-            <div className="overflow-hidden rounded-md border">
+            </div> */}
+            <div className="mt-4 overflow-hidden rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -146,27 +348,22 @@ export default function DataTable({ setData, columns, url }: dataTableProps) {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            {/* <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
                 <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(mcq_data.current_page - 1)}
-                        disabled={mcq_data.current_page <= 1}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(mcqs.current_page - 1)} disabled={mcqs.current_page <= 1}>
                         Previous
                     </Button>
                     <span className="text-sm">
-                        {mcq_data.current_page} of {mcq_data.last_page}
+                        {mcqs.current_page} of {mcqs.last_page}
                     </span>
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handlePageChange(mcq_data.current_page + 1)}
-                        disabled={mcq_data.current_page >= mcq_data.last_page}
+                        onClick={() => handlePageChange(mcqs.current_page + 1)}
+                        disabled={mcqs.current_page >= mcqs.last_page}
                     >
                         Next
                     </Button>
@@ -176,25 +373,88 @@ export default function DataTable({ setData, columns, url }: dataTableProps) {
                         type="number"
                         placeholder="Go to Page"
                         min={1}
-                        max={mcq_data.last_page}
+                        max={mcqs.last_page}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 const pageIndex = Number((e.target as HTMLInputElement).value);
-                                if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                                if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
                                     handlePageChange(pageIndex);
                                 }
                             }
                         }}
                         onBlur={(e) => {
                             const pageIndex = Number(e.target.value);
-                            if (pageIndex >= 1 && pageIndex <= mcq_data.last_page) {
+                            if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
                                 handlePageChange(pageIndex);
                             } else {
-                                e.target.value = String(mcq_data.current_page); // Reset to current page if invalid
+                                e.target.value = String(mcqs.current_page); // Reset to current page if invalid
                             }
                         }}
                         className="w-24"
                     />
+                </div>
+            </div> */}
+
+            {/* Pagination */}
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Results Info */}
+                <div className="text-sm text-muted-foreground">
+                    Showing {mcqs.from || 0} to {mcqs.to || 0} of {mcqs.total} results
+                </div>
+
+                <div className="flex items-center gap-4">
+                    {/* Per Page Selector */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm">Show:</span>
+                        <Select value={String(mcqs.per_page)} onValueChange={handlePerPageChange}>
+                            <SelectTrigger className="w-20">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="25">25</SelectItem>
+                                <SelectItem value="50">50</SelectItem>
+                                <SelectItem value="100">100</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* Page Navigation */}
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handlePageChange(mcqs.current_page - 1)} disabled={mcqs.current_page <= 1}>
+                            Previous
+                        </Button>
+
+                        <span className="text-sm whitespace-nowrap">
+                            Page {mcqs.current_page} of {mcqs.last_page}
+                        </span>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(mcqs.current_page + 1)}
+                            disabled={mcqs.current_page >= mcqs.last_page}
+                        >
+                            Next
+                        </Button>
+
+                        {/* Go to Page Input */}
+                        <Input
+                            type="number"
+                            placeholder="Page"
+                            min={1}
+                            max={mcqs.last_page}
+                            className="w-20"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    const page = Number((e.target as HTMLInputElement).value);
+                                    if (page >= 1 && page <= mcqs.last_page) {
+                                        handlePageChange(page);
+                                    }
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </>
