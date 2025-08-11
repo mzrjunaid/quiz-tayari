@@ -70,7 +70,7 @@ export default function Show() {
                             <Button
                                 variant="default"
                                 className="btn btn-secondary cursor-pointer"
-                                onClick={() => router.post(`/mcqs-rephrase/${mcq?.q_id}/update`, { rephrased })}
+                                onClick={() => router.post(`/rephrase/${mcq?.q_id}/update`, { rephrased })}
                                 disabled={!rephrased || rephrased.trim() === '' || !mcq?.q_id}
                             >
                                 <Save /> Save

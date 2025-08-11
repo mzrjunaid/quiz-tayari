@@ -85,9 +85,13 @@ class McqsRephraseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(McqsRephrase $mcqsRephrase)
+    public function edit($id)
     {
-        //
+        $mcq = McqsRephrase::where('q_id', $id)->first();
+        return Inertia::render('McqsRephrase/Edit', [
+            'mcq' => $mcq,
+            'rephrased' => session('rephrased'),
+        ]);
     }
 
     /**
@@ -178,8 +182,8 @@ class McqsRephraseController extends Controller
                     "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
                     "2. EXPLANATION: Explain the asnwer in 2 lines with details\n\n" .
                     "3. SUBJECT: Get a statment's subject from which book or subject it could be.\n\n" .
-                    "4. CURRENT AFFAIR: Check the statement if this is related to current affairs 2023-25 then response CA: with true or false.\n\n".
-                    "4. GENERAL KNOWLEDGE: check the statement if this is related to General Knowledge then response GK: with true or false.\n\n".
+                    "4. CURRENT AFFAIR: Check the statement if this is related to current affairs 2023-25 then response CA: with true or false.\n\n" .
+                    "4. GENERAL KNOWLEDGE: check the statement if this is related to General Knowledge then response GK: with true or false.\n\n" .
                     "Format your response as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
                     "EXPLANATION: [your explanation]\n" .
@@ -207,7 +211,7 @@ class McqsRephraseController extends Controller
             }
 
             return redirect()
-                ->route('mcqs-rephrase.show', $id)
+                ->route('rephrase.show', $id)
                 ->with([
                     'success' => 'Rephrased successfully.',
                     'rephrased' => $rephrased,
@@ -223,7 +227,7 @@ class McqsRephraseController extends Controller
 
     private function redirectWithError($id, $message)
     {
-        return redirect()->route('mcqs-rephrase.show', $id)->with('error', $message);
+        return redirect()->route('rephrase.show', $id)->with('error', $message);
     }
 
     private function extractContent($text, $marker)
