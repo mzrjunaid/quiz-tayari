@@ -6,6 +6,7 @@ use App\Models\Mcq;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class McqController extends Controller
@@ -15,6 +16,21 @@ class McqController extends Controller
      */
     public function index(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'search' => 'nullable|string|max:255', // Optional search string
+            'is_active' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
+            'is_verified' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
+            'sort_by' => 'nullable|string|in:created_at,updated_at,name,id', // Allowed sort fields
+            'sort_order' => 'nullable|in:asc,desc', // Allowed sort orders
+            'per_page' => 'nullable|integer|min:1|max:100', // Pagination limit
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422); // Unprocessable Entity
+        }
 
         // Get filter parameters
         $search = $request->get('search');
@@ -59,13 +75,19 @@ class McqController extends Controller
             })
 
             // Active status filter
-            ->when($isActive && $isActive !== 'all', function ($query) use ($isActive) {
-                $query->where('is_active', $isActive === '1');
+            ->when($isActive !== 'all', function ($query) use ($isActive) {
+                if ($isActive !== null) {
+                    $query->where('is_active', $isActive === '1');
+                }
             })
+
             // Verified status filter
-            ->when($isVerified && $isVerified !== 'all', function ($query) use ($isVerified) {
-                $query->where('is_verified', $isVerified === '1');
+            ->when($isVerified !== 'all', function ($query) use ($isVerified) {
+                if ($isVerified !== null) {
+                    $query->where('is_verified', $isVerified === '1');
+                }
             })
+
             // Sorting
             ->orderBy($sortBy, $sortOrder)
             // Secondary sort for consistency
