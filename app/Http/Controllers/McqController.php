@@ -144,7 +144,13 @@ class McqController extends Controller
     {
         // dd($slug);
         $mcq = Mcq::where('slug', $slug)->first();
-        dd($mcq);
+        // dd($mcq);
+        if (!$mcq) {
+            abort(404);
+        }
+        return Inertia::render('Mcqs/Show', [
+            'mcq' => $mcq,
+        ]);
     }
 
     /**

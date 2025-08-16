@@ -57,20 +57,28 @@ export interface Mcqs {
     id: string;
     slug: string;
     question: string;
+    explanation: string;
     option_a: string;
-    option_b: string;
-    option_c: string;
+    option_b?: string;
+    option_c?: string;
     option_d?: string;
+    option_e?: string;
     correct_answer: string;
+    correct_answers: string[];
+    subject: string;
+    topic: string;
+    difficulty_level: string;
+    question_type: string;
     is_active: boolean;
     is_verified: boolean;
+    created_by: string;
+    updated_by: string;
+    verified_by: string;
+    tags: string[];
+    exam_types: string[];
     created_at: string;
     updated_at: string;
-
-    question_type?: string;
-    subject?: string;
-    tags?: string[] | null;
-    reference?: string[] | null;
+    deleted_at: string;
 }
 
 export type PaginatedData = {

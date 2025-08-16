@@ -93,12 +93,17 @@ export default function Show() {
                                     <span className="font-bold text-blue-600">Question: </span>
                                     <h1 className="text-xl font-semibold">{mcq.q_statement}</h1>
                                     <ul className="mt-2 ml-5 list-inside">
-                                        {['A', 'B', 'C', 'D'].map((label, i) => (
-                                            <li key={i} className="flex gap-2">
-                                                <span className="font-bold text-blue-600">{label}.</span>
-                                                <span>{mcq[`option_${label}` as 'option_A' | 'option_B' | 'option_C' | 'option_D']}</span>
-                                            </li>
-                                        ))}
+                                        {(['A', 'B', 'C', 'D', 'E'] as const).map((label, i) => {
+                                            const optionKey = `option_${label}` as keyof typeof mcq;
+                                            const optionValue = mcq[optionKey];
+
+                                            return optionValue && optionValue !== '-' ? (
+                                                <li key={i} className="flex gap-2">
+                                                    <span className="font-bold text-blue-600">{label}.</span>
+                                                    <span>{optionValue}</span>
+                                                </li>
+                                            ) : null; // don’t render if option doesn’t exist
+                                        })}
                                     </ul>
                                     <div className="mt-4">
                                         <span className="font-bold text-blue-600">Correct Answer: </span>
