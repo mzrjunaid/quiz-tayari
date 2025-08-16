@@ -55,6 +55,7 @@ export interface OldMcqs {
 
 export interface Mcqs {
     id: string;
+    slug: string;
     question: string;
     option_a: string;
     option_b: string;

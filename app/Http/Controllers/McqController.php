@@ -49,6 +49,7 @@ class McqController extends Controller
         $mcqs = Mcq::query()
             ->select([
                 'id',
+                'slug',
                 'question',
                 'option_a',
                 'option_b',
@@ -65,12 +66,14 @@ class McqController extends Controller
             ])
             // Search filter
             ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('question', 'LIKE', "%{$search}%")
-                        ->orWhere('option_a', 'LIKE', "%{$search}%")
-                        ->orWhere('option_b', 'LIKE', "%{$search}%")
-                        ->orWhere('option_c', 'LIKE', "%{$search}%")
-                        ->orWhere('option_d', 'LIKE', "%{$search}%");
+                $columns = ['question', 'option_a', 'option_b', 'option_c', 'option_d'];
+
+                $query->whereIn('id', function ($subQuery) use ($search, $columns) {
+                    $subQuery->select('id')->from('mcqs');
+
+                    foreach ($columns as $column) {
+                        $subQuery->orWhere($column, 'LIKE', "%{$search}%");
+                    }
                 });
             })
 
@@ -137,9 +140,11 @@ class McqController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Mcq $mcq)
+    public function show($slug)
     {
-        //
+        // dd($slug);
+        $mcq = Mcq::where('slug', $slug)->first();
+        dd($mcq);
     }
 
     /**

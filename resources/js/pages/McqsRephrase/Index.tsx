@@ -155,14 +155,13 @@ export default function McqsRephrase({ mcq_data }: { mcq_data: Mcq_data }) {
                 page: pageIndex, // Adjust for zero-based index
             },
             {
-                preserveState: true,
                 replace: true,
             },
         );
     };
 
     const table = useReactTable({
-        data,
+        data: data || [],
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,

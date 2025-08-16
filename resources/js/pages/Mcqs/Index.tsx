@@ -48,6 +48,17 @@ export const columns: ColumnDef<Mcqs>[] = [
         header: 'Id',
         cell: ({ row }) => <div className="max-w-xs capitalize">{row.getValue('id')}</div>,
     },
+    // // Add slug column (hidden but accessible)
+    // {
+    //     accessorKey: 'slug',
+    //     header: 'Slug',
+    //     cell: ({ row }) => <div>{row.getValue('slug')}</div>,
+    //     enableHiding: true,
+    //     // Hide by default since it's just for data access
+    //     meta: {
+    //         hidden: true,
+    //     },
+    // },
     {
         accessorKey: 'question',
         header: ({ column }) => {
@@ -60,7 +71,7 @@ export const columns: ColumnDef<Mcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/mcqs/${row.getValue('id')}`} className="hover:underline">
+                <Link href={`/mcqs/${row.original.slug}`} className="hover:underline">
                     {row.getValue('question')}
                 </Link>
             </div>
@@ -97,8 +108,9 @@ export const columns: ColumnDef<Mcqs>[] = [
         cell: ({ row }) => {
             const mcq = row.original;
 
-            const handleShowPage = (id: number) => {
-                router.get(`/mcqs/${id}`, {}, { preserveState: true, replace: true });
+            // Use slug for navigation instead of id
+            const handleShowPage = (slug: string) => {
+                router.get(`/mcqs/${slug}`, {}, { preserveState: true, replace: true });
             };
 
             return (
@@ -111,11 +123,15 @@ export const columns: ColumnDef<Mcqs>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleShowPage(Number(mcq.id))}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.id)}>Copy payment ID</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShowPage(mcq.slug)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.slug)}>Copy MCQ Slug</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link href={`/mcqs/${mcq.slug}`} className="w-full">
+                                View Details
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Mark as Verified</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
@@ -131,7 +147,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
-
     const url = '/mcqs';
 
     return (

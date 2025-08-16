@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, OldMcqs } from '@/types';
+import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit, RotateCcw, Save } from 'lucide-react';
+import { Edit, RotateCcw } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,26 +12,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Show() {
-    const { mcq, error, rephrased, explanation, subject, topic, current_affair, general_knowledge, success } = usePage().props as {
-        mcq?: OldMcqs;
+    const { mcq, error } = usePage().props as {
+        mcq?: Mcqs;
         error?: string;
-        success?: string;
-        rephrased?: string;
-        explanation?: string;
-        subject?: string;
-        topic?: string;
-        current_affair?: string;
-        general_knowledge?: string;
     };
 
     console.log(usePage().props);
 
     const handleRephrase = () => {
         router.get(
-            `/rephrase/${mcq?.q_id}/rephrase`,
+            `/rephrase/${mcq?.id}/rephrase`,
             {
-                q_id: mcq?.q_id,
-                q_statement: mcq?.q_statement,
+                id: mcq?.id,
             },
             {
                 preserveScroll: true,
@@ -41,15 +33,9 @@ export default function Show() {
 
     const handleEdit = () => {
         router.post(
-            `/rephrase/${mcq?.q_id}/edit`,
+            `/rephrase/${mcq?.id}/edit`,
             {
-                q_id: mcq?.q_id,
-                rephrased: rephrased,
-                explanation: explanation,
-                subject: subject,
-                topic: topic,
-                current_affair: current_affair,
-                general_knowledge: general_knowledge,
+                q_id: mcq?.id,
             },
             {
                 preserveState: true,
@@ -63,64 +49,38 @@ export default function Show() {
             <Head title="Mcqs Rephrase" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
-                    {success && <div className="mb-4 rounded bg-green-100 px-4 py-2 text-green-700">{success}</div>}
                     <div className="mb-4 items-center justify-between md:flex">
                         <h1 className="mb-4 text-2xl font-semibold md:mb-0">Mcqs Rephrase</h1>
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
                             <Button variant="outline" className="btn btn-primary cursor-pointer" onClick={() => handleRephrase()}>
                                 <RotateCcw /> Rephrase
                             </Button>
-
                             <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
                                 <Edit /> Edit Rephrased
-                            </Button>
-                            <Button
-                                variant="default"
-                                className="btn btn-secondary cursor-pointer"
-                                onClick={() => router.post(`/rephrase/${mcq?.q_id}/update`, { rephrased })}
-                                disabled={!rephrased || rephrased.trim() === '' || !mcq?.q_id}
-                            >
-                                <Save /> Save
                             </Button>
                         </div>
                     </div>
                     <div className="grid auto-rows-min gap-4 md:grid-cols-2">
                         <div className="relative rounded-xl border border-sidebar-border/70 py-4 ps-2 pe-2 dark:border-sidebar-border">
-                            {error && <div className="mb-4 rounded bg-red-100 px-4 py-2 text-red-700">{error}</div>}
-
                             {mcq ? (
                                 <div>
                                     <span className="font-bold text-blue-600">Question: </span>
-                                    <h1 className="text-xl font-semibold">{mcq.q_statement}</h1>
+                                    <h1 className="text-xl font-semibold">{mcq.question}</h1>
                                     <ul className="mt-2 ml-5 list-inside">
-                                        {['A', 'B', 'C', 'D'].map((label, i) => (
+                                        {['a', 'b', 'c', 'd'].map((label, i) => (
                                             <li key={i} className="flex gap-2">
                                                 <span className="font-bold text-blue-600">{label}.</span>
-                                                <span>{mcq[`option_${label}` as 'option_A' | 'option_B' | 'option_C' | 'option_D']}</span>
+                                                <span>{mcq[`option_${label}` as 'option_a' | 'option_b' | 'option_c' | 'option_d']}</span>
                                             </li>
                                         ))}
                                     </ul>
                                     <div className="mt-4">
                                         <span className="font-bold text-blue-600">Correct Answer: </span>
-                                        <span>{mcq.right_choice}</span>
+                                        <span>{mcq.correct_answer}</span>
                                     </div>
                                 </div>
                             ) : (
                                 !error && <p>Loading...</p>
-                            )}
-                        </div>
-                        <div className="relative rounded-xl border border-sidebar-border/70 px-2 py-4 dark:border-sidebar-border">
-                            {rephrased ? (
-                                <>
-                                    <h1 className="text-xl font-bold text-gray-800">{rephrased}</h1>
-                                    <p className="text-sm font-semibold">{explanation}</p>
-                                    <p>
-                                        Subject: {subject} <br /> Topic: {topic} <br /> Current Affair: {current_affair} <br /> General Knowledge:{' '}
-                                        {general_knowledge} <br />
-                                    </p>
-                                </>
-                            ) : (
-                                <h1 className="text-gray-500">Rephrased MCQ will be displayed here!</h1>
                             )}
                         </div>
                     </div>
