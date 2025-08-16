@@ -4,6 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { Edit, Share } from 'lucide-react';
 import { useState } from 'react';
 
@@ -79,16 +80,15 @@ export default function Show() {
                                     <span className="font-bold text-blue-600">Question: </span>
                                     <h1 className="text-xl font-semibold">{mcq.question}</h1>
                                     <ul className="mt-2 ml-5 list-inside">
-                                        {(['a', 'b', 'c', 'd', 'e'] as const).map((label, i) => {
-                                            const optionKey = `option_${label}` as keyof typeof mcq;
-                                            const optionValue = mcq[optionKey];
+                                        {(['A', 'B', 'C', 'D', 'E'] as const).map((label, i) => {
+                                            const optionValue = mcq.options[label];
 
                                             return optionValue ? (
                                                 <li key={i} className="flex gap-2">
                                                     <span className="font-bold text-blue-600">{label}.</span>
                                                     <span>{optionValue}</span>
                                                 </li>
-                                            ) : null; // don’t render if option doesn’t exist
+                                            ) : null; // don't render if option doesn't exist
                                         })}
                                     </ul>
                                     <div className="mt-4">
@@ -134,16 +134,28 @@ export default function Show() {
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="font-bold text-blue-600">Created at: </span>
-                                    <span>{mcq ? mcq.created_at : ''}</span>
+                                    <span>{mcq ? format(mcq.created_at, 'MMM dd, yyyy, hh:mm a') : ''}</span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-bold text-blue-600">Updated at: </span>
+                                    <span>{mcq ? format(mcq.updated_at, 'MMM dd, yyyy, hh:mm a') : ''}</span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-bold text-blue-600">Updated at: </span>
+                                    <span>{mcq ? mcq.created_at_human : ''}</span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-bold text-blue-600">Created by: </span>
+                                    <span>{mcq ? mcq.created_by.name : ''}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {/* MCQ Explanation */}
-                    <div className="relative my-4 rounded-xl border border-sidebar-border/70 px-4 py-4 text-center dark:border-sidebar-border">
+                    {/* <div className="relative my-4 rounded-xl border border-sidebar-border/70 px-4 py-4 text-center dark:border-sidebar-border">
                         <h1 className="mb-2 text-2xl font-bold">MCQ Explanation</h1>
                         <div className="flex flex-col gap-2">{mcq ? mcq.explanation : ''}</div>
-                    </div>
+                    </div> */}
                     <pre>{JSON.stringify(mcq, null, 2)}</pre>
                 </div>
             </div>

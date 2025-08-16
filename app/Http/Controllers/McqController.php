@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\McqResource;
 use App\Models\Mcq;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -143,13 +144,13 @@ class McqController extends Controller
     public function show($slug)
     {
         // dd($slug);
-        $mcq = Mcq::where('slug', $slug)->first();
+        $mcq = $this->findMcqBySlug($slug);
         // dd($mcq);
         if (!$mcq) {
             abort(404);
         }
         return Inertia::render('Mcqs/Show', [
-            'mcq' => $mcq,
+            'mcq' => new McqResource($mcq),
         ]);
     }
 
@@ -175,5 +176,24 @@ class McqController extends Controller
     public function destroy(Mcq $mcq)
     {
         //
+    }
+
+
+    /**
+     * Find MCQ by slug with relationships loaded
+     *
+     * @param string $slug
+     * @return Mcq
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function findMcqBySlug(string $slug): Mcq
+    {
+        return Mcq::with([
+            'creator:id,name,email',
+            'updater:id,name,email',
+            'verifier:id,name,email'
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
     }
 }

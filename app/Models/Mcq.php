@@ -39,11 +39,14 @@ class Mcq extends Model
     ];
 
     protected $casts = [
-        'tags' => 'array',
-        'exam_types' => 'array',
-        'correct_answers' => 'array', // <- important for multiple correct answers
         'is_active' => 'boolean',
         'is_verified' => 'boolean',
+        'correct_answers' => 'array',
+        'tags' => 'array',
+        'exam_types' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
     // Relationships
     public function creator(): BelongsTo
