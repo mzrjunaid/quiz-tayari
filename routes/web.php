@@ -32,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Route::get('/{id}', [McqController::class, 'show'])->name('mcqs.show');
         Route::get('/{slug}', [McqController::class, 'show'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.show');
+        Route::get('/{slug}/edit', [McqController::class, 'edit'])->where('slug', '[a-zA-Z0-9\-_]+')
+            ->name('mcqs.edit');
     });
 });
 

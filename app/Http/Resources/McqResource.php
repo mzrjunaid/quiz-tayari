@@ -61,8 +61,10 @@ class McqResource extends JsonResource
             // Human-readable dates
             'created_at_human' => $this->created_at?->diffForHumans(),
             'updated_at_human' => $this->updated_at?->diffForHumans(),
-            'formatted_date' => $this->created_at?->format('M d, Y'),
-            'formatted_datetime' => $this->created_at?->format('M d, Y h:i A'),
+            'deleted_at_human' => $this->deleted_at?->diffForHumans(),
+            'created_at_datetime' => $this->created_at?->format('M d, Y h:i A'),
+            'updated_at_datetime' => $this->updated_at?->format('M d, Y h:i A'),
+            'deleted_at_datetime' => $this->deleted_at?->fromat('M d, Y h:i A'),
 
             // Computed Properties
             'has_multiple_correct_answers' => $this->hasMultipleCorrectAnswers(),

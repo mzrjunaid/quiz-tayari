@@ -157,9 +157,17 @@ class McqController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Mcq $mcq)
+    public function edit($slug)
     {
-        //
+        // dd($slug);
+        $mcq = $this->findMcqBySlug($slug);
+        // dd($mcq);
+        if (!$mcq) {
+            abort(404);
+        }
+        return Inertia::render('Mcqs/Edit', [
+            'mcq' => new McqResource($mcq),
+        ]);
     }
 
     /**

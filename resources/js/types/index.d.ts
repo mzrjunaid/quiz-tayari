@@ -78,9 +78,11 @@ export interface Mcqs {
     verified_by: User;
     tags: string[];
     exam_types: string[];
-    created_at: string;
-    updated_at: string;
-    deleted_at: string;
+    created_at_human: string;
+    updated_at_human: string;
+    created_at_datetime: string;
+    updated_at_datetime: string;
+    deleted_at_datetime: string;
 }
 
 export type PaginatedData = {

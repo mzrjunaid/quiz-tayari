@@ -4,7 +4,6 @@ import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { format } from 'date-fns';
 import { Edit, Share } from 'lucide-react';
 import { useState } from 'react';
 
@@ -41,16 +40,7 @@ export default function Show() {
     };
 
     const handleEdit = () => {
-        router.post(
-            `/rephrase/${mcq?.id}/edit`,
-            {
-                q_id: mcq?.id,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        router.get(`/mcqs/${mcq?.slug}/edit`);
     };
 
     return (
@@ -134,15 +124,11 @@ export default function Show() {
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="font-bold text-blue-600">Created at: </span>
-                                    <span>{mcq ? format(mcq.created_at, 'MMM dd, yyyy, hh:mm a') : ''}</span>
+                                    <span>{mcq ? mcq.created_at_datetime : ''}</span>
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="font-bold text-blue-600">Updated at: </span>
-                                    <span>{mcq ? format(mcq.updated_at, 'MMM dd, yyyy, hh:mm a') : ''}</span>
-                                </div>
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="font-bold text-blue-600">Updated at: </span>
-                                    <span>{mcq ? mcq.created_at_human : ''}</span>
+                                    <span>{mcq ? mcq.updated_at_datetime : ''}</span>
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="font-bold text-blue-600">Created by: </span>
@@ -152,10 +138,12 @@ export default function Show() {
                         </div>
                     </div>
                     {/* MCQ Explanation */}
-                    {/* <div className="relative my-4 rounded-xl border border-sidebar-border/70 px-4 py-4 text-center dark:border-sidebar-border">
-                        <h1 className="mb-2 text-2xl font-bold">MCQ Explanation</h1>
-                        <div className="flex flex-col gap-2">{mcq ? mcq.explanation : ''}</div>
-                    </div> */}
+                    {mcq?.explanation && (
+                        <div className="relative my-4 rounded-xl border border-sidebar-border/70 px-4 py-4 text-center dark:border-sidebar-border">
+                            <h1 className="mb-2 text-2xl font-bold">MCQ Explanation</h1>
+                            <div className="flex flex-col gap-2">{mcq ? mcq.explanation : ''}</div>
+                        </div>
+                    )}
                     <pre>{JSON.stringify(mcq, null, 2)}</pre>
                 </div>
             </div>
