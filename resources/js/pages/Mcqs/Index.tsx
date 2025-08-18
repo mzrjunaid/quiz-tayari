@@ -153,6 +153,11 @@ export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="MCQs" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <div className="relative w-full">
+                    <Button variant="default" className="float-right">
+                        Add New
+                    </Button>
+                </div>
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
                     <DataTable mcqs={mcqs} columns={columns} filters={filters} url={url} stats={stats} />
                 </div>

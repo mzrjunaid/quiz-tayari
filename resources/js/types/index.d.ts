@@ -83,6 +83,7 @@ export interface Mcqs {
     created_at_datetime: string;
     updated_at_datetime: string;
     deleted_at_datetime: string;
+    status: string;
 }
 
 export type PaginatedData = {

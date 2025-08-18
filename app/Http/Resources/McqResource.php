@@ -69,7 +69,7 @@ class McqResource extends JsonResource
             // Computed Properties
             'has_multiple_correct_answers' => $this->hasMultipleCorrectAnswers(),
             'option_count' => $this->getOptionCount(),
-            'status' => $this->getStatus(),
+            'status' => config('statuses.' . $this->getStatus(), $this->getStatus()),
         ];
     }
 

@@ -129,7 +129,7 @@ class McqsRephraseController extends Controller
                     "2. CORE CONCEPT: Extract the core concept being tested (e.g., 'Capital of France', 'Newton’s 2nd Law', 'Pakistani Constitution 1973').\n\n" .
                     "3. EXPLANATION: Provide a detailed explanation (4–6 lines). Explain why the correct answer is correct and, if useful, add an extra fact.\n\n" .
                     "4. SUBJECT: Identify the broad subject (e.g., General Knowledge, Pakistan Studies, Islamic Studies, Science, Mathematics, English).\n\n" .
-                    "5. TOPIC: Mention a specific topic or subtopic inside that subject (e.g., General Knowledge → World Capitals, Science → Physics → Laws of Motion).\n\n" .
+                    "5. TOPIC: Mention a specific topic or subtopic inside that subject (e.g., World Capitals, Laws of Motion).\n\n" .
                     "6. CURRENT AFFAIRS: Check if the question is related to current events between 2023–2025. Respond CA: true or CA: false.\n\n" .
                     "7. GENERAL KNOWLEDGE: Check if the question is related to General Knowledge (static facts, history, geography, etc.). Respond GK: true or GK: false.\n\n" .
 

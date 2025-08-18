@@ -1,10 +1,9 @@
 import { Filters, Mcqs, PaginatedData, SerializableFilterValue } from '@/types';
 
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table';
-import { ChevronDown, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { router } from '@inertiajs/react';
@@ -15,6 +14,7 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { statusRecord, verificationRecord } from '@/lib/recordUtils';
 import { X } from 'lucide-react';
 
 export interface DataTableProps {
@@ -151,18 +151,6 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
         return searchValue || activeFilter || verifiedFilter;
     }, [searchValue, activeFilter, verifiedFilter]);
 
-    // const handlePageChange = (pageIndex: number) => {
-    //     router.get(
-    //         '/mcqs',
-    //         {
-    //             page: pageIndex, // Adjust for zero-based index
-    //         },
-    //         {
-    //             preserveScroll: true,
-    //         },
-    //     );
-    // };
-
     return (
         <>
             {/* Stats Section */}
@@ -181,7 +169,7 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
             )}
 
             {/* Filters Section */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="mt-2 flex w-full flex-col gap-4 sm:flex-row sm:items-center">
                 {/* Search Input */}
                 <div className="relative max-w-sm flex-1">
                     <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
@@ -207,50 +195,51 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                 </div>
 
                 {/* Status Filters */}
-                <Select
-                    value={activeFilter ?? ''}
-                    onValueChange={(value) => {
-                        setActiveFilter(value);
-                        updateFilters({ is_active: value || undefined });
-                    }}
-                >
-                    <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="1">Active</SelectItem>
-                        <SelectItem value="0">Inactive</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-row gap-3">
+                    <Select
+                        value={activeFilter ?? ''}
+                        onValueChange={(value) => {
+                            setActiveFilter(value);
+                            updateFilters({ is_active: value || undefined });
+                        }}
+                    >
+                        <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="1">Active</SelectItem>
+                            <SelectItem value="0">Inactive</SelectItem>
+                        </SelectContent>
+                    </Select>
 
-                <Select
-                    value={verifiedFilter ?? ''}
-                    onValueChange={(value) => {
-                        setVerifiedFilter(value);
-                        updateFilters({ is_verified: value || undefined });
-                    }}
-                >
-                    <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Verified" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="1">Verified</SelectItem>
-                        <SelectItem value="0">Unverified</SelectItem>
-                    </SelectContent>
-                </Select>
-
-                {/* Clear Filters */}
-                {hasActiveFilters && (
-                    <Button variant="outline" size="sm" onClick={clearFilters}>
-                        <X className="mr-2 h-4 w-4" />
-                        Clear
-                    </Button>
-                )}
+                    <Select
+                        value={verifiedFilter ?? ''}
+                        onValueChange={(value) => {
+                            setVerifiedFilter(value);
+                            updateFilters({ is_verified: value || undefined });
+                        }}
+                    >
+                        <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Verified" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="1">Verified</SelectItem>
+                            <SelectItem value="0">Unverified</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    {/* Clear Filters */}
+                    {hasActiveFilters && (
+                        <Button variant="outline" onClick={clearFilters}>
+                            <X className="mr-2 h-4 w-4" />
+                            Clear
+                        </Button>
+                    )}
+                </div>
 
                 {/* Column Visibility */}
-                <DropdownMenu>
+                {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">
                             Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -271,15 +260,15 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                                 </DropdownMenuCheckboxItem>
                             ))}
                     </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
             </div>
 
             {/* Active Filters Display */}
             {hasActiveFilters && (
-                <div className="flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                     {searchValue && <Badge variant="secondary">Search: {searchValue}</Badge>}
-                    {activeFilter && <Badge variant="secondary">Status: {activeFilter === '1' ? 'Active' : 'Inactive'}</Badge>}
-                    {verifiedFilter && <Badge variant="secondary">Verified: {verifiedFilter === '1' ? 'Yes' : 'No'}</Badge>}
+                    {activeFilter && <Badge variant="secondary">Status: {statusRecord[activeFilter]}</Badge>}
+                    {verifiedFilter && <Badge variant="secondary">Verified: {verificationRecord[verifiedFilter]}</Badge>}
                 </div>
             )}
             {/* <div className="flex items-center py-4">

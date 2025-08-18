@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
+import { statusColors } from '@/lib/recordUtils';
 import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Edit, Share } from 'lucide-react';
@@ -49,7 +50,10 @@ export default function Show() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
                     <div className="mb-4 items-center justify-between md:flex">
-                        <h1 className="mb-4 text-2xl font-semibold md:mb-0">Mcqs Rephrase</h1>
+                        <h1 className="relative mb-4 text-2xl font-semibold md:mb-0">
+                            Mcqs Rephrase
+                            {mcq && <span className={`ms-2 rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>}
+                        </h1>
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
                             <div className="flex items-center space-x-2">
                                 <Label htmlFor="airplane-mode">{publish ? 'Published' : 'Unpublished'}</Label>
