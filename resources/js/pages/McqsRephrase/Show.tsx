@@ -12,11 +12,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Show() {
-    const { mcq, error, rephrased, explanation, subject, topic, current_affair, general_knowledge, success } = usePage().props as {
+    const { mcq, error, rephrased, explanation, subject, topic, core_concept, current_affair, general_knowledge, success } = usePage().props as {
         mcq?: OldMcqs;
         error?: string;
         success?: string;
         rephrased?: string;
+        core_concept?: string;
         explanation?: string;
         subject?: string;
         topic?: string;
@@ -121,7 +122,7 @@ export default function Show() {
                                     <p className="text-sm font-semibold">{explanation}</p>
                                     <p>
                                         Subject: {subject} <br /> Topic: {topic} <br /> Current Affair: {current_affair} <br /> General Knowledge:{' '}
-                                        {general_knowledge} <br />
+                                        {general_knowledge} <br /> Core Concept: {core_concept}
                                     </p>
                                 </>
                             ) : (

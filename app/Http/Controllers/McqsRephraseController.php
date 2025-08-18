@@ -59,6 +59,7 @@ class McqsRephraseController extends Controller
                 'mcq' => $mcq,
                 'rephrased' => session('rephrased'),
                 'explanation' => session('explanation'),
+                'core_concept' => session('core_concept'),
                 'subject' => session('subject'),
                 'topic' => session('topic'),
                 'current_affair' => session('current_affair'),
@@ -122,19 +123,24 @@ class McqsRephraseController extends Controller
 
             // Single API call for better efficiency
             $combinedResult = $model->generateContent(
-                "Please perform four tasks for this statement: '{$q_statement}'\n\n" .
-                    "1. REPHRASE: Rephrase the statement without changing the context (don't answer it)\n" .
-                    "2. EXPLANATION: Explain the asnwer in 5 lines with details\n\n" .
-                    "3. SUBJECT: Get a statment's subject from which book or subject it could be and sub-topic as well.\n\n" .
-                    "4. CURRENT AFFAIR: Check the statement if this is related to current affairs 2023-25 then response CA: with true or false.\n\n" .
-                    "4. GENERAL KNOWLEDGE: check the statement if this is related to General Knowledge then response GK: with true or false.\n\n" .
-                    "Format your response as:\n" .
+                "You are an expert quiz content processor. Perform the following tasks for this MCQ statement: '{$q_statement}'\n\n" .
+
+                    "1. REPHRASED: Rewrite the statement in clear, exam-friendly language without changing its meaning.\n\n" .
+                    "2. CORE CONCEPT: Extract the core concept being tested (e.g., 'Capital of France', 'Newton’s 2nd Law', 'Pakistani Constitution 1973').\n\n" .
+                    "3. EXPLANATION: Provide a detailed explanation (4–6 lines). Explain why the correct answer is correct and, if useful, add an extra fact.\n\n" .
+                    "4. SUBJECT: Identify the broad subject (e.g., General Knowledge, Pakistan Studies, Islamic Studies, Science, Mathematics, English).\n\n" .
+                    "5. TOPIC: Mention a specific topic or subtopic inside that subject (e.g., General Knowledge → World Capitals, Science → Physics → Laws of Motion).\n\n" .
+                    "6. CURRENT AFFAIRS: Check if the question is related to current events between 2023–2025. Respond CA: true or CA: false.\n\n" .
+                    "7. GENERAL KNOWLEDGE: Check if the question is related to General Knowledge (static facts, history, geography, etc.). Respond GK: true or GK: false.\n\n" .
+
+                    "Format your response strictly as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
+                    "CORE CONCEPT: [your core concept]\n" .
                     "EXPLANATION: [your explanation]\n" .
-                    "SUBJECT: [only mention subject here]\n" .
-                    "TOPIC: [only mention topic here]\n" .
-                    "CA: [your response true or false]\n" .
-                    "GK: [your response true or false]\n"
+                    "SUBJECT: [only subject]\n" .
+                    "TOPIC: [only topic]\n" .
+                    "CA: [true/false]\n" .
+                    "GK: [true/false]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
@@ -145,6 +151,7 @@ class McqsRephraseController extends Controller
 
             // Parse the structured response
             $rephrased = $this->extractContent($response, 'REPHRASED:');
+            $core_concept = $this->extractContent($response, 'CORE CONCEPT:');
             $explanation = $this->extractContent($response, 'EXPLANATION:');
             $subject = $this->extractContent($response, 'SUBJECT:');
             $topic = $this->extractContent($response, 'TOPIC:');
@@ -162,6 +169,7 @@ class McqsRephraseController extends Controller
                     'success' => 'Rephrased successfully.',
                     'rephrased' => $rephrased,
                     'explanation' => $explanation,
+                    'core_concept' => $core_concept,
                     'subject' => $subject,
                     'topic' => $topic,
                     'current_affair' => $current_affair,
@@ -178,10 +186,30 @@ class McqsRephraseController extends Controller
         return redirect()->route('rephrase.show', $id)->with('error', $message);
     }
 
-    private function extractContent($text, $marker)
+    private function extractContent(string $text, string $marker, string $type = 'string')
     {
-        $pattern = '/' . preg_quote($marker, '/') . '\s*(.+?)(?=\n[A-Z]+:|$)/s';
-        preg_match($pattern, $text, $matches);
-        return isset($matches[1]) ? trim($matches[1]) : null;
+        // Pattern ensures it matches the marker line until the next ALL-CAPS marker or end of string
+        $pattern = '/' . preg_quote($marker, '/') . '\s*(.+?)(?=\n[A-Z][A-Z ]*?:|$)/s';
+
+        if (preg_match($pattern, $text, $matches)) {
+            $value = trim($matches[1]);
+
+            // Normalize whitespace
+            $value = preg_replace('/\s+/', ' ', $value);
+
+            // Convert booleans if type is boolean
+            if ($type === 'bool') {
+                $normalized = strtolower($value);
+                if (in_array($normalized, ['true', 'yes', '1'])) {
+                    return true;
+                } elseif (in_array($normalized, ['false', 'no', '0'])) {
+                    return false;
+                }
+            }
+
+            return $value !== '' ? $value : null;
+        }
+
+        return null;
     }
 }
