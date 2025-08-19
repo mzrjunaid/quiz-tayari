@@ -127,7 +127,7 @@ class McqController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Mcqs/Create');
     }
 
     /**
@@ -135,7 +135,27 @@ class McqController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'question' => 'required|string',
+            'explanation' => 'required|string',
+            'option_a' => 'required|string',
+            'option_b' => 'required|string',
+            'option_c' => 'required|string',
+            'option_d' => 'required|string',
+            'option_e' => 'nullable|string',
+            'correct_answer' => 'required|string|in:A,B,C,D,E',
+            'subject' => 'required|string',
+            'topic' => 'required|string',
+            'difficulty_level' => 'required|string|in:easy,medium,hard',
+            'question_type' => 'required|string|in:single,multiple',
+            'tags' => 'nullable|array',
+            'exam_types' => 'nullable|array',
+        ]);
+
+        $mcq = Mcq::create($validated);
+
+        return redirect()->route('mcqs.index')
+            ->with('success', 'MCQ created successfully.');
     }
 
     /**
