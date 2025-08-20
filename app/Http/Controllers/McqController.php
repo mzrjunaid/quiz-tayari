@@ -127,9 +127,11 @@ class McqController extends Controller
      */
     public function create()
     {
-        // Get unique subjects and topics from existing MCQs
+        // Get unique subjects
         $subjects = Mcq::select('subject')
             ->distinct()
+            ->whereNotNull('subject')
+            ->where('subject', '!=', '')
             ->orderBy('subject')
             ->pluck('subject')
             ->map(function ($subject) {
@@ -139,8 +141,11 @@ class McqController extends Controller
                 ];
             });
 
+        // Get unique topics with their subjects
         $topics = Mcq::select('topic', 'subject')
             ->distinct()
+            ->whereNotNull('topic')
+            ->where('topic', '!=', '')
             ->orderBy('topic')
             ->get()
             ->map(function ($item) {
@@ -151,25 +156,47 @@ class McqController extends Controller
                 ];
             });
 
-        $tags = Mcq::select('tags')
+        // Handle tags (assuming they're stored as JSON or comma-separated)
+        $tags = collect();
+        Mcq::select('tags')
             ->distinct()
-            ->orderBy('tags')
+            ->whereNotNull('tags')
+            ->where('tags', '!=', '')
             ->get()
-            ->map(function ($item) {
+            ->each(function ($item) use ($tags) {
+                $this->processTags($item->tags, $tags);
+            });
+
+        // Remove duplicates and format for frontend
+        $tags = $tags->unique()
+            ->sort()
+            ->values()
+            ->map(function ($tag) {
                 return [
-                    'id' => $item->tags,
-                    'name' => $item->tags,
+                    'id' => $tag,
+                    'name' => $tag,
                 ];
             });
 
-        $exam_types = Mcq::select('exam_types')
+        // Handle exam_types (assuming they're stored as JSON or comma-separated)
+        $examTypes = collect();
+        Mcq::select('exam_types')
             ->distinct()
-            ->orderBy('exam_types')
+            ->whereNotNull('exam_types')
+            ->where('exam_types', '!=', '')
             ->get()
-            ->map(function ($item) {
+            ->each(function ($item) use ($examTypes) {
+                $this->processTags($item->exam_types, $examTypes);
+            });
+
+        // Remove duplicates and format for frontend
+        $examTypes = $examTypes->unique()
+            ->sort()
+            ->values()
+            ->map(function ($examType) {
                 return [
-                    'id' => $item->exam_types,
-                    'name' => $item->exam_types,
+                    'id' => $examType,
+                    'name' => $examType,
                 ];
             });
 
@@ -177,7 +204,7 @@ class McqController extends Controller
             'subjects' => $subjects,
             'topics' => $topics,
             'tags' => $tags,
-            'exam_types' => $exam_types,
+            'exam_types' => $examTypes,
             'questionTypes' => [
                 ['id' => 1, 'name' => 'Single Answer', 'value' => 'single'],
                 ['id' => 2, 'name' => 'Multiple Answer', 'value' => 'multiple'],
@@ -187,6 +214,61 @@ class McqController extends Controller
         ]);
     }
 
+    /**
+     * Check if a string is valid JSON
+     */
+    private function isJson($string)
+    {
+        if (!is_string($string)) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
+     * Process tags/exam_types data and add to collection
+     */
+    private function processTags($data, $collection)
+    {
+        // Handle array data (already decoded)
+        if (is_array($data)) {
+            foreach ($data as $item) {
+                if (is_string($item) && !empty(trim($item))) {
+                    $collection->push(trim($item));
+                }
+            }
+            return;
+        }
+
+        // Handle string data
+        if (is_string($data)) {
+            // Handle JSON string
+            if ($this->isJson($data)) {
+                $decoded = json_decode($data, true);
+                if (is_array($decoded)) {
+                    $this->processTags($decoded, $collection);
+                }
+                return;
+            }
+
+            // Handle comma-separated values
+            if (strpos($data, ',') !== false) {
+                $items = explode(',', $data);
+                foreach ($items as $item) {
+                    if (!empty(trim($item))) {
+                        $collection->push(trim($item));
+                    }
+                }
+                return;
+            }
+
+            // Handle single value
+            if (!empty(trim($data))) {
+                $collection->push(trim($data));
+            }
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
