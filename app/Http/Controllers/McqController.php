@@ -127,7 +127,64 @@ class McqController extends Controller
      */
     public function create()
     {
-        return inertia('Mcqs/Create');
+        // Get unique subjects and topics from existing MCQs
+        $subjects = Mcq::select('subject')
+            ->distinct()
+            ->orderBy('subject')
+            ->pluck('subject')
+            ->map(function ($subject) {
+                return [
+                    'id' => $subject,
+                    'name' => $subject
+                ];
+            });
+
+        $topics = Mcq::select('topic', 'subject')
+            ->distinct()
+            ->orderBy('topic')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->topic,
+                    'name' => $item->topic,
+                    'subject_id' => $item->subject
+                ];
+            });
+
+        $tags = Mcq::select('tags')
+            ->distinct()
+            ->orderBy('tags')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->tags,
+                    'name' => $item->tags,
+                ];
+            });
+
+        $exam_types = Mcq::select('exam_types')
+            ->distinct()
+            ->orderBy('exam_types')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->exam_types,
+                    'name' => $item->exam_types,
+                ];
+            });
+
+        return inertia('Mcqs/Create', [
+            'subjects' => $subjects,
+            'topics' => $topics,
+            'tags' => $tags,
+            'exam_types' => $exam_types,
+            'questionTypes' => [
+                ['id' => 1, 'name' => 'Single Answer', 'value' => 'single'],
+                ['id' => 2, 'name' => 'Multiple Answer', 'value' => 'multiple'],
+                ['id' => 3, 'name' => 'True/False', 'value' => 'true_false'],
+                ['id' => 4, 'name' => 'Single Answer (A only)', 'value' => 'single_a'],
+            ],
+        ]);
     }
 
     /**
@@ -135,27 +192,29 @@ class McqController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'question' => 'required|string',
-            'explanation' => 'required|string',
-            'option_a' => 'required|string',
-            'option_b' => 'required|string',
-            'option_c' => 'required|string',
-            'option_d' => 'required|string',
-            'option_e' => 'nullable|string',
-            'correct_answer' => 'required|string|in:A,B,C,D,E',
-            'subject' => 'required|string',
-            'topic' => 'required|string',
-            'difficulty_level' => 'required|string|in:easy,medium,hard',
-            'question_type' => 'required|string|in:single,multiple',
-            'tags' => 'nullable|array',
-            'exam_types' => 'nullable|array',
-        ]);
 
-        $mcq = Mcq::create($validated);
+        dd($request);
+        // $validated = $request->validate([
+        //     'question' => 'required|string',
+        //     'explanation' => 'required|string',
+        //     'option_a' => 'required|string',
+        //     'option_b' => 'required|string',
+        //     'option_c' => 'required|string',
+        //     'option_d' => 'required|string',
+        //     'option_e' => 'nullable|string',
+        //     'correct_answer' => 'required|string|in:A,B,C,D,E',
+        //     'subject' => 'required|string',
+        //     'topic' => 'required|string',
+        //     'difficulty_level' => 'required|string|in:easy,medium,hard',
+        //     'question_type' => 'required|string|in:single,multiple',
+        //     'tags' => 'nullable|array',
+        //     'exam_types' => 'nullable|array',
+        // ]);
 
-        return redirect()->route('mcqs.index')
-            ->with('success', 'MCQ created successfully.');
+        // $mcq = Mcq::create($validated);
+
+        // return redirect()->route('mcqs.index')
+        //     ->with('success', 'MCQ created successfully.');
     }
 
     /**

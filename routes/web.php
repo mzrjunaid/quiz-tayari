@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['prefix' => 'mcqs'], function () {
         Route::get('/', [McqController::class, 'index'])->name('mcqs.index');
         Route::get('/create', [McqController::class, 'create'])->name('mcqs.create');
+        Route::post('/store', [McqController::class, 'store'])->name('mcqs.store');
         // Route::get('/{id}', [McqController::class, 'show'])->name('mcqs.show');
         Route::get('/{slug}', [McqController::class, 'show'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.show');

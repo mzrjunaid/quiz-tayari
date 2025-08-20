@@ -1,223 +1,445 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { Head, router } from '@inertiajs/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    MultiSelect,
+    MultiSelectContent,
+    MultiSelectItem,
+    MultiSelectTrigger,
+    MultiSelectValue,
+} from '@/components/ui/multi-select';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'MCQs',
-        href: '/mcqs',
-    },
-    {
-        title: 'Create',
-        href: '/mcqs/create',
-    },
-];
-
-interface CreateMcqForm {
-    question: string;
-    explanation: string;
-    option_a: string;
-    option_b?: string;
-    option_c?: string;
-    option_d?: string;
-    option_e?: string;
-    correct_answer: string;
-    subject: string;
-    topic: string;
-    difficulty_level: string;
-    question_type: string;
-    tags: string[];
-    exam_types: string[];
-    [key: string]: string | string[] | undefined;
+interface Props {
+    subjects: Array<{ id: string; name: string }>;
+    topics: Array<{ id: string; name: string; subject_id: string }>;
+    questionTypes: Array<{ id: number; name: string; value: string }>;
 }
 
-export default function Create() {
-    const { data, setData, post, processing, errors } = useForm<CreateMcqForm>({
-        question: '',
-        explanation: '',
-        option_a: '',
-        option_b: '',
-        option_c: '',
-        option_d: '',
-        option_e: '',
-        correct_answer: '',
-        subject: '',
-        topic: '',
-        difficulty_level: 'medium',
-        question_type: 'single',
-        tags: [],
-        exam_types: [],
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'MCQs', href: '/mcqs' },
+    { title: 'Create', href: '/mcqs/create' },
+];
+
+const formSchema = z.object({
+    question: z.string().min(1, 'Question is required'),
+    explanation: z.string().min(1, 'Explanation is required'),
+    option_a: z.string().min(1, 'Option A is required'),
+    option_b: z.string(),
+    option_c: z.string(),
+    option_d: z.string(),
+    option_e: z.string(),
+    correct_answer: z.union([z.string(), z.array(z.string())]),
+    subject: z.string().min(1, 'Subject is required'),
+    topic: z.string().min(1, 'Topic is required'),
+    difficulty_level: z.enum(['easy', 'medium', 'hard']),
+    question_type: z.enum(['single', 'multiple', 'true_false', 'single_a']),
+    tags: z.array(z.string()),
+    exam_types: z.array(z.string())
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export default function Create({ subjects, topics, questionTypes }: Props) {
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            question: "",
+            explanation: "",
+            option_a: "",
+            option_b: "",
+            option_c: "",
+            option_d: "",
+            option_e: "",
+            correct_answer: [],
+            subject: "",
+            topic: "",
+            difficulty_level: "medium",
+            question_type: "single",
+            tags: [],
+            exam_types: []
+        }
     });
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        post(route('mcqs.store'));
-    };
+    function onSubmit(values: FormValues) {
+        router.post(route('mcqs.store'), values);
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create MCQ" />
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
                 <div className="rounded-xl border border-sidebar-border/70 p-6 dark:border-sidebar-border">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-4">
-                            <div>
-                                <Label htmlFor="question">Question</Label>
-                                <Textarea
-                                    id="question"
-                                    value={data.question}
-                                    onChange={(e) => setData('question', e.target.value)}
-                                    className="mt-1"
-                                    rows={3}
-                                />
-                                {errors.question && <p className="mt-1 text-sm text-red-500">{errors.question}</p>}
-                            </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="question_type"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Question Type *</FormLabel>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                if (value === 'true_false') {
+                                                    form.setValue('option_a', 'True');
+                                                    form.setValue('option_b', 'False');
+                                                    form.setValue('option_c', '');
+                                                    form.setValue('option_d', '');
+                                                    form.setValue('option_e', '');
+                                                    form.setValue('correct_answer', '');
+                                                } else if (value === 'single_a') {
+                                                    form.setValue('option_a', '');
+                                                    form.setValue('option_b', '');
+                                                    form.setValue('option_c', '');
+                                                    form.setValue('option_d', '');
+                                                    form.setValue('option_e', '');
+                                                    form.setValue('correct_answer', 'A');
+                                                } else if (value === 'single') {
+                                                    form.setValue('correct_answer', '');
+                                                } else if (value === 'multiple') {
+                                                    form.setValue('correct_answer', []);
+                                                }
+                                            }}
+                                            value={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select question type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {questionTypes.map(type => (
+                                                    <SelectItem key={type.id} value={type.value}>
+                                                        {type.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div>
-                                <Label htmlFor="explanation">Explanation</Label>
-                                <Textarea
-                                    id="explanation"
-                                    value={data.explanation}
-                                    onChange={(e) => setData('explanation', e.target.value)}
-                                    className="mt-1"
-                                    rows={3}
-                                />
-                                {errors.explanation && <p className="mt-1 text-sm text-red-500">{errors.explanation}</p>}
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="question"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Question *</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Enter your question"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <div>
-                                    <Label htmlFor="option_a">Option A</Label>
-                                    <Input
-                                        id="option_a"
-                                        value={data.option_a}
-                                        onChange={(e) => setData('option_a', e.target.value)}
-                                        className="mt-1"
-                                    />
-                                    {errors.option_a && <p className="mt-1 text-sm text-red-500">{errors.option_a}</p>}
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="option_b">Option B</Label>
-                                    <Input
-                                        id="option_b"
-                                        value={data.option_b}
-                                        onChange={(e) => setData('option_b', e.target.value)}
-                                        className="mt-1"
-                                    />
-                                    {errors.option_b && <p className="mt-1 text-sm text-red-500">{errors.option_b}</p>}
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="option_c">Option C</Label>
-                                    <Input
-                                        id="option_c"
-                                        value={data.option_c}
-                                        onChange={(e) => setData('option_c', e.target.value)}
-                                        className="mt-1"
-                                    />
-                                    {errors.option_c && <p className="mt-1 text-sm text-red-500">{errors.option_c}</p>}
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="option_d">Option D</Label>
-                                    <Input
-                                        id="option_d"
-                                        value={data.option_d}
-                                        onChange={(e) => setData('option_d', e.target.value)}
-                                        className="mt-1"
-                                    />
-                                    {errors.option_d && <p className="mt-1 text-sm text-red-500">{errors.option_d}</p>}
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="option_e">Option E (Optional)</Label>
-                                    <Input
-                                        id="option_e"
-                                        value={data.option_e}
-                                        onChange={(e) => setData('option_e', e.target.value)}
-                                        className="mt-1"
-                                    />
-                                    {errors.option_e && <p className="mt-1 text-sm text-red-500">{errors.option_e}</p>}
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="correct_answer">Correct Answer</Label>
-                                    <Select value={data.correct_answer} onValueChange={(value) => setData('correct_answer', value)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select correct answer" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="A">Option A</SelectItem>
-                                            <SelectItem value="B">Option B</SelectItem>
-                                            <SelectItem value="C">Option C</SelectItem>
-                                            <SelectItem value="D">Option D</SelectItem>
-                                            <SelectItem value="E">Option E</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.correct_answer && <p className="mt-1 text-sm text-red-500">{errors.correct_answer}</p>}
-                                </div>
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="explanation"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Explanation *</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Enter explanation"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <div>
-                                    <Label htmlFor="subject">Subject</Label>
-                                    <Input id="subject" value={data.subject} onChange={(e) => setData('subject', e.target.value)} className="mt-1" />
-                                    {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject}</p>}
-                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="option_a"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Option A *</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    disabled={form.watch('question_type') === 'true_false'}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                                <div>
-                                    <Label htmlFor="topic">Topic</Label>
-                                    <Input id="topic" value={data.topic} onChange={(e) => setData('topic', e.target.value)} className="mt-1" />
-                                    {errors.topic && <p className="mt-1 text-sm text-red-500">{errors.topic}</p>}
-                                </div>
+                                {form.watch('question_type') !== 'single_a' && (
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="option_b"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Option B {form.watch('question_type') === 'multiple' && '*'}
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            disabled={form.watch('question_type') === 'true_false'}
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                <div>
-                                    <Label htmlFor="difficulty_level">Difficulty Level</Label>
-                                    <Select value={data.difficulty_level} onValueChange={(value) => setData('difficulty_level', value)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select difficulty" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="easy">Easy</SelectItem>
-                                            <SelectItem value="medium">Medium</SelectItem>
-                                            <SelectItem value="hard">Hard</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.difficulty_level && <p className="mt-1 text-sm text-red-500">{errors.difficulty_level}</p>}
-                                </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="option_c"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Option C {form.watch('question_type') === 'multiple' && '*'}
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                <div>
-                                    <Label htmlFor="question_type">Question Type</Label>
-                                    <Select value={data.question_type} onValueChange={(value) => setData('question_type', value)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select question type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="single">Single Answer</SelectItem>
-                                            <SelectItem value="multiple">Multiple Answer</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.question_type && <p className="mt-1 text-sm text-red-500">{errors.question_type}</p>}
-                                </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="option_d"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Option D</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="option_e"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Option E</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
+                                )}
+
+                                <FormField
+                                    control={form.control}
+                                    name="correct_answer"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Correct Answer{form.watch('question_type') === 'multiple' ? '(s)' : ''} *
+                                            </FormLabel>
+                                            {form.watch('question_type') === 'multiple' ? (
+                                                <FormControl>
+                                                    <MultiSelect
+                                                        values={Array.isArray(field.value) ? field.value : []}
+                                                        onValuesChange={field.onChange}
+                                                    >
+                                                        <MultiSelectTrigger>
+                                                            <MultiSelectValue placeholder="Select correct answers" />
+                                                        </MultiSelectTrigger>
+                                                        <MultiSelectContent>
+                                                            {form.watch('option_a') && (
+                                                                <MultiSelectItem value="A">Option A</MultiSelectItem>
+                                                            )}
+                                                            {form.watch('option_b') && (
+                                                                <MultiSelectItem value="B">Option B</MultiSelectItem>
+                                                            )}
+                                                            {form.watch('option_c') && (
+                                                                <MultiSelectItem value="C">Option C</MultiSelectItem>
+                                                            )}
+                                                            {form.watch('option_d') && (
+                                                                <MultiSelectItem value="D">Option D</MultiSelectItem>
+                                                            )}
+                                                            {form.watch('option_e') && (
+                                                                <MultiSelectItem value="E">Option E</MultiSelectItem>
+                                                            )}
+                                                        </MultiSelectContent>
+                                                    </MultiSelect>
+                                                </FormControl>
+                                            ) : (
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    value={Array.isArray(field.value) ? field.value[0] : field.value}
+                                                    disabled={form.watch('question_type') === 'single_a'}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select correct answer" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {form.watch('question_type') === 'true_false' ? (
+                                                            <>
+                                                                <SelectItem value="A">True</SelectItem>
+                                                                <SelectItem value="B">False</SelectItem>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {form.watch('option_a') && (
+                                                                    <SelectItem value="A">Option A</SelectItem>
+                                                                )}
+                                                                {form.watch('option_b') && (
+                                                                    <SelectItem value="B">Option B</SelectItem>
+                                                                )}
+                                                                {form.watch('option_c') && (
+                                                                    <SelectItem value="C">Option C</SelectItem>
+                                                                )}
+                                                                {form.watch('option_d') && (
+                                                                    <SelectItem value="D">Option D</SelectItem>
+                                                                )}
+                                                                {form.watch('option_e') && (
+                                                                    <SelectItem value="E">Option E</SelectItem>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="subject"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Subject *</FormLabel>
+                                            <Select
+                                                onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    form.setValue('topic', '');
+                                                }}
+                                                value={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select subject" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {subjects.map(subject => (
+                                                        <SelectItem key={subject.id} value={subject.id}>
+                                                            {subject.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="topic"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Topic *</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                                disabled={!form.watch('subject')}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select topic" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {topics
+                                                        .filter(topic => topic.subject_id === form.watch('subject'))
+                                                        .map(topic => (
+                                                            <SelectItem key={topic.id} value={topic.id}>
+                                                                {topic.name}
+                                                            </SelectItem>
+                                                        ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="difficulty_level"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Difficulty Level *</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select difficulty" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="easy">Easy</SelectItem>
+                                                    <SelectItem value="medium">Medium</SelectItem>
+                                                    <SelectItem value="hard">Hard</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
-                        </div>
 
-                        <div className="flex justify-end gap-4">
-                            <Button type="button" variant="outline" onClick={() => window.history.back()}>
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={processing}>
-                                {processing ? 'Creating...' : 'Create MCQ'}
-                            </Button>
-                        </div>
-                    </form>
+                            <div className="flex justify-end space-x-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => router.get(route('mcqs.index'))}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={form.formState.isSubmitting}>
+                                    {form.formState.isSubmitting ? 'Creating...' : 'Create MCQ'}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
                 </div>
             </div>
         </AppLayout>
