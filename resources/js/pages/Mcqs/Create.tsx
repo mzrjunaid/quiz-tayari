@@ -202,7 +202,7 @@ export default function Create({ subjects, topics, tags, exam_types, questionTyp
         return (
             <div className="flex max-w-full flex-wrap gap-1">
                 {values.map((value) => (
-                    <Badge key={value} variant="secondary" className="flex max-w-[200px] items-center gap-1 text-xs">
+                    <Badge key={value} variant="secondary" className="flex max-w-full items-center gap-1 text-xs">
                         <span className="truncate">{value}</span>
                         <X
                             className="h-3 w-3 cursor-pointer hover:text-destructive"
@@ -792,7 +792,7 @@ export default function Create({ subjects, topics, tags, exam_types, questionTyp
                                                             placeholder="Enter new exam type name"
                                                             value={newExamTypeName}
                                                             onChange={(e) => setNewExamTypeName(e.target.value)}
-                                                            onKeyPress={(e) => e.key === 'Enter' && addNewExamType()}
+                                                            onKeyDown={(e) => e.key === 'Enter' && addNewExamType()}
                                                         />
                                                         <Button type="button" size="sm" onClick={addNewExamType} disabled={!newExamTypeName.trim()}>
                                                             Add
@@ -829,10 +829,11 @@ export default function Create({ subjects, topics, tags, exam_types, questionTyp
                             </div>
 
                             {/* Form Actions */}
-                            <div className="flex justify-end space-x-4 border-t pt-6">
+                            <div className="flex flex-col-reverse justify-end gap-2 space-x-4 border-t pt-6 md:flex-row">
                                 <Button
                                     type="button"
                                     variant="outline"
+                                    className="w-full md:w-auto"
                                     onClick={() => {
                                         if (confirm('Are you sure you want to discard your changes?')) {
                                             resetForm();
@@ -841,10 +842,16 @@ export default function Create({ subjects, topics, tags, exam_types, questionTyp
                                 >
                                     Reset Form
                                 </Button>
-                                <Button type="button" variant="outline" onClick={() => router.get(route('mcqs.index'))} disabled={isSubmitting}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => router.get(route('mcqs.index'))}
+                                    disabled={isSubmitting}
+                                    className="w-full md:w-auto"
+                                >
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={isSubmitting}>
+                                <Button type="submit" disabled={isSubmitting} variant="default">
                                     {isSubmitting ? 'Creating...' : 'Create MCQ'}
                                 </Button>
                             </div>
