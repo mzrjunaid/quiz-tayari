@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mcq;
 use App\Models\McqsRephrase;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
@@ -62,6 +63,8 @@ class McqsRephraseController extends Controller
                 'core_concept' => session('core_concept'),
                 'subject' => session('subject'),
                 'topic' => session('topic'),
+                'tags' => session('tags'),
+                'exam_types' => session('exam_types'),
                 'current_affair' => session('current_affair'),
                 'general_knowledge' => session('general_knowledge'),
                 'success' => session('success'),
@@ -82,9 +85,91 @@ class McqsRephraseController extends Controller
      */
     public function edit($id, Request $request)
     {
+
+        $subjects = Mcq::select('subject')
+            ->distinct()
+            ->whereNotNull('subject')
+            ->where('subject', '!=', '')
+            ->orderBy('subject')
+            ->pluck('subject')
+            ->map(function ($subject) {
+                return [
+                    'id' => $subject,
+                    'name' => $subject
+                ];
+            });
+
+        // Get unique topics with their subjects
+        $topics = Mcq::select('topic', 'subject')
+            ->distinct()
+            ->whereNotNull('topic')
+            ->where('topic', '!=', '')
+            ->orderBy('topic')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->topic,
+                    'name' => $item->topic,
+                    'subject_id' => $item->subject
+                ];
+            });
+
+        // Handle tags (assuming they're stored as JSON or comma-separated)
+        $tags = collect();
+        Mcq::select('tags')
+            ->distinct()
+            ->whereNotNull('tags')
+            ->where('tags', '!=', '')
+            ->get()
+            ->each(function ($item) use ($tags) {
+                $this->processTags($item->tags, $tags);
+            });
+
+        // Remove duplicates and format for frontend
+        $tags = $tags->unique()
+            ->sort()
+            ->values()
+            ->map(function ($tag) {
+                return [
+                    'id' => $tag,
+                    'name' => $tag,
+                ];
+            });
+
+        // Handle exam_types (assuming they're stored as JSON or comma-separated)
+        $examTypes = collect();
+        Mcq::select('exam_types')
+            ->distinct()
+            ->whereNotNull('exam_types')
+            ->where('exam_types', '!=', '')
+            ->get()
+            ->each(function ($item) use ($examTypes) {
+                $this->processTags($item->exam_types, $examTypes);
+            });
+
+        // Remove duplicates and format for frontend
+        $examTypes = $examTypes->unique()
+            ->sort()
+            ->values()
+            ->map(function ($examType) {
+                return [
+                    'id' => $examType,
+                    'name' => $examType,
+                ];
+            });
         $mcq = McqsRephrase::where('q_id', $id)->first();
 
         return Inertia::render('McqsRephrase/Edit', [
+            'subjects' => $subjects,
+            'topics' => $topics,
+            'tags' => $tags,
+            'exam_types' => $examTypes,
+            'questionTypes' => [
+                ['id' => 1, 'name' => 'Single Answer', 'value' => 'single'],
+                ['id' => 2, 'name' => 'Multiple Answer', 'value' => 'multiple'],
+                ['id' => 3, 'name' => 'True/False', 'value' => 'true_false'],
+                ['id' => 4, 'name' => 'Single Answer (A only)', 'value' => 'single_a'],
+            ],
             'mcq' => $mcq,
             'rephrased' => $request->rephrased,
             'explanation' => $request->explanation,
@@ -92,6 +177,62 @@ class McqsRephraseController extends Controller
             'current_affair' => $request->current_affair,
             'general_knowledge' => $request->general_knowledge,
         ]);
+    }
+
+    /**
+     * Check if a string is valid JSON
+     */
+    private function isJson($string)
+    {
+        if (!is_string($string)) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
+     * Process tags/exam_types data and add to collection
+     */
+    private function processTags($data, $collection)
+    {
+        // Handle array data (already decoded)
+        if (is_array($data)) {
+            foreach ($data as $item) {
+                if (is_string($item) && !empty(trim($item))) {
+                    $collection->push(trim($item));
+                }
+            }
+            return;
+        }
+
+        // Handle string data
+        if (is_string($data)) {
+            // Handle JSON string
+            if ($this->isJson($data)) {
+                $decoded = json_decode($data, true);
+                if (is_array($decoded)) {
+                    $this->processTags($decoded, $collection);
+                }
+                return;
+            }
+
+            // Handle comma-separated values
+            if (strpos($data, ',') !== false) {
+                $items = explode(',', $data);
+                foreach ($items as $item) {
+                    if (!empty(trim($item))) {
+                        $collection->push(trim($item));
+                    }
+                }
+                return;
+            }
+
+            // Handle single value
+            if (!empty(trim($data))) {
+                $collection->push(trim($data));
+            }
+        }
     }
 
     /**
@@ -132,6 +273,8 @@ class McqsRephraseController extends Controller
                     "5. TOPIC: Mention a specific topic or subtopic inside that subject (e.g., World Capitals, Laws of Motion).\n\n" .
                     "6. CURRENT AFFAIRS: Check if the question is related to current events between 2023–2025. Respond CA: true or CA: false.\n\n" .
                     "7. GENERAL KNOWLEDGE: Check if the question is related to General Knowledge (static facts, history, geography, etc.). Respond GK: true or GK: false.\n\n" .
+                    "8. TAGS: Check if the question is related to specific tags (e.g., 'History', 'Geography'). Respond TAGS: [your tags].\n\n" .
+                    "9. EXAM TYPES: Check if the question is related to specific exam types and response in EXAM SHORT FORMS (e.g., 'MCAT', 'GRE'). Respond EXAM_TYPES: [your exam types].\n\n" .
 
                     "Format your response strictly as:\n" .
                     "REPHRASED: [your rephrased version]\n" .
@@ -139,6 +282,8 @@ class McqsRephraseController extends Controller
                     "EXPLANATION: [your explanation]\n" .
                     "SUBJECT: [only subject]\n" .
                     "TOPIC: [only topic]\n" .
+                    "TAGS: [only tags]\n" .
+                    "EXAM TYPES: [only exam types]\n" .
                     "CA: [true/false]\n" .
                     "GK: [true/false]\n"
             );
@@ -155,6 +300,8 @@ class McqsRephraseController extends Controller
             $explanation = $this->extractContent($response, 'EXPLANATION:');
             $subject = $this->extractContent($response, 'SUBJECT:');
             $topic = $this->extractContent($response, 'TOPIC:');
+            $tags = $this->extractContent($response, 'TAGS:');
+            $exam_types = $this->extractContent($response, 'EXAM TYPES:');
             // Extract current affairs and general knowledge sections
             $current_affair = $this->extractContent($response, 'CA:');
             $general_knowledge = $this->extractContent($response, 'GK:');
@@ -172,6 +319,8 @@ class McqsRephraseController extends Controller
                     'core_concept' => $core_concept,
                     'subject' => $subject,
                     'topic' => $topic,
+                    'tags' => $tags,
+                    'exam_types' => $exam_types,
                     'current_affair' => $current_affair,
                     'general_knowledge' => $general_knowledge,
 
