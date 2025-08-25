@@ -136,7 +136,7 @@ export const columns: ColumnDef<OldMcqs>[] = [
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Mcqs Rephrase',
+        title: 'Mcqs List',
         href: 'rephrase',
     },
 ];

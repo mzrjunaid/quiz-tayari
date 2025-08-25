@@ -29,11 +29,6 @@ interface NewItem {
     subject_id?: string;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'MCQs', href: '/mcqs' },
-    { title: 'Create', href: '/mcqs/create' },
-];
-
 // Enhanced validation schema with conditional validation
 const formSchema = z
     .object({
@@ -85,6 +80,11 @@ const formSchema = z
 type FormValues = z.infer<typeof formSchema>;
 
 export default function Edit({ subjects, topics, tags, exam_types, questionTypes }: Props) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'MCQs List', href: '/rephrase' },
+        { title: 'Show', href: `/rephrase/82` },
+        { title: 'Create', href: `/rephrase/create` },
+    ];
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 

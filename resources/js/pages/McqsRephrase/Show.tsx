@@ -2,13 +2,11 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, OldMcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit, RotateCcw, Save } from 'lucide-react';
+import { Edit, Edit2, RotateCcw } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Mcqs Rephrase Show',
-        href: '/show',
-    },
+    { title: 'MCQs List', href: '/rephrase' },
+    { title: 'Mcqs Rephrase', href: '/show' },
 ];
 
 export default function Show() {
@@ -71,20 +69,15 @@ export default function Show() {
                     <div className="mb-4 items-center justify-between md:flex">
                         <h1 className="mb-4 text-2xl font-semibold md:mb-0">Mcqs Rephrase</h1>
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
-                            <Button variant="outline" className="btn btn-primary cursor-pointer" onClick={() => handleRephrase()}>
+                            <Button variant="outline" onClick={() => handleRephrase()}>
                                 <RotateCcw /> Rephrase
                             </Button>
 
-                            <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
+                            <Button variant="secondary" onClick={() => handleEdit()}>
                                 <Edit /> Edit Rephrased
                             </Button>
-                            <Button
-                                variant="default"
-                                className="btn btn-secondary cursor-pointer"
-                                onClick={() => router.post(`/rephrase/${mcq?.q_id}/update`, { rephrased })}
-                                disabled={!rephrased || rephrased.trim() === '' || !mcq?.q_id}
-                            >
-                                <Save /> Save
+                            <Button variant="default" onClick={() => router.get(`/rephrase/${mcq?.q_id}/edit`)}>
+                                <Edit2 /> Edit Original
                             </Button>
                         </div>
                     </div>
