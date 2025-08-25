@@ -10,14 +10,41 @@ import { Head, useForm } from '@inertiajs/react';
 
 export interface EditProps {
     mcq: Mcqs;
-    rephrased: string;
-    explanation: string;
-    subject: string;
-    current_affair: boolean;
-    general_knowledge: boolean;
+    question: string;
+    rephrased?: string;
+    explanation?: string;
+    subject?: string;
+    topic?: string;
+    current_affair?: boolean;
+    general_knowledge?: boolean;
+    option_a: string;
+    option_b: string;
+    option_c: string;
+    option_d: string;
+    right_choice: string;
+    core_concept: string;
+    tags: string[];
+    exam_types: string[];
 }
 
-export default function Edit({ mcq, rephrased, explanation, subject, current_affair, general_knowledge }: EditProps) {
+export default function Edit({
+    mcq,
+    rephrased,
+    explanation,
+    subject,
+    topic,
+    tags,
+    core_concept,
+    exam_types,
+    option_a,
+    option_b,
+    option_c,
+    option_d,
+    question,
+    right_choice,
+    current_affair,
+    general_knowledge,
+}: EditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'MCQs List',
@@ -33,16 +60,21 @@ export default function Edit({ mcq, rephrased, explanation, subject, current_aff
         },
     ];
     const { data, setData, errors, reset, post, processing } = useForm({
+        question: question || '',
         rephrased: rephrased || '',
-        option_a: mcq.options.A || '',
-        option_b: mcq.options.B || '',
-        option_c: mcq.options.C || '',
-        option_d: mcq?.options.D || '',
-        correct_answer: mcq.correct_answer || '',
+        option_a: option_a || '',
+        option_b: option_b || '',
+        option_c: option_c || '',
+        option_d: option_d || '',
+        correct_answer: right_choice || '',
         explanation: explanation || '',
         subject: subject || '',
         current_affair: Boolean(current_affair),
         general_knowledge: Boolean(general_knowledge),
+        topic: topic || '',
+        core_concept: core_concept || '',
+        tags: tags || [],
+        exam_types: exam_types || [],
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, OldMcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit, Edit2, RotateCcw } from 'lucide-react';
+import { Edit, RotateCcw } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'MCQs List', href: '/rephrase' },
@@ -26,8 +26,6 @@ export default function Show() {
             general_knowledge?: string;
         };
 
-    console.log(usePage().props);
-
     const handleRephrase = () => {
         router.get(
             `/rephrase/${mcq?.q_id}/rephrase`,
@@ -45,7 +43,9 @@ export default function Show() {
         router.post(
             `/rephrase/${mcq?.q_id}/edit`,
             {
-                q_id: mcq?.q_id,
+                core_concept: core_concept,
+                tags: tags,
+                exam_types: exam_types,
                 rephrased: rephrased,
                 explanation: explanation,
                 subject: subject,
@@ -73,11 +73,8 @@ export default function Show() {
                                 <RotateCcw /> Rephrase
                             </Button>
 
-                            <Button variant="secondary" onClick={() => handleEdit()}>
-                                <Edit /> Edit Rephrased
-                            </Button>
-                            <Button variant="default" onClick={() => router.get(`/rephrase/${mcq?.q_id}/edit`)}>
-                                <Edit2 /> Edit Original
+                            <Button variant="default" onClick={() => handleEdit()}>
+                                <Edit /> Edit
                             </Button>
                         </div>
                     </div>

@@ -159,7 +159,9 @@ class McqsRephraseController extends Controller
             });
         $mcq = McqsRephrase::where('q_id', $id)->first();
 
-        return Inertia::render('McqsRephrase/Edit', [
+        // dd($request->all());
+
+        return Inertia::render('McqsRephrase/EditNew', [
             'subjects' => $subjects,
             'topics' => $topics,
             'tags' => $tags,
@@ -171,6 +173,7 @@ class McqsRephraseController extends Controller
                 ['id' => 4, 'name' => 'Single Answer (A only)', 'value' => 'single_a'],
             ],
             'mcq' => $mcq,
+            'question' => $mcq->q_statement,
             'rephrased' => $request->rephrased,
             'explanation' => $request->explanation,
             'subject' => $request->subject,

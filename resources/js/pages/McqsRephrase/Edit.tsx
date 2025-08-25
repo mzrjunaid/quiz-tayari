@@ -7,7 +7,7 @@ import { MultiSelect, MultiSelectContent, MultiSelectItem, MultiSelectTrigger, M
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, OldMcqs } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
 import { debounce } from 'lodash';
@@ -17,6 +17,16 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 interface Props {
+    mcq: OldMcqs;
+    rephrased?: string;
+    explanation?: string;
+    subject?: string;
+    topic?: string;
+    current_affair?: boolean;
+    general_knowledge?: boolean;
+    core_concept: string;
+    tags_new: string[];
+    exam_types_new: string[];
     subjects: Array<{ id: string; name: string }>;
     topics: Array<{ id: string; name: string; subject_id: string }>;
     tags: Array<{ id: string; name: string }>;
@@ -42,6 +52,7 @@ const formSchema = z
         correct_answer: z.union([
             z.enum(['A', 'B', 'C', 'D', 'E']),
             z.array(z.enum(['A', 'B', 'C', 'D', 'E'])).min(1, 'At least one correct answer is required'),
+            z.string().min(1, 'Correct answer is required'), // To handle single answer as string
         ]),
         subject: z.string().min(1, 'Subject is required'),
         topic: z.string().min(1, 'Topic is required'),
@@ -79,10 +90,24 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function Edit({ subjects, topics, tags, exam_types, questionTypes }: Props) {
+export default function Edit({
+    mcq,
+    subjects,
+    topics,
+    tags,
+    exam_types,
+    questionTypes,
+    core_concept,
+    exam_types_new,
+    tags_new,
+    current_affair,
+    explanation,
+    general_knowledge,
+    rephrased,
+}: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'MCQs List', href: '/rephrase' },
-        { title: 'Show', href: `/rephrase/82` },
+        { title: 'Show', href: `/rephrase/${mcq?.q_id}` },
         { title: 'Create', href: `/rephrase/create` },
     ];
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,22 +133,24 @@ export default function Edit({ subjects, topics, tags, exam_types, questionTypes
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            question: '',
-            explanation: '',
-            option_a: '',
-            option_b: '',
-            option_c: '',
-            option_d: '',
-            option_e: '',
-            correct_answer: 'A',
-            subject: '',
-            topic: '',
-            difficulty_level: 'medium',
-            question_type: 'single',
-            tags: [],
-            exam_types: [],
-        },
+        defaultValues: mcq
+            ? {
+                  question: mcq.q_statement,
+                  explanation: explanation || '',
+                  option_a: mcq.option_A || '',
+                  option_b: mcq.option_B || '',
+                  option_c: mcq.option_C || '',
+                  option_d: mcq.option_D || '',
+                  option_e: '',
+                  correct_answer: mcq.right_choice || 'A',
+                  subject: '',
+                  topic: '',
+                  difficulty_level: 'medium',
+                  question_type: 'single',
+                  tags: [],
+                  exam_types: [],
+              }
+            : undefined,
     });
 
     const currentQuestionType = form.watch('question_type');
@@ -279,11 +306,11 @@ export default function Edit({ subjects, topics, tags, exam_types, questionTypes
     // Load draft on mount
     useEffect(() => {
         const savedDraft = localStorage.getItem('mcq_draft');
-        if (savedDraft) {
+        if (savedDraft && !mcq) {
             const draft = JSON.parse(savedDraft);
             form.reset(draft);
         }
-    }, [form]);
+    }, [form, mcq]);
 
     // Watch form changes for auto-save
     useEffect(() => {
