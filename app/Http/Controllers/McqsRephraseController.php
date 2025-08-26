@@ -177,6 +177,8 @@ class McqsRephraseController extends Controller
             'rephrased' => $request->rephrased,
             'explanation' => $request->explanation,
             'subject' => $request->subject,
+            'topic' => $request->topic,
+            'core_concept' => $request->core_concept,
             'current_affair' => $request->current_affair,
             'general_knowledge' => $request->general_knowledge,
         ]);

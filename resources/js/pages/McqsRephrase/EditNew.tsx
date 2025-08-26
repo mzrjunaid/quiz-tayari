@@ -1,6 +1,6 @@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
@@ -13,6 +13,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 // Import the extracted components
+import { Checkbox } from '@/components/ui/checkbox';
+import { formSchema } from '@/types/zodSchema';
 import { ClassificationSection } from './components/ClassificationSection';
 import { CorrectAnswerSection } from './components/CorrectAnswerSection';
 import { QuestionOptionsSection } from './components/QuestionOptionsSection';
@@ -37,58 +39,15 @@ interface Props {
 }
 
 // Enhanced validation schema with conditional validation
-const formSchema = z
-    .object({
-        question: z.string().min(1, 'Question is required').min(10, 'Question must be at least 10 characters'),
-        explanation: z.string().min(1, 'Explanation is required').min(10, 'Explanation must be at least 10 characters'),
-        option_a: z.string().min(1, 'Option A is required'),
-        option_b: z.string(),
-        option_c: z.string(),
-        option_d: z.string(),
-        option_e: z.string(),
-        correct_answer: z.union([
-            z.enum(['A', 'B', 'C', 'D', 'E']),
-            z.array(z.enum(['A', 'B', 'C', 'D', 'E'])).min(1, 'At least one correct answer is required'),
-            z.string().min(1, 'Correct answer is required'),
-        ]),
-        subject: z.string().min(1, 'Subject is required'),
-        topic: z.string().min(1, 'Topic is required'),
-        difficulty_level: z.enum(['easy', 'medium', 'hard']),
-        question_type: z.enum(['single', 'multiple', 'true_false', 'single_a']),
-        tags: z.array(z.string()).min(1, 'At least one tag is required'),
-        exam_types: z.array(z.string()),
-    })
-    .refine(
-        (data) => {
-            if (data.question_type === 'multiple') {
-                return data.option_b && data.option_c && data.option_b.length > 0 && data.option_c.length > 0;
-            }
-            return true;
-        },
-        {
-            message: 'Multiple choice questions require at least options A, B, and C',
-            path: ['option_b'],
-        },
-    )
-    .refine(
-        (data) => {
-            if (data.question_type === 'multiple' && Array.isArray(data.correct_answer)) {
-                return data.correct_answer.length >= 2;
-            }
-            return true;
-        },
-        {
-            message: 'Multiple choice questions must have at least 2 correct answers',
-            path: ['correct_answer'],
-        },
-    );
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function Edit({
     mcq,
     subjects,
+    subject,
     topics,
+    topic,
     tags,
     exam_types,
     questionTypes,
@@ -114,6 +73,7 @@ export default function Edit({
     const [dynamicTopics, setDynamicTopics] = useState(topics);
     const [dynamicTags, setDynamicTags] = useState(tags);
     const [dynamicExamTypes, setDynamicExamTypes] = useState(exam_types);
+    const [isRephrasedAdded, setIsRephrasedAdded] = useState(false);
 
     // State for add new item forms
     const [showAddSubject, setShowAddSubject] = useState(false);
@@ -131,7 +91,7 @@ export default function Edit({
         resolver: zodResolver(formSchema),
         defaultValues: mcq
             ? {
-                  question: mcq.q_statement,
+                  question: isRephrasedAdded ? rephrased : mcq.q_statement,
                   explanation: explanation || '',
                   option_a: mcq.option_A || '',
                   option_b: mcq.option_B || '',
@@ -139,15 +99,21 @@ export default function Edit({
                   option_d: mcq.option_D || '',
                   option_e: '',
                   correct_answer: mcq.right_choice || 'A',
-                  subject: '',
-                  topic: '',
+                  subject: subject || '',
+                  topic: topic || '',
                   difficulty_level: 'medium',
                   question_type: 'single',
-                  tags: [],
-                  exam_types: [],
+                  tags: tags_new || [],
+                  exam_types: exam_types_new || [],
+                  core_concept: core_concept || '',
+                  current_affair: current_affair || false,
+                  general_knowledge: general_knowledge || false,
+                  is_rephrased_added: isRephrasedAdded,
               }
             : undefined,
     });
+
+    // console.log(form.getValues());
 
     const currentQuestionType = form.watch('question_type');
     const currentSubject = form.watch('subject');
@@ -369,6 +335,33 @@ export default function Edit({
                                 )}
                             />
 
+                            {rephrased && (
+                                <FormField
+                                    control={form.control}
+                                    name="is_rephrased_added"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center gap-2">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value || isRephrasedAdded}
+                                                    onCheckedChange={(checked) => {
+                                                        field.onChange(checked);
+                                                        setIsRephrasedAdded(!!checked);
+                                                        if (checked) {
+                                                            form.setValue('question', rephrased || '');
+                                                        } else {
+                                                            form.setValue('question', mcq.q_statement);
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormLabel>Rephrased Question *</FormLabel>
+                                            <FormDescription>Check if you want to add a rephrased version</FormDescription>
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
+
                             {/* Question Text */}
                             <FormField
                                 control={form.control}
@@ -421,6 +414,7 @@ export default function Edit({
                                 subjects={subjects}
                                 availableTopics={availableTopics}
                                 currentSubject={currentSubject}
+                                newSubejctName={subject}
                             />
 
                             {/* Tags and Exam Types Section */}

@@ -1,24 +1,11 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { formSchema } from '@/types/zodSchema';
 import { UseFormReturn } from 'react-hook-form';
+import z from 'zod';
 
 // Define the form values type (should match your main component's FormValues)
-interface FormValues {
-    question: string;
-    explanation: string;
-    option_a: string;
-    option_b: string;
-    option_c: string;
-    option_d: string;
-    option_e: string;
-    correct_answer: string | string[];
-    subject: string;
-    topic: string;
-    difficulty_level: 'easy' | 'medium' | 'hard';
-    question_type: 'single' | 'multiple' | 'true_false' | 'single_a';
-    tags: string[];
-    exam_types: string[];
-}
+type FormValues = z.infer<typeof formSchema>;
 
 interface QuestionOptionsSectionProps {
     form: UseFormReturn<FormValues>;
