@@ -26,8 +26,6 @@ interface Props {
     explanation?: string;
     subject?: string;
     topic?: string;
-    current_affair?: boolean;
-    general_knowledge?: boolean;
     core_concept: string;
     tags_new: string[];
     exam_types_new: string[];
@@ -54,9 +52,7 @@ export default function Edit({
     core_concept,
     exam_types_new,
     tags_new,
-    current_affair,
     explanation,
-    general_knowledge,
     rephrased,
 }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -106,11 +102,28 @@ export default function Edit({
                   tags: tags_new || [],
                   exam_types: exam_types_new || [],
                   core_concept: core_concept || '',
-                  current_affair: current_affair || false,
-                  general_knowledge: general_knowledge || false,
                   is_rephrased_added: isRephrasedAdded,
               }
-            : undefined,
+            : {
+                  question: '',
+                  explanation: '',
+                  option_a: '',
+                  option_b: '',
+                  option_c: '',
+                  option_d: '',
+                  option_e: '',
+                  correct_answer: 'A',
+                  subject: '',
+                  topic: '',
+                  difficulty_level: 'medium',
+                  question_type: 'single',
+                  tags: [],
+                  exam_types: [],
+                  core_concept: '',
+                  current_affair: false,
+                  general_knowledge: false,
+                  is_rephrased_added: false,
+              },
     });
 
     // console.log(form.getValues());
@@ -290,6 +303,25 @@ export default function Edit({
         }
     }
 
+    const handleAddNewSubject = (name: string) => {
+        const newSubject = {
+            id: `new-${Date.now()}`,
+            name: name,
+        };
+        setDynamicSubjects([...dynamicSubjects, newSubject]);
+        form.setValue('subject', newSubject.name);
+    };
+
+    const handleAddNewTopic = (name: string, subjectId: string) => {
+        const newTopic = {
+            id: `new-${Date.now()}`,
+            name: name,
+            subject_id: subjectId,
+        };
+        setDynamicTopics([...dynamicTopics, newTopic]);
+        form.setValue('topic', newTopic.name);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create MCQ" />
@@ -302,7 +334,13 @@ export default function Edit({
                     )}
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                form.handleSubmit(onSubmit)(e);
+                            }}
+                            className="space-y-6"
+                        >
                             {/* Question Type Selection */}
                             <FormField
                                 control={form.control}
@@ -414,7 +452,10 @@ export default function Edit({
                                 subjects={subjects}
                                 availableTopics={availableTopics}
                                 currentSubject={currentSubject}
-                                newSubejctName={subject}
+                                newSubjectName={subject}
+                                newTopicName={topic}
+                                onAddNewSubject={handleAddNewSubject}
+                                onAddNewTopic={handleAddNewTopic}
                             />
 
                             {/* Tags and Exam Types Section */}
