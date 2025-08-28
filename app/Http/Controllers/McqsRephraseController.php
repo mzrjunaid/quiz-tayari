@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
+
 class McqsRephraseController extends Controller
 {
     /**
@@ -114,6 +115,21 @@ class McqsRephraseController extends Controller
                 ];
             });
 
+
+        $ai_tags = $request->tags_new;
+        // convert string tags to array if it's a string
+        if (is_string($ai_tags)) {
+            $ai_tags = array_map('trim', explode(',', trim($ai_tags, '[]')));
+        }
+        // prepare tags for frontend
+        $tags_new = collect($ai_tags)->map(function ($tag) {
+            return [
+                'id' => $tag,
+                'name' => $tag,
+            ];
+        })->toArray();
+
+
         // Handle tags (assuming they're stored as JSON or comma-separated)
         $tags = collect();
         Mcq::select('tags')
@@ -136,6 +152,27 @@ class McqsRephraseController extends Controller
                 ];
             });
 
+        //merge tags with new tags from AI
+        $tags = $tags->merge(collect($tags_new))->unique('id')->values();
+
+
+        $ai_exam_types = $request->exam_types_new;
+
+        // convert string exam_types to array if it's a string
+        if (is_string($ai_exam_types)) {
+            $ai_exam_types = array_map('trim', explode(',', trim($ai_exam_types, '[]')));
+        }
+        // prepare tags for frontend
+        $exam_types_new = collect($ai_exam_types)->map(function ($tag) {
+            return [
+                'id' => $tag,
+                'name' => $tag,
+            ];
+        })->toArray();
+
+
+        // dd($exam_types_new);
+
         // Handle exam_types (assuming they're stored as JSON or comma-separated)
         $examTypes = collect();
         Mcq::select('exam_types')
@@ -157,6 +194,10 @@ class McqsRephraseController extends Controller
                     'name' => $examType,
                 ];
             });
+
+        //merge exam types with new exam types from AI
+        $examTypes = $examTypes->merge(collect($exam_types_new))->unique('id')->values();
+
         $mcq = McqsRephrase::where('q_id', $id)->first();
 
         // dd($request->all());
@@ -178,6 +219,8 @@ class McqsRephraseController extends Controller
             'explanation' => $request->explanation,
             'subject' => $request->subject,
             'topic' => $request->topic,
+            'tags_new' => $tags_new,
+            'exam_types_new' => $exam_types_new,
             'core_concept' => $request->core_concept,
             'current_affair' => $request->current_affair,
             'general_knowledge' => $request->general_knowledge,
@@ -196,6 +239,9 @@ class McqsRephraseController extends Controller
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+    /**
+     * Process tags/exam_types data and add to collection
+     */
     /**
      * Process tags/exam_types data and add to collection
      */
@@ -218,6 +264,21 @@ class McqsRephraseController extends Controller
                 $decoded = json_decode($data, true);
                 if (is_array($decoded)) {
                     $this->processTags($decoded, $collection);
+                }
+                return;
+            }
+
+            // Handle bracket format like [tag1, tag2, tag3]
+            if (preg_match('/^\s*\[(.*)\]\s*$/', $data, $matches)) {
+                $bracketContent = $matches[1];
+                if (!empty(trim($bracketContent))) {
+                    $items = explode(',', $bracketContent);
+                    foreach ($items as $item) {
+                        $cleanItem = trim($item);
+                        if (!empty($cleanItem)) {
+                            $collection->push($cleanItem);
+                        }
+                    }
                 }
                 return;
             }

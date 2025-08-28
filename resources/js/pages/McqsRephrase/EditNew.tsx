@@ -27,8 +27,8 @@ interface Props {
     subject?: string;
     topic?: string;
     core_concept: string;
-    tags_new: string[];
-    exam_types_new: string[];
+    tags_new: Array<{ id: string; name: string }>;
+    exam_types_new: Array<{ id: string; name: string }>;
     subjects: Array<{ id: string; name: string }>;
     topics: Array<{ id: string; name: string; subject_id: string }>;
     tags: Array<{ id: string; name: string }>;
@@ -61,6 +61,9 @@ export default function Edit({
         { title: 'Create', href: `/rephrase/create` },
     ];
 
+    console.log('Initial tags_new:', tags_new);
+    console.log('defined tags:', tags);
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -72,14 +75,10 @@ export default function Edit({
     const [isRephrasedAdded, setIsRephrasedAdded] = useState(false);
 
     // State for add new item forms
-    const [showAddSubject, setShowAddSubject] = useState(false);
-    const [showAddTopic, setShowAddTopic] = useState(false);
     const [showAddTag, setShowAddTag] = useState(false);
     const [showAddExamType, setShowAddExamType] = useState(false);
 
     // State for new item inputs
-    const [newSubjectName, setNewSubjectName] = useState('');
-    const [newTopicName, setNewTopicName] = useState('');
     const [newTagName, setNewTagName] = useState('');
     const [newExamTypeName, setNewExamTypeName] = useState('');
 
@@ -99,8 +98,8 @@ export default function Edit({
                   topic: topic || '',
                   difficulty_level: 'medium',
                   question_type: 'single',
-                  tags: tags_new || [],
-                  exam_types: exam_types_new || [],
+                  tags: tags_new.map((tag) => tag.name) || [],
+                  exam_types: exam_types_new.map((tag) => tag.name) || [],
                   core_concept: core_concept || '',
                   is_rephrased_added: isRephrasedAdded,
               }
@@ -131,33 +130,6 @@ export default function Edit({
     const currentQuestionType = form.watch('question_type');
     const currentSubject = form.watch('subject');
     const availableTopics = dynamicTopics.filter((topic) => topic.subject_id === currentSubject);
-
-    // Helper functions for adding new items
-    const addNewSubject = () => {
-        if (newSubjectName.trim()) {
-            const newId = `temp_${Date.now()}`;
-            const newSubject = { id: newId, name: newSubjectName.trim() };
-            setDynamicSubjects([...dynamicSubjects, newSubject]);
-            form.setValue('subject', newId);
-            setNewSubjectName('');
-            setShowAddSubject(false);
-        }
-    };
-
-    const addNewTopic = () => {
-        if (newTopicName.trim() && currentSubject) {
-            const newId = `temp_${Date.now()}`;
-            const newTopic = {
-                id: newId,
-                name: newTopicName.trim(),
-                subject_id: currentSubject,
-            };
-            setDynamicTopics([...dynamicTopics, newTopic]);
-            form.setValue('topic', newId);
-            setNewTopicName('');
-            setShowAddTopic(false);
-        }
-    };
 
     const addNewTag = () => {
         if (newTagName.trim()) {

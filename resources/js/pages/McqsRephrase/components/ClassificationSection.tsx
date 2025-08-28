@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -232,28 +233,56 @@ export function ClassificationSection({
                     />
                 </div>
 
-                <FormField
-                    control={form.control}
-                    name="difficulty_level"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Difficulty Level *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                <div className="space-y-2">
+                    <FormField
+                        control={form.control}
+                        name="difficulty_level"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Difficulty Level *</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select difficulty" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="easy">Easy</SelectItem>
+                                        <SelectItem value="medium">Medium</SelectItem>
+                                        <SelectItem value="hard">Hard</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="space-y-2">
+                    {/* add functionality to check currentaffair and general knowledge */}
+                    <FormField
+                        control={form.control}
+                        name="is_rephrased_added"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-center gap-2">
                                 <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select difficulty" />
-                                    </SelectTrigger>
+                                    <Checkbox
+                                        checked={field.value || isCurrentAffair}
+                                        onCheckedChange={(checked) => {
+                                            field.onChange(checked);
+                                            setIsCurrentAffair(!!checked);
+                                            if (checked) {
+                                                form.setValue('question', rephrased || '');
+                                            } else {
+                                                form.setValue('question', mcq.q_statement);
+                                            }
+                                        }}
+                                    />
                                 </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="easy">Easy</SelectItem>
-                                    <SelectItem value="medium">Medium</SelectItem>
-                                    <SelectItem value="hard">Hard</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                                <FormLabel>Current Affairs *</FormLabel>
+                            </FormItem>
+                        )}
+                    />
+                </div>
             </div>
         </div>
     );

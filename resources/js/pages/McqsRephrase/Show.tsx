@@ -44,8 +44,8 @@ export default function Show() {
             `/rephrase/${mcq?.q_id}/edit`,
             {
                 core_concept: core_concept,
-                tags: tags,
-                exam_types: exam_types,
+                tags_new: tags,
+                exam_types_new: exam_types,
                 rephrased: rephrased,
                 explanation: explanation,
                 subject: subject,
