@@ -117,7 +117,8 @@ class McqsRephraseController extends Controller
 
 
         $ai_tags = $request->tags_new;
-        // convert string tags to array if it's a string
+        // convert string tags to array if it's a string ['CSS', 'PMS', 'PCS', 'LLB', 'Judicial Exams', 'UPSC']
+
         if (is_string($ai_tags)) {
             $ai_tags = array_map('trim', explode(',', trim($ai_tags, '[]')));
         }
@@ -339,8 +340,8 @@ class McqsRephraseController extends Controller
                     "5. TOPIC: Mention a specific topic or subtopic inside that subject (e.g., World Capitals, Laws of Motion).\n\n" .
                     "6. CURRENT AFFAIRS: Check if the question is related to current events between 2023–2025. Respond CA: true or CA: false.\n\n" .
                     "7. GENERAL KNOWLEDGE: Check if the question is related to General Knowledge (static facts, history, geography, etc.). Respond GK: true or GK: false.\n\n" .
-                    "8. TAGS: Check if the question is related to specific tags (e.g., 'History', 'Geography'). Respond TAGS: [your tags].\n\n" .
-                    "9. EXAM TYPES: Check if the question is related to specific exam types and response in EXAM SHORT FORMS (e.g., 'MCAT', 'GRE'). Respond EXAM_TYPES: [your exam types].\n\n" .
+                    "8. TAGS: Check if the question is related to specific tags, dont include quatation marks but separate with commas (e.g., 'History', 'Geography').\n\n" .
+                    "9. EXAM TYPES: Check if the question is related to specific exam types and response in EXAM SHORT FORMS, dont include quatation marks but separate with commas (e.g., 'MCAT', 'GRE').\n\n" .
 
                     "Format your response strictly as:\n" .
                     "REPHRASED: [your rephrased version]\n" .

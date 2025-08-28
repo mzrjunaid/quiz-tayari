@@ -20,8 +20,8 @@ interface ClassificationSectionProps {
     subject?: string;
     availableTopics: Array<{ id: string; name: string; subject_id: string }>;
     currentSubject: string;
-    currentAffair: boolean;
-    generalKnowledge: boolean;
+    currentAffair: string;
+    generalKnowledge: string;
     onAddNewSubject?: (name: string) => void;
     onAddNewTopic?: (name: string, subjectId: string) => void;
 }
@@ -40,8 +40,6 @@ export function ClassificationSection({
 }: ClassificationSectionProps) {
     const [showAddSubject, setShowAddSubject] = useState(false);
     const [showAddTopic, setShowAddTopic] = useState(false);
-    const [isCurrentAffair, setIsCurrentAffair] = useState(currentAffair);
-    const [isGeneralKnowledge, setIsGeneralKnowledge] = useState(generalKnowledge);
     const [manualSubjectName, setManualSubjectName] = useState('');
     const [manualTopicName, setManualTopicName] = useState('');
     const [addedSubject, setAddedSubject] = useState<{ id: string; name: string } | null>(null);
@@ -86,6 +84,34 @@ export function ClassificationSection({
             setShowAddSubject(false);
         }
     };
+
+    // Update the initial states with useEffect
+    useEffect(() => {
+        // Set initial values for checkboxes
+
+        console.log('Setting initial checkbox values:', { currentAffair, generalKnowledge });
+        const currentAffairValue = currentAffair === 'true' ? true : false;
+        const generalKnowledgeValue = generalKnowledge === 'true' ? true : false;
+
+        form.setValue('current_affair', currentAffairValue, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+        });
+        form.setValue('general_knowledge', generalKnowledgeValue, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+        });
+
+        console.log('Checkbox values after setting:', {
+            currentAffair: form.getValues('current_affair'),
+            generalKnowledge: form.getValues('general_knowledge'),
+        });
+
+        // setIsCurrentAffair(currentAffair);
+        // setIsGeneralKnowledge(generalKnowledge);
+    }, [currentAffair, generalKnowledge, form]);
 
     const handleAddTopic = () => {
         if (manualTopicName.trim() && currentSubject && onAddNewTopic) {
@@ -272,10 +298,10 @@ export function ClassificationSection({
                             <FormItem className="flex flex-row items-center gap-2">
                                 <FormControl>
                                     <Checkbox
-                                        checked={isCurrentAffair || field.value}
+                                        checked={field.value}
                                         onCheckedChange={(checked) => {
                                             field.onChange(checked);
-                                            setIsCurrentAffair(!!checked);
+                                            // setIsCurrentAffair(!!checked);
                                         }}
                                     />
                                 </FormControl>
@@ -291,10 +317,10 @@ export function ClassificationSection({
                             <FormItem className="flex flex-row items-center gap-2">
                                 <FormControl>
                                     <Checkbox
-                                        checked={isGeneralKnowledge || field.value}
+                                        checked={field.value}
                                         onCheckedChange={(checked) => {
                                             field.onChange(checked);
-                                            setIsGeneralKnowledge(!!checked);
+                                            // setIsGeneralKnowledge(!!checked);
                                         }}
                                     />
                                 </FormControl>

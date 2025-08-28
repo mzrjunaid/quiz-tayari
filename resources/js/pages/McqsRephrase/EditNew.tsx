@@ -34,8 +34,8 @@ interface Props {
     tags: Array<{ id: string; name: string }>;
     exam_types: Array<{ id: string; name: string }>;
     questionTypes: Array<{ id: number; name: string; value: string }>;
-    current_affair: boolean;
-    general_knowledge: boolean;
+    current_affair: string;
+    general_knowledge: string;
 }
 
 // Enhanced validation schema with conditional validation
@@ -103,10 +103,8 @@ export default function Edit({
                   exam_types: exam_types_new.map((tag) => tag.name) || [],
                   core_concept: core_concept || '',
                   //convert string to boolean
-
-                  current_affair: current_affair || false,
-
-                  general_knowledge: general_knowledge || false,
+                  current_affair: Boolean(current_affair) || false,
+                  general_knowledge: Boolean(general_knowledge) || false,
                   is_rephrased_added: isRephrasedAdded,
               }
             : {
