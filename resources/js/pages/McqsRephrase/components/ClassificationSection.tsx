@@ -20,6 +20,8 @@ interface ClassificationSectionProps {
     subject?: string;
     availableTopics: Array<{ id: string; name: string; subject_id: string }>;
     currentSubject: string;
+    currentAffair: boolean;
+    generalKnowledge: boolean;
     onAddNewSubject?: (name: string) => void;
     onAddNewTopic?: (name: string, subjectId: string) => void;
 }
@@ -33,9 +35,13 @@ export function ClassificationSection({
     newTopicName,
     onAddNewSubject,
     onAddNewTopic,
+    currentAffair,
+    generalKnowledge,
 }: ClassificationSectionProps) {
     const [showAddSubject, setShowAddSubject] = useState(false);
     const [showAddTopic, setShowAddTopic] = useState(false);
+    const [isCurrentAffair, setIsCurrentAffair] = useState(currentAffair);
+    const [isGeneralKnowledge, setIsGeneralKnowledge] = useState(generalKnowledge);
     const [manualSubjectName, setManualSubjectName] = useState('');
     const [manualTopicName, setManualTopicName] = useState('');
     const [addedSubject, setAddedSubject] = useState<{ id: string; name: string } | null>(null);
@@ -261,24 +267,38 @@ export function ClassificationSection({
                     {/* add functionality to check currentaffair and general knowledge */}
                     <FormField
                         control={form.control}
-                        name="is_rephrased_added"
+                        name="current_affair"
                         render={({ field }) => (
                             <FormItem className="flex flex-row items-center gap-2">
                                 <FormControl>
                                     <Checkbox
-                                        checked={field.value || isCurrentAffair}
+                                        checked={isCurrentAffair || field.value}
                                         onCheckedChange={(checked) => {
                                             field.onChange(checked);
                                             setIsCurrentAffair(!!checked);
-                                            if (checked) {
-                                                form.setValue('question', rephrased || '');
-                                            } else {
-                                                form.setValue('question', mcq.q_statement);
-                                            }
                                         }}
                                     />
                                 </FormControl>
                                 <FormLabel>Current Affairs *</FormLabel>
+                            </FormItem>
+                        )}
+                    />
+                    {/* add functionality to check currentaffair and general knowledge */}
+                    <FormField
+                        control={form.control}
+                        name="general_knowledge"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-center gap-2">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={isGeneralKnowledge || field.value}
+                                        onCheckedChange={(checked) => {
+                                            field.onChange(checked);
+                                            setIsGeneralKnowledge(!!checked);
+                                        }}
+                                    />
+                                </FormControl>
+                                <FormLabel>General Knowledge *</FormLabel>
                             </FormItem>
                         )}
                     />

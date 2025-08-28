@@ -34,6 +34,8 @@ interface Props {
     tags: Array<{ id: string; name: string }>;
     exam_types: Array<{ id: string; name: string }>;
     questionTypes: Array<{ id: number; name: string; value: string }>;
+    current_affair: boolean;
+    general_knowledge: boolean;
 }
 
 // Enhanced validation schema with conditional validation
@@ -54,15 +56,14 @@ export default function Edit({
     tags_new,
     explanation,
     rephrased,
+    current_affair,
+    general_knowledge,
 }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'MCQs List', href: '/rephrase' },
         { title: 'Show', href: `/rephrase/${mcq?.q_id}` },
         { title: 'Create', href: `/rephrase/create` },
     ];
-
-    console.log('Initial tags_new:', tags_new);
-    console.log('defined tags:', tags);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
@@ -101,6 +102,11 @@ export default function Edit({
                   tags: tags_new.map((tag) => tag.name) || [],
                   exam_types: exam_types_new.map((tag) => tag.name) || [],
                   core_concept: core_concept || '',
+                  //convert string to boolean
+
+                  current_affair: current_affair || false,
+
+                  general_knowledge: general_knowledge || false,
                   is_rephrased_added: isRephrasedAdded,
               }
             : {
@@ -125,7 +131,7 @@ export default function Edit({
               },
     });
 
-    // console.log(form.getValues());
+    console.log('form errors', form.formState.errors);
 
     const currentQuestionType = form.watch('question_type');
     const currentSubject = form.watch('subject');
@@ -428,6 +434,8 @@ export default function Edit({
                                 newTopicName={topic}
                                 onAddNewSubject={handleAddNewSubject}
                                 onAddNewTopic={handleAddNewTopic}
+                                currentAffair={current_affair}
+                                generalKnowledge={general_knowledge}
                             />
 
                             {/* Tags and Exam Types Section */}
