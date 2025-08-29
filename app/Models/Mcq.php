@@ -35,6 +35,7 @@ class Mcq extends Model
         'updated_by',      // <- missing
         'verified_by',     // <- missing
         'tags',
+        'language',
         'exam_types'
     ];
 

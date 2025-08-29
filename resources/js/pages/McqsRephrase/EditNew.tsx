@@ -103,8 +103,13 @@ export default function Edit({
                   exam_types: exam_types_new.map((tag) => tag.name) || [],
                   core_concept: core_concept || '',
                   //convert string to boolean
-                  current_affair: Boolean(current_affair) || false,
-                  general_knowledge: Boolean(general_knowledge) || false,
+                  current_affair: (current_affair === 'true' ? true : false) || false,
+                  general_knowledge: (general_knowledge === 'true' ? true : false) || false,
+
+                  // question language
+
+                  langauge: 'english',
+
                   is_rephrased_added: isRephrasedAdded,
               }
             : {

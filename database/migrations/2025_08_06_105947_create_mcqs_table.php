@@ -47,6 +47,9 @@ return new class extends Migration
                 'matching'
             ])->default('single_correct');
 
+            // Question Language Type
+            $table->enum('language', ['english', 'urdu'])->default('english');
+
             // Status and visibility
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_verified')->default(false)->index();

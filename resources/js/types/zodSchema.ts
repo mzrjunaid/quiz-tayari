@@ -23,6 +23,7 @@ export const formSchema = z
         core_concept: z.string().optional(),
         current_affair: z.boolean().optional(),
         general_knowledge: z.boolean().optional(),
+        language: z.enum(['english', 'urdu']).optional(),
         is_rephrased_added: z.boolean().optional(),
     })
     .refine(

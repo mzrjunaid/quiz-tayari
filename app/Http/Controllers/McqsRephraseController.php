@@ -352,7 +352,8 @@ class McqsRephraseController extends Controller
                     "TAGS: [only tags]\n" .
                     "EXAM TYPES: [only exam types]\n" .
                     "CA: [true/false]\n" .
-                    "GK: [true/false]\n"
+                    "GK: [true/false]\n".
+                    "Defficulty: [Easy/Medium/Hard]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
