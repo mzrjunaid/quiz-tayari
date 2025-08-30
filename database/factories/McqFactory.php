@@ -101,7 +101,7 @@ class McqFactory extends Factory
                 'etea',
                 'mdcat'
             ], rand(1, 3)),
-            'language' => $this->faker->randomElement(['english', 'urdu']),
+            'language' => $this->faker->randomElement(['en', 'ur']),
         ];
     }
 

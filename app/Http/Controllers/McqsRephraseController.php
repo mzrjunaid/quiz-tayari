@@ -171,9 +171,6 @@ class McqsRephraseController extends Controller
             ];
         })->toArray();
 
-
-        // dd($exam_types_new);
-
         // Handle exam_types (assuming they're stored as JSON or comma-separated)
         $examTypes = collect();
         Mcq::select('exam_types')
@@ -352,8 +349,7 @@ class McqsRephraseController extends Controller
                     "TAGS: [only tags]\n" .
                     "EXAM TYPES: [only exam types]\n" .
                     "CA: [true/false]\n" .
-                    "GK: [true/false]\n".
-                    "Defficulty: [Easy/Medium/Hard]\n"
+                    "GK: [true/false]\n"
             );
 
             $response = $combinedResult->candidates[0]->content->parts[0]->text ?? null;
@@ -391,7 +387,6 @@ class McqsRephraseController extends Controller
                     'exam_types' => $exam_types,
                     'current_affair' => $current_affair,
                     'general_knowledge' => $general_knowledge,
-
                 ]);
         } catch (\Exception $e) {
             return $this->redirectWithError($id, 'Failed to generate content: ' . $e->getMessage());

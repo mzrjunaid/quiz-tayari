@@ -24,30 +24,31 @@ class Mcq extends Model
         'option_d',
         'option_e',
         'correct_answer',
-        'correct_answers', // <- missing in your version
+        'correct_answers',
         'subject',
         'topic',
         'difficulty_level',
         'question_type',
-        'is_active',       // <- missing
-        'is_verified',     // <- missing
-        'created_by',      // <- missing
-        'updated_by',      // <- missing
-        'verified_by',     // <- missing
-        'tags',
         'language',
-        'exam_types'
+        'current_affair',
+        'general_knowledge',
+        'is_active',
+        'is_verified',
+        'tags',
+        'exam_types',
+        'created_by',
+        'updated_by'
+
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'is_verified' => 'boolean',
-        'correct_answers' => 'array',
         'tags' => 'array',
         'exam_types' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'correct_answers' => 'array',
+        'is_active' => 'boolean',
+        'is_verified' => 'boolean',
+        'current_affair' => 'boolean',
+        'general_knowledge' => 'boolean',
     ];
     // Relationships
     public function creator(): BelongsTo

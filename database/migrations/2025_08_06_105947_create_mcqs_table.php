@@ -48,7 +48,7 @@ return new class extends Migration
             ])->default('single_correct');
 
             // Question Language Type
-            $table->enum('language', ['english', 'urdu'])->default('english');
+            $table->enum('language', ['en', 'ur'])->default('en');
 
             // Status and visibility
             $table->boolean('is_active')->default(true)->index();

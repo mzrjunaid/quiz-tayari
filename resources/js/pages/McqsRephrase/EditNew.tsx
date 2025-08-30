@@ -105,10 +105,8 @@ export default function Edit({
                   //convert string to boolean
                   current_affair: (current_affair === 'true' ? true : false) || false,
                   general_knowledge: (general_knowledge === 'true' ? true : false) || false,
-
                   // question language
-
-                  langauge: 'english',
+                  language: 'en',
 
                   is_rephrased_added: isRephrasedAdded,
               }
@@ -128,6 +126,7 @@ export default function Edit({
                   tags: [],
                   exam_types: [],
                   core_concept: '',
+                  language: 'en',
                   current_affair: false,
                   general_knowledge: false,
                   is_rephrased_added: false,
