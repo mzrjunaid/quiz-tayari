@@ -30,9 +30,10 @@ class McqFactory extends Factory
 
         // Generate question type and ensure consistency
         $questionType = $this->faker->randomElement([
-            'single_correct',
-            'multiple_correct',
+            'single',
+            'multiple',
             'true_false',
+            'single_a',
         ]);
 
         $correctAnswers = $this->generateCorrectAnswers($questionType, $correctLetter, $availableOptions);

@@ -274,6 +274,8 @@ class McqController extends Controller
 
     public function store(StoreMcqRequest $request)
     {
+
+        // validate the request
         $validated = $request->getProcessedData();
 
         DB::beginTransaction();
@@ -290,9 +292,7 @@ class McqController extends Controller
                 'option_d' => $validated['option_d'] ?? null,
                 'option_e' => $validated['option_e'] ?? null,
                 'correct_answer' => $validated['correct_answer'],
-                'correct_answers' => is_array($validated['correct_answers'])
-                    ? json_encode($validated['correct_answers'])
-                    : null,
+                'correct_answers' =>  $validated['correct_answers'] ?? null,
                 'subject' => $validated['subject'],
                 'topic' => $validated['topic'],
                 'difficulty_level' => $validated['difficulty_level'] ?? 'medium',
@@ -302,38 +302,73 @@ class McqController extends Controller
                 'general_knowledge' => $validated['general_knowledge'] ?? true,
                 'is_active' => $validated['is_active'] ?? true,
                 'is_verified' => $validated['is_verified'] ?? false,
-                'tags' => is_array($validated['tags'])
-                    ? json_encode($validated['tags'])
-                    : null,
-                'exam_types' => is_array($validated['exam_types'])
-                    ? json_encode($validated['exam_types'])
-                    : null,
+                'tags' => $validated['tags'] ?? null,
+                'exam_types' => $validated['exam_types'] ?? null,
                 'created_by' => Auth::id(),
                 'updated_by' => Auth::id(),
             ];
 
+            // // write mock data
+            // $mcqData = [
+            //     'slug' => 'testing-question',
+            //     'question' => 'Testing Question',
+            //     'explanation' => 'explaination testing',
+            //     'option_a' => 'A',
+            //     'option_b' => 'B',
+            //     'option_c' => 'C',
+            //     'option_d' => 'D',
+            //     'option_e' => null,
+            //     'correct_answer' => 'C',
+            //     'correct_answers' => json_encode(['C']),  // Encode arrays
+            //     'subject' => 'General Knowledge',  // Change to single value
+            //     'topic' => 'topic',  // Change to single value
+            //     'difficulty_level' => 'easy',
+            //     'question_type' => 'single',
+            //     'is_active' => true,
+            //     'is_verified' => false,
+            //     'created_by' => Auth::id(),  // Use Auth::id() instead of hardcoded value
+            //     'updated_by' => Auth::id(),
+            //     'tags' => json_encode([  // Encode arrays
+            //         'mathematics',
+            //         'science',
+            //         'history'
+            //     ]),
+            //     'exam_types' => json_encode([  // Encode arrays
+            //         'ppsc',
+            //         'fpsc',
+            //         'nts'
+            //     ]),
+            //     'language' => 'en',
+            // ];
+
             // Add debug logging
             Log::info('Attempting to create MCQ with data:', $mcqData);
 
+
+
+            // dd('herer');
             $mcq = Mcq::create($mcqData);
 
+
+            Log::info('After MCQ creation', [
+                'mcq' => $mcq ? $mcq->toArray() : null,
+                'success' => (bool)$mcq
+            ]);
+
             if (!$mcq) {
+                Log::error('MCQ creation returned null');
                 throw new Exception('Failed to create MCQ record');
             }
 
             DB::commit();
+            Log::info('Transaction committed');
 
-            Log::info('MCQ created successfully', [
-                'mcq_id' => $mcq->id,
-                'slug' => $mcq->slug
+            // Add this debug statement
+            dd([
+                'status' => 'success',
+                'mcq' => $mcq->toArray(),
+                'redirect' => route('mcqs.index')
             ]);
-
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'message' => 'MCQ created successfully',
-                    'mcq' => new McqResource($mcq)
-                ], 201);
-            }
 
             return redirect()
                 ->route('mcqs.index')
@@ -345,15 +380,16 @@ class McqController extends Controller
             DB::rollBack();
             Log::error('MCQ creation failed:', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'data' => $mcqData ?? null
             ]);
 
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'message' => 'Failed to create MCQ',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
+            // Add this debug statement
+            dd([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return back()
                 ->withInput()

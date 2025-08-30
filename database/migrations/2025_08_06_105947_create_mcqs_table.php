@@ -40,12 +40,14 @@ return new class extends Migration
 
             // Question metadata
             $table->enum('question_type', [
-                'single_correct',
-                'multiple_correct',
+                'single',
+                'multiple',
                 'true_false',
-                'fill_in_blank',
-                'matching'
-            ])->default('single_correct');
+                'single_a',
+            ])->default('single');
+
+            $table->boolean('current_affair')->default(false)->index();
+            $table->boolean('general_knowledge')->default(false)->index();
 
             // Question Language Type
             $table->enum('language', ['en', 'ur'])->default('en');
