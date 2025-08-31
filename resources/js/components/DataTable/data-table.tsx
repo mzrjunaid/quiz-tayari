@@ -25,6 +25,7 @@ export interface DataTableProps {
         total: number;
         active: number;
         verified: number;
+        deleted: number;
     };
     columns: ColumnDef<Mcqs>[];
 }
@@ -71,8 +72,6 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                 pageSize: newFilters.per_page as number,
             }));
         }
-
-        console.log(updatedFilters);
 
         router.get(url, updatedFilters, {
             only: ['mcqs', 'filters'],
@@ -164,6 +163,9 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                     </div>
                     <div className="text-sm">
                         <span className="font-medium">Verified:</span> {stats.verified}
+                    </div>
+                    <div className="text-sm">
+                        <span className="font-medium">Deleted:</span> {stats.deleted}
                     </div>
                 </div>
             )}

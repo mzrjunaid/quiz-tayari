@@ -26,8 +26,6 @@ export default function Show() {
     };
     const [publish, setPublish] = useState(mcq?.is_verified);
 
-    console.log(usePage().props);
-
     const handleRephrase = () => {
         router.get(
             `/rephrase/${mcq?.id}/rephrase`,
@@ -44,6 +42,24 @@ export default function Show() {
         router.get(`/mcqs/${mcq?.slug}/edit`);
     };
 
+    const updatePublish = (is_verified: boolean) => {
+        setPublish(is_verified);
+        router.patch(
+            `/mcqs/${mcq?.slug}/field`,
+            {
+                field: 'is_verified',
+                value: is_verified,
+            },
+            {
+                preserveScroll: true,
+                onError: (e) => {
+                    console.log(e);
+                    setPublish(!is_verified); // revert the change if error occurs
+                },
+            },
+        );
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mcqs Rephrase" />
@@ -57,7 +73,7 @@ export default function Show() {
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
                             <div className="flex items-center space-x-2">
                                 <Label htmlFor="airplane-mode">{publish ? 'Published' : 'Unpublished'}</Label>
-                                <Switch id="airplane-mode" checked={publish} onCheckedChange={(checked) => setPublish(checked)} />
+                                <Switch id="airplane-mode" checked={publish} onCheckedChange={(checked) => updatePublish(checked)} />
                             </div>
                             <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
                                 <Edit /> Edit

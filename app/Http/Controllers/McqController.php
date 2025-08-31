@@ -103,6 +103,8 @@ class McqController extends Controller
             ->withQueryString(); // Preserves all query parameters
 
 
+        $deleted = Mcq::onlyTrashed()->count();
+
 
         return Inertia::render('Mcqs/Index', [
             'mcqs' => $mcqs,
@@ -119,6 +121,7 @@ class McqController extends Controller
                 'total' => $mcqs->total(),
                 'active' => Mcq::where('is_active', true)->count(),
                 'verified' => Mcq::where('is_verified', true)->count(),
+                'deleted' => $deleted,
             ]
         ]);
     }
@@ -341,27 +344,12 @@ class McqController extends Controller
             //     'language' => 'en',
             // ];
 
-            // Add debug logging
-            Log::info('Attempting to create MCQ with data:', $mcqData);
-
 
 
             // dd('herer');
             $mcq = Mcq::create($mcqData);
 
-
-            Log::info('After MCQ creation', [
-                'mcq' => $mcq ? $mcq->toArray() : null,
-                'success' => (bool)$mcq
-            ]);
-
-            if (!$mcq) {
-                Log::error('MCQ creation returned null');
-                throw new Exception('Failed to create MCQ record');
-            }
-
             DB::commit();
-            Log::info('Transaction committed');
 
             // Add this debug statement
             dd([
@@ -399,63 +387,6 @@ class McqController extends Controller
                 ]);
         }
     }
-
-    /**
-     * Generate a slug from the question text
-     *
-     * @param string $question
-     * @return string
-     */
-    private function generateSlugFromQuestion(string $question): string
-    {
-        // Clean the question text and create a meaningful slug
-        $cleanQuestion = strip_tags($question);
-        $cleanQuestion = preg_replace('/[^\w\s\u0600-\u06FF-]/', '', $cleanQuestion); // Support Urdu characters
-
-        // Take first 12 words for slug to keep it manageable
-        $words = explode(' ', trim($cleanQuestion));
-        $slugWords = array_slice($words, 0, 12);
-        $baseSlug = implode(' ', $slugWords);
-
-        // Generate slug with language prefix for better organization
-        $languagePrefix = request('language', 'en');
-        $slug = $languagePrefix . '-' . Str::slug($baseSlug);
-
-        return $slug;
-    }
-
-    /**
-     * Ensure slug is unique by appending timestamp and counter if needed
-     *
-     * @param string $baseSlug
-     * @return string
-     */
-    private function ensureUniqueSlug(string $baseSlug): string
-    {
-        $slug = $baseSlug;
-        $counter = 1;
-
-        // Check if base slug exists
-        while (Mcq::where('slug', $slug)->exists()) {
-            if ($counter === 1) {
-                // First duplicate gets timestamp
-                $slug = $baseSlug . '-' . time();
-            } else {
-                // Further duplicates get counter
-                $slug = $baseSlug . '-' . time() . '-' . $counter;
-            }
-            $counter++;
-
-            // Safety break to prevent infinite loop
-            if ($counter > 100) {
-                $slug = $baseSlug . '-' . uniqid();
-                break;
-            }
-        }
-
-        return $slug;
-    }
-
 
     /**
      * Display the specified resource.
@@ -567,11 +498,84 @@ class McqController extends Controller
     }
 
     /**
+     * Toggle a boolean field
+     */
+    public function toggleField(Request $validated, $slug)
+    {
+
+        $mcq = $this->findMcqBySlug($slug);
+        if (!$mcq) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'MCQ not found'
+            ]);
+        }
+
+        $validated = $validated->validate([
+            'field' => 'required|string|in:is_active,is_verified',
+            'value' => 'required|boolean'
+        ]);
+
+
+
+        // dd($validated);
+        try {
+            $field = $validated['field'];
+            $value = $validated['value'];
+
+            $mcq->update([
+                'is_verified' => $value
+            ]);
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'message' => ucfirst(str_replace('_', ' ', $field)) . ' toggled successfully',
+            ]);
+        } catch (Exception $e) {
+            Log::error('Toggle failed:', [
+                'error' => $e->getMessage(),
+                'mcq_id' => $mcq->id,
+                'field' => $validated['field']
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to toggle field'
+            ], 500);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Mcq $mcq)
+    public function destroy($slug)
     {
-        //
+        $mcq = $this->findMcqBySlug($slug);
+        if (!$mcq) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'MCQ not found'
+            ]);
+        }
+
+        try {
+            $mcq->delete();
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'message' => 'MCQ deleted successfully',
+            ]);
+        } catch (Exception $e) {
+            Log::error('Delete failed:', [
+                'error' => $e->getMessage(),
+                'mcq_id' => $mcq->id,
+            ]);
+
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Failed to delete MCQ'
+            ]);
+        }
     }
 
 
