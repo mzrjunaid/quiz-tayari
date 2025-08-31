@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formSchema } from '@/types/zodSchema';
 import { PlusCircle, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
@@ -15,13 +15,9 @@ type FormValues = z.infer<typeof formSchema>;
 interface ClassificationSectionProps {
     form: UseFormReturn<FormValues>;
     subjects: Array<{ id: string; name: string }>;
-    newSubjectName?: string;
-    newTopicName?: string;
     subject?: string;
     availableTopics: Array<{ id: string; name: string; subject_id: string }>;
     currentSubject: string;
-    currentAffair: string;
-    generalKnowledge: string;
     onAddNewSubject?: (name: string) => void;
     onAddNewTopic?: (name: string, subjectId: string) => void;
 }
@@ -31,12 +27,8 @@ export function ClassificationSection({
     subjects,
     availableTopics,
     currentSubject,
-    newSubjectName,
-    newTopicName,
     onAddNewSubject,
     onAddNewTopic,
-    currentAffair,
-    generalKnowledge,
 }: ClassificationSectionProps) {
     const [showAddSubject, setShowAddSubject] = useState(false);
     const [showAddTopic, setShowAddTopic] = useState(false);
@@ -44,31 +36,6 @@ export function ClassificationSection({
     const [manualTopicName, setManualTopicName] = useState('');
     const [addedSubject, setAddedSubject] = useState<{ id: string; name: string } | null>(null);
     const [addedTopic, setAddedTopic] = useState<{ id: string; name: string } | null>(null);
-
-    useEffect(() => {
-        if (newSubjectName && newTopicName) {
-            // If we have both new values, set them and mark fields as validated
-            const newSubjectId = newSubjectName; // Use the name itself as ID
-
-            form.clearErrors(['subject', 'topic']); // Clear any existing errors
-
-            // Set the values synchronously
-            form.setValue('subject', newSubjectId, {
-                shouldValidate: true,
-                shouldDirty: true,
-                shouldTouch: true,
-            });
-
-            form.setValue('topic', newTopicName, {
-                shouldValidate: true,
-                shouldDirty: true,
-                shouldTouch: true,
-            });
-
-            // Manually trigger validation
-            form.trigger(['subject', 'topic']);
-        }
-    }, [newSubjectName, newTopicName, form]);
 
     const handleAddSubject = () => {
         if (manualSubjectName.trim() && onAddNewSubject) {
@@ -84,34 +51,6 @@ export function ClassificationSection({
             setShowAddSubject(false);
         }
     };
-
-    // Update the initial states with useEffect
-    useEffect(() => {
-        // Set initial values for checkboxes
-
-        console.log('Setting initial checkbox values:', { currentAffair, generalKnowledge });
-        const currentAffairValue = currentAffair === 'true' ? true : false;
-        const generalKnowledgeValue = generalKnowledge === 'true' ? true : false;
-
-        form.setValue('current_affair', currentAffairValue, {
-            shouldValidate: true,
-            shouldDirty: true,
-            shouldTouch: true,
-        });
-        form.setValue('general_knowledge', generalKnowledgeValue, {
-            shouldValidate: true,
-            shouldDirty: true,
-            shouldTouch: true,
-        });
-
-        console.log('Checkbox values after setting:', {
-            currentAffair: form.getValues('current_affair'),
-            generalKnowledge: form.getValues('general_knowledge'),
-        });
-
-        // setIsCurrentAffair(currentAffair);
-        // setIsGeneralKnowledge(generalKnowledge);
-    }, [currentAffair, generalKnowledge, form]);
 
     const handleAddTopic = () => {
         if (manualTopicName.trim() && currentSubject && onAddNewTopic) {
@@ -150,14 +89,13 @@ export function ClassificationSection({
                                                     form.setValue('topic', '');
                                                     setAddedTopic(null); // Reset added topic when subject changes
                                                 }}
-                                                value={newSubjectName || field.value}
-                                                disabled={!!newSubjectName || !!addedSubject}
+                                                value={field.value}
+                                                disabled={!!addedSubject}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue>
-                                                            {newSubjectName ||
-                                                                addedSubject?.name ||
+                                                            {addedSubject?.name ||
                                                                 subjects.find((s) => s.id === field.value)?.name ||
                                                                 'Select subject'}
                                                         </SelectValue>
@@ -208,16 +146,11 @@ export function ClassificationSection({
                                 <div className="space-y-2">
                                     {!showAddTopic ? (
                                         <>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={newTopicName || field.value}
-                                                disabled={!currentSubject || !!newTopicName || !!addedTopic}
-                                            >
+                                            <Select onValueChange={field.onChange} value={field.value} disabled={!currentSubject || !!addedTopic}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue>
-                                                            {newTopicName ||
-                                                                addedTopic?.name ||
+                                                            {addedTopic?.name ||
                                                                 availableTopics.find((t) => t.id === field.value)?.name ||
                                                                 'Select topic'}
                                                         </SelectValue>

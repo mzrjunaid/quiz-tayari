@@ -15,10 +15,10 @@ import * as z from 'zod';
 // Import the extracted components
 import { Checkbox } from '@/components/ui/checkbox';
 import { formSchema } from '@/types/zodSchema';
-import { ClassificationSection } from './components/ClassificationSection';
-import { CorrectAnswerSection } from './components/CorrectAnswerSection';
-import { QuestionOptionsSection } from './components/QuestionOptionsSection';
-import { TagsExamTypesSection } from './components/TagsExamTypesSection';
+import { ClassificationSection } from '../../components/mcqComponents/ClassificationSection';
+import { CorrectAnswerSection } from '../../components/mcqComponents/CorrectAnswerSection';
+import { QuestionOptionsSection } from '../../components/mcqComponents/QuestionOptionsSection';
+import { TagsExamTypesSection } from '../../components/mcqComponents/TagsExamTypesSection';
 
 interface Props {
     mcq: OldMcqs;
@@ -133,7 +133,6 @@ export default function Edit({
               },
     });
 
-    console.log('form errors', form.formState.errors);
 
     const currentQuestionType = form.watch('question_type');
     const currentSubject = form.watch('subject');
