@@ -23,6 +23,7 @@ class McqResource extends JsonResource
         return [
             // Basic Information
             'id' => $this->id,
+            'serial_number' => $this->serial_number ?? null,
             'slug' => $this->slug,
 
             // Question Content

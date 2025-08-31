@@ -55,6 +55,7 @@ export interface OldMcqs {
 
 export interface Mcqs {
     id: string;
+    serial_number?: number;
     slug: string;
     question: string;
     explanation: string;

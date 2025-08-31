@@ -43,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{slug}', [McqController::class, 'destroy'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.delete');
     });
+    Route::group(['prefix' => 'deleted'], function () {
+        Route::get('/mcqs', [McqController::class, 'deleted'])->name('deleted.mcqs');
+    });
 });
 
 require __DIR__ . '/settings.php';

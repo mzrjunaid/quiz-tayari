@@ -1,9 +1,3 @@
-import { BreadcrumbItem, Filters, Mcqs, PaginatedData } from '@/types';
-import { Link, router } from '@inertiajs/react';
-
-import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-
 import DataTable from '@/components/DataTable/data-table';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,25 +10,22 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
+import { BreadcrumbItem, Filters, Mcqs, PaginatedData } from '@/types';
+import { router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown } from 'lucide-react';
 
-interface DataTableProps {
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Deleted MCQs',
+        href: '/deleted/mcqs',
+    },
+];
+
+interface Props {
     mcqs: PaginatedData;
     filters: Filters;
-    stats?: {
-        total: number;
-        active: number;
-        verified: number;
-        deleted: number;
-    };
 }
 
 export const columns: ColumnDef<Mcqs>[] = [
@@ -53,13 +44,7 @@ export const columns: ColumnDef<Mcqs>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => (
-            <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/mcqs/${row.original.slug}`} className="hover:underline">
-                    {row.getValue('question')}
-                </Link>
-            </div>
-        ),
+        cell: ({ row }) => <div className="max-w-sm break-words whitespace-normal">{row.getValue('question')}</div>,
     },
     {
         accessorKey: 'option_a',
@@ -138,76 +123,12 @@ export const columns: ColumnDef<Mcqs>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-    {
-        id: 'actions',
-        enableHiding: false,
-        cell: ({ row }) => {
-            const mcq = row.original;
-
-            // Use slug for navigation instead of id
-            const handleShowPage = (slug: string) => {
-                router.get(`/mcqs/${slug}`, {}, { preserveState: true, replace: true });
-            };
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleShowPage(mcq.slug)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(mcq.slug)}>Copy MCQ Slug</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <Link href={`/mcqs/${mcq.slug}`} className="w-full">
-                                View Details
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>Mark as Verified</DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Dialog>
-                                <DialogTrigger>Open</DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                        <DialogDescription>
-                                            This action cannot be undone. This will permanently delete your account and remove your data from our
-                                            servers.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            );
-        },
-    },
 ];
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'MCQs',
-        href: 'mcqs',
-    },
-];
-
-export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
-    const handleAddNew = () => {
-        router.get('/mcqs/create');
-    };
+export default function Deleted({ mcqs, filters }: Props) {
     return (
-        <DashboardLayout title="MCQs" breadcrumbs={breadcrumbs}>
-            <div className="relative w-full">
-                <Button variant="default" className="float-right mb-2" onClick={handleAddNew}>
-                    Add New
-                </Button>
-            </div>
-            <DataTable mcqs={mcqs} columns={columns} filters={filters} url="/mcqs" stats={stats} />
+        <DashboardLayout title="Deleted MCQs" breadcrumbs={breadcrumbs}>
+            <DataTable mcqs={mcqs} columns={columns} filters={filters} url="/deleted/mcqs" />
         </DashboardLayout>
     );
 }

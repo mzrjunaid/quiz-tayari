@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: '/mcqs',
         icon: List,
     },
+    {
+        title: 'Deleted MCQs',
+        href: '/deleted/mcqs',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

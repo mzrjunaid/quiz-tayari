@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Mcq extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $keyType = 'string'; // Set key type to string for UUID
+    public $incrementing = false; // Disable auto-incrementing for UUID
 
     // Explicitly define the table name
     protected $table = 'mcqs';
+
+
 
     protected $fillable = [
         'slug',
@@ -82,5 +87,16 @@ class Mcq extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
     }
 }

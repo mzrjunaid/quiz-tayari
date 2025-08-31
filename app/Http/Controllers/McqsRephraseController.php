@@ -200,7 +200,7 @@ class McqsRephraseController extends Controller
 
         // dd($request->all());
 
-        return Inertia::render('McqsRephrase/EditNew', [
+        return Inertia::render('McqsRephrase/Edit', [
             'subjects' => $subjects,
             'topics' => $topics,
             'tags' => $tags,

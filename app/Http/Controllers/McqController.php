@@ -105,6 +105,12 @@ class McqController extends Controller
 
         $deleted = Mcq::onlyTrashed()->count();
 
+        // Add serial numbers to the collection
+        $mcqs->through(function ($mcq, $key) use ($mcqs) {
+            // Calculate the serial number based on pagination
+            $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
+            return $mcq;
+        });
 
         return Inertia::render('Mcqs/Index', [
             'mcqs' => $mcqs,
@@ -576,6 +582,36 @@ class McqController extends Controller
                 'message' => 'Failed to delete MCQ'
             ]);
         }
+    }
+
+    /**
+     * Display a listing of deleted MCQs.
+     */
+
+    public function deleted(Request $request)
+    {
+        $perPage = $request->get('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? $perPage : 10;
+
+        $deletedMcqs = Mcq::onlyTrashed()
+            ->orderBy('deleted_at', 'desc')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        // Add serial numbers to the collection
+        $deletedMcqs->through(function ($mcq, $key) use ($deletedMcqs) {
+            // Calculate the serial number based on pagination
+            $mcq->serial_number = ($deletedMcqs->currentPage() - 1) * $deletedMcqs->perPage() + $key + 1;
+            return $mcq;
+        });
+
+        return Inertia::render('Mcqs/Deleted', [
+            'mcqs' => $deletedMcqs,
+            'filters' => [
+                'per_page' => (int) $perPage,
+                'page' => $deletedMcqs->currentPage(),
+            ],
+        ]);
     }
 
 
