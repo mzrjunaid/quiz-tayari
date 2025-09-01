@@ -17,12 +17,16 @@ class DatabaseSeeder extends Seeder
 
         $this->call(McqSeeder::class);
 
+
+        // call the PaperSeeder to populate the Papers table
+        $this->call(PaperSeeder::class);
+
         // User::factory(10)->create();
 
         User::factory()->create([
             'name' => 'Junaid Mazhar',
             'email' => 'mzrjunaid@gmail.com',
-            'password'=> bcrypt('123.321A'),
+            'password' => bcrypt('123.321A'),
         ]);
     }
 }

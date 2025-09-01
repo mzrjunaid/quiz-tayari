@@ -31,6 +31,7 @@ class McqController extends Controller
             'sort_order' => 'nullable|in:asc,desc', // Allowed sort orders
             'per_page' => 'nullable|integer|min:1|max:100', // Pagination limit
         ]);
+
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json([

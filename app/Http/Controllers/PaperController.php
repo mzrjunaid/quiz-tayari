@@ -96,7 +96,14 @@ class PaperController extends Controller
             ->sort()
             ->values();
 
-        return Inertia::render('Papers/Index', [
+        // Add serial numbers to the collection
+        $papers->through(function ($paper, $key) use ($papers) {
+            // Calculate the serial number based on pagination
+            $paper->serial_number = ($papers->currentPage() - 1) * $papers->perPage() + $key + 1;
+            return $paper;
+        });
+
+        return Inertia::render('papers/index', [
             'papers' => PaperResource::collection($papers),
             'filters' => $request->only(['search', 'department', 'subject', 'testing_service', 'status']),
             'sort' => [

@@ -16,6 +16,8 @@ class PaperResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'serial_number' => $this->serial_number,
+            'slug' => $this->slug,
             'title' => $this->title,
             'description' => $this->description,
 

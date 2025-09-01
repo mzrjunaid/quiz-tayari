@@ -87,8 +87,8 @@ export interface Mcqs {
     status: string;
 }
 
-export type PaginatedData = {
-    data: Mcqs[];
+export type PaginatedData<T> = {
+    data: T[];
     current_page: number;
     last_page: number;
     total: number;
@@ -96,6 +96,47 @@ export type PaginatedData = {
     from: number;
     to: number;
 };
+
+export interface Paper {
+    id: string;
+    slug: string;
+    serial_number?: number;
+    title: string;
+    description: string;
+    testing_service: {
+        short: string;
+        long: string;
+    };
+    department: string;
+    subject: string;
+    scheduled_at: {
+        datetime: string;
+        human: string;
+        formatted: string;
+        date_only: string;
+        time_only: string;
+    };
+    status: {
+        is_scheduled: boolean;
+        is_today: boolean;
+        is_upcoming: boolean;
+        is_past: boolean;
+    };
+    meta: {
+        has_description: boolean;
+        has_testing_service: boolean;
+    };
+    created_at: {
+        datetime: string;
+        human: string;
+        formatted: string;
+    };
+    updated_at: {
+        datetime: string;
+        human: string;
+        formatted: string;
+    };
+}
 
 export type SerializableFilterValue = string | number;
 

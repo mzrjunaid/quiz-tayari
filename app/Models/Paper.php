@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Str;
 
 class Paper extends Model
 {
     use HasFactory, HasUuids;
+
+    // Explicitly define the table name
+    protected $table = 'papers';
 
     /**
      * The attributes that are mass assignable.
@@ -16,6 +20,7 @@ class Paper extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'slug',
         'title',
         'description',
         'testing_services',
@@ -142,4 +147,22 @@ class Paper extends Model
     {
         return $this->scheduled_at?->format($format);
     }
+
+    // Route model binding with slug
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::creating(function ($model) {
+    //         if (empty($model->id)) {
+    //             $model->id = (string) Str::uuid();
+    //         }
+    //     });
+    // }
 }

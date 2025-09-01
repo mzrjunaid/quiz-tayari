@@ -18,7 +18,7 @@ import { statusRecord, verificationRecord } from '@/lib/recordUtils';
 import { X } from 'lucide-react';
 
 export interface DataTableProps {
-    mcqs: PaginatedData;
+    mcqs: PaginatedData<Mcqs>;
     filters: Filters;
     url: string | URL;
     stats?: {

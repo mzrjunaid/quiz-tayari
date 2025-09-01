@@ -14,8 +14,11 @@
             Schema::create('papers', function (Blueprint $table) {
                 $table->uuid('id')->primary();
 
+                // SEO and URL-friendly identifier
+                $table->string('slug')->unique()->nullable(); // URL-friendly version
+
                 $table->string('title', 150);
-                $table->string('description', 255)->nullable();
+                $table->string('description')->nullable();
                 $table->json('testing_services')->nullable();
                 $table->string('department', 150)->nullable();
                 $table->string('subject', 100)->nullable();
@@ -26,6 +29,7 @@
 
                 $table->timestamps();
 
+                $table->index('slug');
                 $table->index(['department', 'subject']);
                 $table->index('scheduled_at');
             });

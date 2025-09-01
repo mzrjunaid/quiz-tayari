@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Paper;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Paper>
@@ -24,6 +25,9 @@ class PaperFactory extends Factory
      */
     public function definition(): array
     {
+
+        $title = $this->faker->sentence(3, true);
+
         $testingServices = [
             ['short' => 'NTS', 'long' => 'National Testing Service'],
             ['short' => 'FPSC', 'long' => 'Fedearl Public Service Comission'],
@@ -47,7 +51,8 @@ class PaperFactory extends Factory
         ];
 
         return [
-            'title' => $this->faker->sentence(3, true),
+            'slug' => Str::slug($title) . '-' . Str::random(5),
+            'title' => $title,
             'description' => $this->faker->optional(0.7)->sentence(10),
             'testing_services' => $this->faker->randomElement($testingServices),
             'department' => $this->faker->randomElement($departments),
@@ -55,6 +60,7 @@ class PaperFactory extends Factory
             'scheduled_at' => $this->faker->optional(0.8)->dateTimeBetween('now', '+3 months'),
         ];
     }
+
 
     /**
      * Indicate that the paper is scheduled for today.

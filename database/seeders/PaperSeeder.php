@@ -87,6 +87,7 @@ class PaperSeeder extends Seeder
 
         // Create some custom papers with specific data
         Paper::factory()->create([
+            'slug' => 'sat-mathematics-practice-test',
             'title' => 'SAT Mathematics Practice Test',
             'description' => 'Comprehensive practice test covering all SAT math topics',
             'testing_services' => ['short' => 'SAT', 'long' => 'Scholastic Assessment Test'],

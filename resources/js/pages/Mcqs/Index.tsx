@@ -27,7 +27,7 @@ import {
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
 
 interface DataTableProps {
-    mcqs: PaginatedData;
+    mcqs: PaginatedData<Mcqs>;
     filters: Filters;
     stats?: {
         total: number;
