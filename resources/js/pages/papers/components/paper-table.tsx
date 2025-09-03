@@ -33,6 +33,11 @@ interface DataTableProps {
 
 export const columns: ColumnDef<Paper>[] = [
     {
+        accessorKey: 'serial_number',
+        header: 'Sr. No.',
+        cell: ({ row }) => <div className="capitalize">{row.getValue('serial_number')}</div>,
+    },
+    {
         accessorKey: 'title',
         header: 'Paper',
         cell: ({ row }) => <div className="capitalize">{row.getValue('title')}</div>,
@@ -48,23 +53,112 @@ export const columns: ColumnDef<Paper>[] = [
             );
         },
         cell: ({ row }) => {
-            const service = row.original.testing_service.short;
-            return <div className="uppercase">{service}</div>;
+            const serviceShort = row.original.testing_service.short;
+            const serviceLong = row.original.testing_service.long;
+
+            return (
+                <div className="uppercase">
+                    {serviceShort}
+                    <br />
+                    <span className="font-mono text-xs text-gray-500">long: {serviceLong}</span>
+                </div>
+            );
         },
     },
     {
-        accessorKey: 'amount',
-        header: () => <div className="text-right">Amount</div>,
+        accessorKey: 'department',
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Department
+                    <ArrowUpDown />
+                </Button>
+            );
+        },
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue('amount'));
+            return <div className="font-semibold">{row.original.department}</div>;
+        },
+    },
+    {
+        accessorKey: 'subject',
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Subject
+                    <ArrowUpDown />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return <div className="font-semibold">{row.original.subject}</div>;
+        },
+    },
+    {
+        accessorKey: 'scheduled_at',
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Date
+                    <ArrowUpDown />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const scheduledAt = row.original.scheduled_at;
 
-            // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            }).format(amount);
+            // Handle cases where scheduled_at might be null/undefined
+            if (!scheduledAt) {
+                return <div className="font-semibold text-gray-400">No date</div>;
+            }
 
-            return <div className="text-right font-medium">{formatted}</div>;
+            // Function to format date as dd-mm-yyyy
+            const formatDate = (dateString: string): string => {
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) {
+                        return dateString; // Return original if invalid date
+                    }
+
+                    const day = date.getDate().toString().padStart(2, '0');
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const year = date.getFullYear();
+
+                    return `${day}-${month}-${year}`;
+                } catch {
+                    return dateString; // Return original if parsing fails
+                }
+            };
+
+            // Try to get a date string from available fields
+            const dateString = scheduledAt.date_only || scheduledAt.datetime || scheduledAt.formatted || scheduledAt.human;
+
+            if (!dateString) {
+                return <div className="font-semibold text-gray-400">Invalid date</div>;
+            }
+
+            // If date_only is already in dd-mm-yyyy format, use it directly
+            if (scheduledAt.date_only && /^\d{2}-\d{2}-\d{4}$/.test(scheduledAt.date_only)) {
+                return <div className="font-semibold">{scheduledAt.date_only}</div>;
+            }
+
+            // Otherwise, format the date
+            const formattedDate = formatDate(dateString);
+
+            return <div className="font-semibold">{formattedDate}</div>;
+        },
+    },
+    {
+        accessorKey: 'status',
+        header: 'status',
+        cell: ({ row }) => {
+            const status = row.original.status;
+
+            const currentStatus =
+                (status.is_today && 'test') ||
+                (status.is_upcoming && 'Comming Soon') ||
+                (status.is_past && 'Past') ||
+                (status.is_scheduled && 'Sechduled');
+            return <div>{currentStatus}</div>;
         },
     },
     {
@@ -121,7 +215,6 @@ export default function PaperTable({ papers }: DataTableProps) {
 
     return (
         <div className="w-full">
-            <pre>{JSON.stringify(papers, null, 2)}</pre>
             <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter emails..."
@@ -201,6 +294,7 @@ export default function PaperTable({ papers }: DataTableProps) {
                     </Button>
                 </div>
             </div>
+            <pre>{JSON.stringify(papers, null, 2)}</pre>
         </div>
     );
 }

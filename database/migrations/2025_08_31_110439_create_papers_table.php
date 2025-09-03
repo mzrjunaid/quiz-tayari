@@ -18,7 +18,7 @@
                 $table->string('slug')->unique()->nullable(); // URL-friendly version
 
                 $table->string('title', 150);
-                $table->string('description')->nullable();
+                $table->text('description')->nullable();
                 $table->json('testing_services')->nullable();
                 $table->string('department', 150)->nullable();
                 $table->string('subject', 100)->nullable();
