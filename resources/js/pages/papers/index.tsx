@@ -18,12 +18,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Papers', href: '/papers' },
 ];
 
-export default function PapersIndex({ papers, filters, stats }: DataTableProps) {
+export default function PapersIndex({ papers, filters }: DataTableProps) {
     return (
-        <>
-            <DashboardLayout title="Papers" breadcrumbs={breadcrumbs}>
-                <PaperTable papers={papers} />
-            </DashboardLayout>
-        </>
+        <DashboardLayout title="Papers" breadcrumbs={breadcrumbs}>
+            <PaperTable papers={papers} filters={filters} />
+        </DashboardLayout>
     );
 }

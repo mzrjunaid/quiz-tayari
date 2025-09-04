@@ -133,7 +133,6 @@ export default function Edit({
               },
     });
 
-
     const currentQuestionType = form.watch('question_type');
     const currentSubject = form.watch('subject');
     const availableTopics = dynamicTopics.filter((topic) => topic.subject_id === currentSubject);
@@ -431,12 +430,8 @@ export default function Edit({
                                 subjects={subjects}
                                 availableTopics={availableTopics}
                                 currentSubject={currentSubject}
-                                newSubjectName={subject}
-                                newTopicName={topic}
                                 onAddNewSubject={handleAddNewSubject}
                                 onAddNewTopic={handleAddNewTopic}
-                                currentAffair={current_affair}
-                                generalKnowledge={general_knowledge}
                             />
 
                             {/* Tags and Exam Types Section */}

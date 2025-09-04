@@ -50,3 +50,15 @@ export const formSchema = z
             path: ['correct_answer'],
         },
     );
+
+export const paperSchema = z.object({
+    title: z.string().min(1, 'Title is required').min(10, 'Title must be at least 10 characters'),
+    description: z.string().optional(),
+    testing_services: z.object({
+        short: z.string().trim().min(2, 'Short must be at least 2 characters').max(15, { error: 'Short must be at most 15 characters' }),
+        long: z.string().trim().min(3, 'Long must be at least 3 characters').max(200, { error: 'Long must be at most 200 characters' }),
+    }),
+    department: z.string().min(3, 'Department must be at least 3 Character').optional(),
+    subject: z.string().min(3, 'Subject must be at least 3 Character'),
+    scheduled_at: z.string().min(1, 'Schedule date is required'),
+});

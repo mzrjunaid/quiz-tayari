@@ -10,13 +10,12 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Search } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
@@ -25,10 +24,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PaginatedData, Paper } from '@/types';
+import { Filters, PaginatedData, Paper, SerializableFilterValue } from '@/types';
+import { Link, router } from '@inertiajs/react';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface DataTableProps {
     papers: PaginatedData<Paper>;
+    filters: Filters;
 }
 
 export const columns: ColumnDef<Paper>[] = [
@@ -60,7 +62,7 @@ export const columns: ColumnDef<Paper>[] = [
                 <div className="uppercase">
                     {serviceShort}
                     <br />
-                    <span className="font-mono text-xs text-gray-500">long: {serviceLong}</span>
+                    <span className="font-mono text-xs text-gray-500">{serviceLong}</span>
                 </div>
             );
         },
@@ -154,7 +156,7 @@ export const columns: ColumnDef<Paper>[] = [
             const status = row.original.status;
 
             const currentStatus =
-                (status.is_today && 'test') ||
+                (status.is_today && 'Today') ||
                 (status.is_upcoming && 'Comming Soon') ||
                 (status.is_past && 'Past') ||
                 (status.is_scheduled && 'Sechduled');
@@ -178,6 +180,7 @@ export const columns: ColumnDef<Paper>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => navigator.clipboard.writeText(paper.id)}>Copy payment ID</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.get(`/papers/${row.original.slug}/edit`)}>Edit</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View customer</DropdownMenuItem>
                         <DropdownMenuItem>View payment details</DropdownMenuItem>
@@ -188,15 +191,58 @@ export const columns: ColumnDef<Paper>[] = [
     },
 ];
 
-export default function PaperTable({ papers }: DataTableProps) {
+export default function PaperTable({ papers, filters }: DataTableProps) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
+    const [pagination, setPagination] = React.useState({
+        pageIndex: papers.current_page - 1,
+        pageSize: papers.per_page,
+    });
+
+    const [searchValue, setSearchValue] = React.useState(filters?.search || '');
+
+    // Debounced search to avoid too many requests
+    const debouncedSearch = useDebouncedCallback((value: string) => {
+        updateFilters({ search: value || undefined });
+    }, 300);
+
+    // Update filters and navigate
+    const updateFilters = (newFilters: Partial<Record<keyof Filters, SerializableFilterValue>>) => {
+        const updatedFilters: Partial<Record<keyof Filters, SerializableFilterValue>> = { ...filters, ...newFilters };
+
+        // Remove values that would break Inertia's serialization
+        (Object.keys(updatedFilters) as Array<keyof Filters>).forEach((key) => {
+            const value = updatedFilters[key];
+            if (value === undefined || value === '' || (typeof value === 'number' && Number.isNaN(value))) {
+                delete updatedFilters[key];
+            }
+        });
+
+        // If page size changed, reset to first page
+        if ('per_page' in newFilters) {
+            updatedFilters.page = 1;
+            setPagination((prev) => ({
+                ...prev,
+                pageIndex: 0,
+                pageSize: newFilters.per_page as number,
+            }));
+        }
+
+        router.get('/papers', updatedFilters, {
+            only: ['papers', 'filters'],
+            preserveState: true,
+            replace: true,
+            preserveScroll: true,
+        });
+    };
+
     const table = useReactTable({
         data: papers.data,
         columns,
+        manualPagination: true, // Important: We handle pagination server-side
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -205,47 +251,49 @@ export default function PaperTable({ papers }: DataTableProps) {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
+        pageCount: papers.last_page,
+        onPaginationChange: setPagination, // Add this handler
         state: {
             sorting,
             columnFilters,
             columnVisibility,
             rowSelection,
+            pagination,
         },
     });
 
     return (
         <div className="w-full">
-            <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
-                    className="max-w-sm"
-                />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+            <div className="flex w-full items-center justify-between gap-3 py-4">
+                <div className="relative max-w-sm flex-1">
+                    <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search MCQs..."
+                        value={searchValue}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchValue(value);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                setSearchValue(e.currentTarget.value);
+                                debouncedSearch(e.currentTarget.value);
+                            }
+                        }}
+                        onBlur={(e) => {
+                            setSearchValue(e.currentTarget.value);
+                            debouncedSearch(e.currentTarget.value);
+                        }}
+                        className="pl-10"
+                    />
+                </div>
+                <div className="relative max-w-sm">
+                    <Button variant="default" asChild>
+                        <Link href={route('papers.create')} type="button">
+                            Add New
+                        </Link>
+                    </Button>
+                </div>
             </div>
             <div className="overflow-hidden rounded-md border">
                 <Table>

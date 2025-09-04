@@ -20,8 +20,8 @@ class Paper extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'slug',
         'title',
+        'slug',
         'description',
         'testing_services',
         'department',
@@ -155,14 +155,17 @@ class Paper extends Model
     }
 
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-    //     static::creating(function ($model) {
-    //         if (empty($model->id)) {
-    //             $model->id = (string) Str::uuid();
-    //         }
-    //     });
-    // }
+        static::creating(function ($paper) {
+            $paper->slug = $paper->generateUniqueSlug($paper->title);
+        });
+    }
+
+    private function generateUniqueSlug($title)
+    {
+        return Str::slug($title);
+    }
 }

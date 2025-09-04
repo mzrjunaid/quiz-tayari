@@ -130,59 +130,10 @@ class PaperController extends Controller
             ->sort()
             ->values();
 
-        // Get testing services from existing papers
-        $commonTestingServices = Paper::whereNotNull('testing_services')
-            ->get()
-            ->pluck('testing_services')
-            ->unique()
-            ->values()
-            ->filter() // Remove any null values
-            ->map(function ($service) {
-                return [
-                    'short' => $service['short'] ?? '',
-                    'long' => $service['long'] ?? '',
-                ];
-            })
-            ->sortBy('short')
-            ->values();
-
-        return Inertia::render('Papers/Create', [
-            'departments' => $departments,
-            'commonTestingServices' => $commonTestingServices,
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorePaperRequest $request)
-    {
-        $paper = Paper::create($request->validated());
-
-        return redirect()
-            ->route('papers.show', $paper)
-            ->with('success', 'Paper created successfully!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Paper $paper): Response
-    {
-        return Inertia::render('Papers/Show', [
-            'paper' => new PaperResource($paper),
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Paper $paper): Response
-    {
-        // Get departments from existing papers
-        $departments = Paper::whereNotNull('department')
+        // Get subjects from existing papers
+        $subjects = Paper::whereNotNull('subject')
             ->distinct()
-            ->pluck('department')
+            ->pluck('subject')
             ->sort()
             ->values();
 
@@ -202,8 +153,76 @@ class PaperController extends Controller
             ->sortBy('short')
             ->values();
 
-        return Inertia::render('Papers/Edit', [
+        return Inertia::render('papers/create', [
+            'departments' => $departments,
+            'subjects' => $subjects,
+            'commonTestingServices' => $commonTestingServices,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StorePaperRequest $request)
+    {
+
+        Paper::create($request->validated());
+
+        return redirect()
+            ->route('papers.index')
+            ->with('success', 'Paper created successfully!');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Paper $paper): Response
+    {
+        return Inertia::render('Papers/Show', [
             'paper' => new PaperResource($paper),
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Paper $paper): Response
+    {
+
+        // dd($paper);
+        // Get departments from existing papers
+        $departments = Paper::whereNotNull('department')
+            ->distinct()
+            ->pluck('department')
+            ->sort()
+            ->values();
+
+        // Get subjects from existing papers
+        $subjects = Paper::whereNotNull('subject')
+            ->distinct()
+            ->pluck('subject')
+            ->sort()
+            ->values();
+
+        // Get testing services from existing papers
+        $commonTestingServices = Paper::whereNotNull('testing_services')
+            ->get()
+            ->pluck('testing_services')
+            ->unique()
+            ->values()
+            ->filter() // Remove any null values
+            ->map(function ($service) {
+                return [
+                    'short' => $service['short'] ?? '',
+                    'long' => $service['long'] ?? '',
+                ];
+            })
+            ->sortBy('short')
+            ->values();
+
+        return Inertia::render('papers/edit', [
+            'paper' => (new PaperResource($paper))->resolve(),
+            'subjects' => $subjects,
             'departments' => $departments,
             'commonTestingServices' => $commonTestingServices,
         ]);
@@ -217,7 +236,7 @@ class PaperController extends Controller
         $paper->update($request->validated());
 
         return redirect()
-            ->route('papers.show', $paper)
+            ->route('papers.index')
             ->with('success', 'Paper updated successfully!');
     }
 
