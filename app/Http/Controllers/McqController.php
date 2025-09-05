@@ -406,6 +406,9 @@ class McqController extends Controller
         if (!$mcq) {
             abort(404);
         }
+
+        // dd($mcq);
+
         return Inertia::render('Mcqs/Show', [
             'mcq' => new McqResource($mcq),
         ]);

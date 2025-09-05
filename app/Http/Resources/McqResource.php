@@ -49,6 +49,9 @@ class McqResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'is_verified' => (bool) $this->is_verified,
 
+            // get paper Information
+            'paper' => new PaperResource($this->paper),
+
             // User Relationships (with safety checks)
             'created_by' => $this->getCreatedByUser(),
             'updated_by' => $this->getUpdatedByUser(),
@@ -120,6 +123,26 @@ class McqResource extends JsonResource
                 'email' => $this->updater->email,
             ];
         }) ?: ($this->updated_by ? ['id' => $this->updated_by] : null);
+    }
+
+    /**
+     * Get verified by user information
+     *
+     * @return array<string, mixed>|null
+     */
+
+    private function getMcqPaper(): ?array
+    {
+        return $this->whenLoaded('paper', function () {
+            return [
+                'id' => $this->paper->id,
+                'title' => $this->paper->title,
+                'department' => $this->paper->department,
+                'subject' => $this->paper->subject,
+                'testing_services' => $this->paper->testing_services,
+                'scheduled_at' => optional($this->paper->scheduled_at)->toDateTimeString(),
+            ];
+        });
     }
 
     /**

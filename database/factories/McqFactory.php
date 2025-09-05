@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Mcq;
+use App\Models\Paper;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -37,6 +38,11 @@ class McqFactory extends Factory
         ]);
 
         $correctAnswers = $this->generateCorrectAnswers($questionType, $correctLetter, $availableOptions);
+
+
+        $existingPapers = Paper::pluck('id')->toArray();
+        $paper = !empty($existingPapers) ? $this->faker->randomElement($existingPapers) : Paper::factory()->create()->id;
+
 
         // Get existing user IDs or create new ones
         $existingUserIds = User::pluck('id')->toArray();
@@ -75,6 +81,7 @@ class McqFactory extends Factory
             'topic' => $this->faker->words(rand(1, 2), true),
             'difficulty_level' => $this->faker->randomElement(['easy', 'medium', 'hard']),
             'question_type' => $questionType,
+            'paper_id' => $paper,
             'is_active' => $this->faker->boolean(90),
             'is_verified' => $this->faker->boolean(70),
             'created_by' => $createdBy,

@@ -41,6 +41,7 @@ class Mcq extends Model
         'is_verified',
         'tags',
         'exam_types',
+        'paper_id',
         'created_by',
         'updated_by'
 
@@ -56,6 +57,11 @@ class Mcq extends Model
         'general_knowledge' => 'boolean',
     ];
     // Relationships
+    public function paper(): BelongsTo
+    {
+        return $this->belongsTo(Paper::class, 'paper_id');
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

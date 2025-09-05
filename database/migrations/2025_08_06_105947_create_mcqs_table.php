@@ -58,6 +58,11 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_verified')->default(false)->index();
 
+
+            // Papers Information
+            $table->uuid('paper_id')->nullable();
+            $table->foreign('paper_id')->references('id')->on('papers')->onDelete('set null');
+
             // Creator and editor information
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Str;
@@ -38,6 +39,16 @@ class Paper extends Model
         'testing_services' => 'array',
         'scheduled_at' => 'datetime',
     ];
+
+    // MCQ Relationships
+
+    /**
+     * MCQs created by this user
+     */
+    public function paperMcqs(): HasMany
+    {
+        return $this->hasMany(Mcq::class, 'paper_id');
+    }
 
     /**
      * Get the testing service short name.

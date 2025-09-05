@@ -14,7 +14,7 @@ class PaperSeeder extends Seeder
     public function run(): void
     {
         // Clear existing papers (optional - comment out if you want to keep existing data)
-        Paper::truncate();
+        // Paper::truncate();
 
         // Create papers scheduled for today (5 papers)
         Paper::factory()

@@ -79,6 +79,7 @@ export interface Mcqs {
     verified_by: User;
     tags: string[];
     exam_types: string[];
+    paper: Paper;
     created_at_human: string;
     updated_at_human: string;
     created_at_datetime: string;
