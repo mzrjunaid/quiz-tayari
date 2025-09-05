@@ -106,7 +106,7 @@ export default function Show() {
                                     </ul>
                                     <div className="mt-4">
                                         <span className="font-bold text-blue-600">Correct Answer: </span>
-                                        {mcq.question_type !== 'multiple_correct' ? (
+                                        {mcq.question_type !== 'multiple' ? (
                                             <span>{mcq.correct_answer}</span>
                                         ) : (
                                             <>{mcq.correct_answers?.map((answer, i) => <span key={i}>"{answer}"</span>)}</>

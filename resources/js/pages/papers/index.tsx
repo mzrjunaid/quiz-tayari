@@ -14,8 +14,8 @@ interface DataTableProps {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Papers', href: '/papers' },
+    { title: 'Dashboard', href: route('dashboard') },
+    { title: 'Papers', href: route('papers.index') },
 ];
 
 export default function PapersIndex({ papers, filters }: DataTableProps) {

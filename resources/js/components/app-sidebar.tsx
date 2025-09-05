@@ -3,43 +3,38 @@ import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, List, Paperclip, ScrollText } from 'lucide-react';
+import { BookOpen, LayoutGrid, List, Paperclip, ScrollText, Trash } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavUser } from './nav-user';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
     },
     {
         title: 'MCQs Rephrase',
-        href: '/rephrase',
+        href: route('rephrase.index'),
         icon: ScrollText,
     },
     {
         title: 'Papers',
-        href: '/papers',
+        href: route('papers.index'),
         icon: Paperclip,
     },
     {
         title: 'MCQs',
-        href: '/mcqs',
+        href: route('mcqs.index'),
         icon: List,
-    },
-    {
-        title: 'Deleted MCQs',
-        href: '/deleted/mcqs',
-        icon: Folder,
     },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'MCQs - Trash Bin',
+        href: route('mcqs.trashbin'),
+        icon: Trash,
     },
     {
         title: 'Documentation',
