@@ -109,6 +109,7 @@ export default function Edit({
                   language: 'en',
 
                   is_rephrased_added: isRephrasedAdded,
+                  oldMcq_id: String(mcq.q_id),
               }
             : {
                   question: '',
@@ -130,6 +131,7 @@ export default function Edit({
                   current_affair: false,
                   general_knowledge: false,
                   is_rephrased_added: false,
+                  oldMcq_id: '',
               },
     });
 
@@ -147,6 +149,9 @@ export default function Edit({
             setShowAddTag(false);
         }
     };
+
+    console.log(form.formState);
+    console.log(form.formState.errors);
 
     const addNewExamType = () => {
         if (newExamTypeName.trim()) {
@@ -432,6 +437,8 @@ export default function Edit({
                                 currentSubject={currentSubject}
                                 onAddNewSubject={handleAddNewSubject}
                                 onAddNewTopic={handleAddNewTopic}
+                                subject={subject}
+                                topic={topic}
                             />
 
                             {/* Tags and Exam Types Section */}

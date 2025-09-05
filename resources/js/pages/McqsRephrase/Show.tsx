@@ -5,6 +5,10 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Edit, RotateCcw } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
     { title: 'MCQs List', href: '/rephrase' },
     { title: 'Mcqs Rephrase', href: '/show' },
 ];

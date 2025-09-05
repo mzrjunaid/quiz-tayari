@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formSchema } from '@/types/zodSchema';
 import { PlusCircle, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
@@ -16,6 +16,7 @@ interface ClassificationSectionProps {
     form: UseFormReturn<FormValues>;
     subjects: Array<{ id: string; name: string }>;
     subject?: string;
+    topic?: string;
     availableTopics: Array<{ id: string; name: string; subject_id: string }>;
     currentSubject: string;
     onAddNewSubject?: (name: string) => void;
@@ -25,6 +26,8 @@ interface ClassificationSectionProps {
 export function ClassificationSection({
     form,
     subjects,
+    subject,
+    topic,
     availableTopics,
     currentSubject,
     onAddNewSubject,
@@ -36,6 +39,31 @@ export function ClassificationSection({
     const [manualTopicName, setManualTopicName] = useState('');
     const [addedSubject, setAddedSubject] = useState<{ id: string; name: string } | null>(null);
     const [addedTopic, setAddedTopic] = useState<{ id: string; name: string } | null>(null);
+
+    useEffect(() => {
+        if (subject && topic) {
+            // If we have both new values, set them and mark fields as validated
+            const newSubjectId = subject; // Use the name itself as ID
+
+            form.clearErrors(['subject', 'topic']); // Clear any existing errors
+
+            // Set the values synchronously
+            form.setValue('subject', newSubjectId, {
+                shouldValidate: true,
+                shouldDirty: true,
+                shouldTouch: true,
+            });
+
+            form.setValue('topic', topic, {
+                shouldValidate: true,
+                shouldDirty: true,
+                shouldTouch: true,
+            });
+
+            // Manually trigger validation
+            form.trigger(['subject', 'topic']);
+        }
+    }, [subject, topic, form]);
 
     const handleAddSubject = () => {
         if (manualSubjectName.trim() && onAddNewSubject) {
@@ -71,7 +99,6 @@ export function ClassificationSection({
     return (
         <div className="space-y-4">
             <h3 className="text-lg font-medium">Classification</h3>
-
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                     <FormField
@@ -97,6 +124,7 @@ export function ClassificationSection({
                                                         <SelectValue>
                                                             {addedSubject?.name ||
                                                                 subjects.find((s) => s.id === field.value)?.name ||
+                                                                field.value ||
                                                                 'Select subject'}
                                                         </SelectValue>
                                                     </SelectTrigger>
@@ -152,6 +180,7 @@ export function ClassificationSection({
                                                         <SelectValue>
                                                             {addedTopic?.name ||
                                                                 availableTopics.find((t) => t.id === field.value)?.name ||
+                                                                field.value ||
                                                                 'Select topic'}
                                                         </SelectValue>
                                                     </SelectTrigger>

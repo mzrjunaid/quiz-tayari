@@ -99,11 +99,7 @@ export const columns: ColumnDef<Mcqs>[] = [
             const handleDelete = () => {
                 const slug = row.original.slug;
                 router.delete(`/mcqs/${slug}`, {
-                    preserveState: true,
                     replace: true,
-                    onError: (e) => {
-                        console.log(e);
-                    },
                 });
             };
             return (
@@ -116,7 +112,7 @@ export const columns: ColumnDef<Mcqs>[] = [
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Are you sure to delete the following question?</DialogTitle>
-                            <DialogDescription>This action cannot be undone.</DialogDescription>
+                            <DialogDescription>This MCQ will be moved to Trash.</DialogDescription>
                         </DialogHeader>
                         <div className="px-2 py-4">{row.original.question}</div>
                         <DialogFooter>
@@ -168,20 +164,6 @@ export const columns: ColumnDef<Mcqs>[] = [
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>Mark as Verified</DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Dialog>
-                                <DialogTrigger>Open</DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                        <DialogDescription>
-                                            This action cannot be undone. This will permanently delete your account and remove your data from our
-                                            servers.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
@@ -190,6 +172,10 @@ export const columns: ColumnDef<Mcqs>[] = [
 ];
 
 const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
     {
         title: 'MCQs',
         href: 'mcqs',

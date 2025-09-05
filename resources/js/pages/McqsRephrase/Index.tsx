@@ -87,8 +87,16 @@ export const columns: ColumnDef<OldMcqs>[] = [
     },
     {
         accessorKey: 'right_choice',
-        header: () => <div className="capitalize">Right</div>,
+        header: () => <div className="capitalize">Right Answer</div>,
         cell: ({ row }) => <div className="max-w-xs break-words whitespace-normal capitalize">{row.getValue('right_choice')}</div>,
+    },
+    {
+        accessorKey: 'is_rephrased',
+        header: () => <div className="capitalize">Rephrased</div>,
+        cell: ({ row }) => {
+            const rephrase_status = row.original.is_rephrased;
+            return <div className="max-w-xs text-center break-words whitespace-normal capitalize">{rephrase_status ? 'Yes' : 'No'}</div>;
+        },
     },
     {
         id: 'actions',
@@ -119,6 +127,10 @@ export const columns: ColumnDef<OldMcqs>[] = [
 ];
 
 const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
     {
         title: 'Mcqs List',
         href: 'rephrase',

@@ -45,6 +45,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::group(['prefix' => 'deleted'], function () {
         Route::get('/mcqs', [McqController::class, 'deleted'])->name('deleted.mcqs');
+        Route::get('/{id}/restore', [McqController::class, 'restore'])->name('mcqs.restore');
+        Route::get('/{id}/delete-permanently', [McqController::class, 'forceDelete'])->name('mcqs.delete-permanently');
     });
 
     Route::resource('papers', \App\Http\Controllers\PaperController::class);

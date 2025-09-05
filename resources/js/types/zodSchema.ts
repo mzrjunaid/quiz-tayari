@@ -25,6 +25,7 @@ export const formSchema = z
         general_knowledge: z.boolean().optional(),
         language: z.enum(['en', 'ur']).optional(),
         is_rephrased_added: z.boolean().optional(),
+        oldMcq_id: z.string().optional(),
     })
     .refine(
         (data) => {

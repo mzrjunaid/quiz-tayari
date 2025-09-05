@@ -6,6 +6,7 @@ use App\Models\Mcq;
 use App\Models\McqsRephrase;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -18,7 +19,7 @@ class McqsRephraseController extends Controller
     public function index()
     {
 
-        $data = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'created_at')->paginate(50)->withQueryString();; // Ensure 'all' method is used to retrieve all records
+        $data = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'created_at', 'is_rephrased')->paginate(50)->withQueryString();; // Ensure 'all' method is used to retrieve all records
 
         // Return the view with the MCQs data
         return Inertia::render('McqsRephrase/Index', [
@@ -26,6 +27,26 @@ class McqsRephraseController extends Controller
         ]);
     }
 
+    /**
+     * Change Status of Rephrased
+     */
+
+    public function markAsRephrased($oldMcq_id)
+    {
+        try {
+            // Connect to your different database
+            DB::connection('pace_mcqs')
+                ->table('add_question')
+                ->where('q_id', $oldMcq_id)
+                ->update([
+                    'is_rephrased' => 1,
+                ]);
+
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */

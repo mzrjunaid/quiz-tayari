@@ -284,8 +284,6 @@ class McqController extends Controller
 
     public function store(StoreMcqRequest $request)
     {
-
-        // validate the request
         $validated = $request->getProcessedData();
 
         DB::beginTransaction();
@@ -318,52 +316,13 @@ class McqController extends Controller
                 'updated_by' => Auth::id(),
             ];
 
-            // // write mock data
-            // $mcqData = [
-            //     'slug' => 'testing-question',
-            //     'question' => 'Testing Question',
-            //     'explanation' => 'explaination testing',
-            //     'option_a' => 'A',
-            //     'option_b' => 'B',
-            //     'option_c' => 'C',
-            //     'option_d' => 'D',
-            //     'option_e' => null,
-            //     'correct_answer' => 'C',
-            //     'correct_answers' => json_encode(['C']),  // Encode arrays
-            //     'subject' => 'General Knowledge',  // Change to single value
-            //     'topic' => 'topic',  // Change to single value
-            //     'difficulty_level' => 'easy',
-            //     'question_type' => 'single',
-            //     'is_active' => true,
-            //     'is_verified' => false,
-            //     'created_by' => Auth::id(),  // Use Auth::id() instead of hardcoded value
-            //     'updated_by' => Auth::id(),
-            //     'tags' => json_encode([  // Encode arrays
-            //         'mathematics',
-            //         'science',
-            //         'history'
-            //     ]),
-            //     'exam_types' => json_encode([  // Encode arrays
-            //         'ppsc',
-            //         'fpsc',
-            //         'nts'
-            //     ]),
-            //     'language' => 'en',
-            // ];
 
-
-
-            // dd('herer');
             $mcq = Mcq::create($mcqData);
 
             DB::commit();
 
-            // Add this debug statement
-            dd([
-                'status' => 'success',
-                'mcq' => $mcq->toArray(),
-                'redirect' => route('mcqs.index')
-            ]);
+            $rephraseController = app(McqsRephraseController::class);
+            $rephraseController->markAsRephrased($request->oldMcq_id);
 
             return redirect()
                 ->route('mcqs.index')
@@ -425,8 +384,93 @@ class McqController extends Controller
         if (!$mcq) {
             abort(404);
         }
+
+        // Get unique subjects
+        $subjects = Mcq::select('subject')
+            ->distinct()
+            ->whereNotNull('subject')
+            ->where('subject', '!=', '')
+            ->orderBy('subject')
+            ->pluck('subject')
+            ->map(function ($subject) {
+                return [
+                    'id' => $subject,
+                    'name' => $subject
+                ];
+            });
+
+        // Get unique topics with their subjects
+        $topics = Mcq::select('topic', 'subject')
+            ->distinct()
+            ->whereNotNull('topic')
+            ->where('topic', '!=', '')
+            ->orderBy('topic')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->topic,
+                    'name' => $item->topic,
+                    'subject_id' => $item->subject
+                ];
+            });
+
+        // Handle tags (assuming they're stored as JSON or comma-separated)
+        $tags = collect();
+        Mcq::select('tags')
+            ->distinct()
+            ->whereNotNull('tags')
+            ->where('tags', '!=', '')
+            ->get()
+            ->each(function ($item) use ($tags) {
+                $this->processTags($item->tags, $tags);
+            });
+
+        // Remove duplicates and format for frontend
+        $tags = $tags->unique()
+            ->sort()
+            ->values()
+            ->map(function ($tag) {
+                return [
+                    'id' => $tag,
+                    'name' => $tag,
+                ];
+            });
+
+        // Handle exam_types (assuming they're stored as JSON or comma-separated)
+        $examTypes = collect();
+        Mcq::select('exam_types')
+            ->distinct()
+            ->whereNotNull('exam_types')
+            ->where('exam_types', '!=', '')
+            ->get()
+            ->each(function ($item) use ($examTypes) {
+                $this->processTags($item->exam_types, $examTypes);
+            });
+
+        // Remove duplicates and format for frontend
+        $examTypes = $examTypes->unique()
+            ->sort()
+            ->values()
+            ->map(function ($examType) {
+                return [
+                    'id' => $examType,
+                    'name' => $examType,
+                ];
+            });
+
+
         return Inertia::render('Mcqs/Edit', [
             'mcq' => new McqResource($mcq),
+            'subjects' => $subjects,
+            'topics' => $topics,
+            'tags' => $tags,
+            'exam_types' => $examTypes,
+            'questionTypes' => [
+                ['id' => 1, 'name' => 'Single Answer', 'value' => 'single'],
+                ['id' => 2, 'name' => 'Multiple Answer', 'value' => 'multiple'],
+                ['id' => 3, 'name' => 'True/False', 'value' => 'true_false'],
+                ['id' => 4, 'name' => 'Single Answer (A only)', 'value' => 'single_a'],
+            ],
         ]);
     }
 
@@ -533,9 +577,20 @@ class McqController extends Controller
             $field = $validated['field'];
             $value = $validated['value'];
 
-            $mcq->update([
-                'is_verified' => $value
-            ]);
+            $user = Auth::id();
+
+            $updateToggle = [
+                'is_verified' => $value,
+            ];
+
+            // Only update verified_by when toggling is_verified
+            if ($field === 'is_verified') {
+                $updateToggle['verified_by'] = $value ? $user : null; // Set to user if verified, null if unverified
+            }
+
+            // dd($updateToggle);
+
+            $mcq->update($updateToggle);
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
@@ -616,6 +671,25 @@ class McqController extends Controller
                 'page' => $deletedMcqs->currentPage(),
             ],
         ]);
+    }
+
+    public function forceDelete($id)
+    {
+        $mcq = Mcq::onlyTrashed()->findOrFail($id);
+        $mcq->forceDelete();
+
+        return redirect()->route('deleted.mcqs')
+            ->with('message', 'Mcq restored successfully');
+    }
+
+    // Restore soft deleted user
+    public function restore($id)
+    {
+        $mcq = Mcq::onlyTrashed()->findOrFail($id);
+        $mcq->restore();
+
+        return redirect()->route('mcqs.index')
+            ->with('message', 'Mcq restored successfully');
     }
 
 

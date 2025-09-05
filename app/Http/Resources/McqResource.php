@@ -52,6 +52,11 @@ class McqResource extends JsonResource
             // get paper Information
             'paper' => new PaperResource($this->paper),
 
+            // mcq categoriezation
+            'current_affair' => (bool) $this->current_affair,
+            'general_knowledge' => (bool) $this->general_knowledge,
+            'language' => $this->language,
+
             // User Relationships (with safety checks)
             'created_by' => $this->getCreatedByUser(),
             'updated_by' => $this->getUpdatedByUser(),

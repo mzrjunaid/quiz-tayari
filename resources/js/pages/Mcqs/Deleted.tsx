@@ -18,13 +18,17 @@ import { ArrowUpDown } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
+    {
         title: 'Deleted MCQs',
         href: '/deleted/mcqs',
     },
 ];
 
 interface Props {
-    mcqs: PaginatedData;
+    mcqs: PaginatedData<Mcqs>;
     filters: Filters;
 }
 
@@ -78,46 +82,49 @@ export const columns: ColumnDef<Mcqs>[] = [
         cell: ({ row }) => <div>{row.getValue('is_verified') ? 'Yes' : 'No'}</div>,
     },
     {
-        id: 'Remove',
-        header: () => <div className="capitalize">Remove</div>,
+        id: 'permanent',
+        header: () => <div className="capitalize">Remove Permanently</div>,
         cell: ({ row }) => {
+            const id = row.original.id;
+            const handleRestore = () => {
+                router.get(route('mcqs.restore', id));
+            };
+
             const handleDelete = () => {
-                const slug = row.original.slug;
-                router.delete(`/mcqs/${slug}`, {
-                    preserveState: true,
-                    replace: true,
-                    onError: (e) => {
-                        console.log(e);
-                    },
-                });
+                router.get(route('mcqs.delete-permanently', id));
             };
             return (
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="destructive" size="sm">
-                            Delete
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Are you sure to delete the following question?</DialogTitle>
-                            <DialogDescription>This action cannot be undone.</DialogDescription>
-                        </DialogHeader>
-                        <div className="px-2 py-4">{row.original.question}</div>
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button variant="outline" onClick={() => router.cancel()}>
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-                                <Button type="submit" variant="destructive" onClick={() => handleDelete()}>
-                                    Yes, Delete
-                                </Button>
-                            </DialogClose>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                <div className="flex flex-row gap-2">
+                    <Button variant="default" onClick={() => handleRestore()} size="sm">
+                        Restore
+                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                                Delete Permanently
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Are you sure to delete the following question, permanently?</DialogTitle>
+                                <DialogDescription>This action cannot be undone.</DialogDescription>
+                            </DialogHeader>
+                            <div className="px-2 py-4">{row.original.question}</div>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button variant="outline" onClick={() => router.cancel()}>
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                    <Button type="submit" variant="default" onClick={() => handleDelete()}>
+                                        Delete
+                                    </Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             );
         },
         enableSorting: false,

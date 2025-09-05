@@ -43,8 +43,8 @@ class Mcq extends Model
         'exam_types',
         'paper_id',
         'created_by',
-        'updated_by'
-
+        'updated_by',
+        'verified_by'
     ];
 
     protected $casts = [

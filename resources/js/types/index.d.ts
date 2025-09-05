@@ -51,6 +51,7 @@ export interface OldMcqs {
     option_D: string;
     right_choice: string;
     created_at: string;
+    is_rephrased: string;
 }
 
 export interface Mcqs {
@@ -70,10 +71,13 @@ export interface Mcqs {
     correct_answers: string[];
     subject: string;
     topic: string;
-    difficulty_level: string;
-    question_type: string;
+    difficulty_level: 'easy' | 'medium' | 'hard' | undefined;
+    question_type: 'single' | 'multiple' | 'true_false' | 'single_a' | undefined;
+    language: 'en' | 'ur' | undefined;
     is_active: boolean;
     is_verified: boolean;
+    current_affair: boolean;
+    general_knowledge: boolean;
     created_by: User;
     updated_by: User;
     verified_by: User;
