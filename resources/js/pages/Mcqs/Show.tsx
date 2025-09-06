@@ -5,29 +5,30 @@ import AppLayout from '@/layouts/app-layout';
 import { statusColors } from '@/lib/recordUtils';
 import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
+import { truncate } from 'lodash';
 import { Edit, Share } from 'lucide-react';
 import { useState } from 'react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'MCQs List',
-        href: '/mcqs',
-    },
-    {
-        title: 'MCQ',
-        href: '/show',
-    },
-];
 
 export default function Show() {
     const { mcq, error } = usePage().props as {
         mcq?: Mcqs;
         error?: string;
     };
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: route('dashboard'),
+        },
+        {
+            title: 'MCQs List',
+            href: route('mcqs.index'),
+        },
+        {
+            title: truncate(mcq?.question) || 'MCQ',
+            href: route('mcqs.show', mcq?.id),
+        },
+    ];
+
     const [publish, setPublish] = useState(mcq?.is_verified);
 
     const handleRephrase = () => {
@@ -71,7 +72,8 @@ export default function Show() {
                 <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
                     <div className="mb-4 items-center justify-between md:flex">
                         <h1 className="relative mb-4 text-2xl font-semibold md:mb-0">
-                            Status: {mcq && <span className={`ms-2 rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>}
+                            Status:{' '}
+                            {mcq && <span className={`ms-2 rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>}
                         </h1>
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
                             <div className="flex items-center space-x-2">

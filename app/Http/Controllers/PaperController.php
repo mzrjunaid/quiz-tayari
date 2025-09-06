@@ -103,7 +103,7 @@ class PaperController extends Controller
             return $paper;
         });
 
-        return Inertia::render('papers/index', [
+        return Inertia::render('Papers/Index', [
             'papers' => PaperResource::collection($papers),
             'filters' => $request->only(['search', 'department', 'subject', 'testing_service', 'status']),
             'sort' => [
@@ -153,7 +153,7 @@ class PaperController extends Controller
             ->sortBy('short')
             ->values();
 
-        return Inertia::render('papers/create', [
+        return Inertia::render('Papers/Create', [
             'departments' => $departments,
             'subjects' => $subjects,
             'commonTestingServices' => $commonTestingServices,
@@ -178,8 +178,12 @@ class PaperController extends Controller
      */
     public function show(Paper $paper): Response
     {
+        // $paper = Paper::findOrFail($id);
+
+        // dd($paper);
+
         return Inertia::render('Papers/Show', [
-            'paper' => new PaperResource($paper),
+            'paper' => (new PaperResource($paper))->resolve(),
         ]);
     }
 

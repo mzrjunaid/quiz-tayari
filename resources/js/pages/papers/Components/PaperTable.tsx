@@ -34,7 +34,13 @@ export const columns: ColumnDef<Paper>[] = [
     {
         accessorKey: 'title',
         header: 'Paper',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('title')}</div>,
+        cell: ({ row }) => (
+            <div className="capitalize">
+                <Button variant="link" asChild>
+                    <Link href={route('papers.show', row.original.slug)}>{row.getValue('title')}</Link>
+                </Button>
+            </div>
+        ),
     },
     {
         accessorKey: 'testing_services',
@@ -159,28 +165,12 @@ export const columns: ColumnDef<Paper>[] = [
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
-            // const paper = row.original;
-
-            // <DropdownMenu>
-            //         <DropdownMenuTrigger asChild>
-            //             <Button variant="ghost" className="h-8 w-8 p-0">
-            //                 <span className="sr-only">Open menu</span>
-            //                 <MoreHorizontal />
-            //             </Button>
-            //         </DropdownMenuTrigger>
-            //         <DropdownMenuContent align="end">
-            //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            //             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(paper.id)}>Copy ID</DropdownMenuItem>
-            //             <DropdownMenuItem onClick={() => router.get(`/papers/${row.original.slug}/edit`)}>Edit</DropdownMenuItem>
-            //         </DropdownMenuContent>
-            //     </DropdownMenu>
-
             return (
                 <div className="flex flex-row">
                     {/* <Button variant="link" onClick={() => navigator.clipboard.writeText(row.original.id)}>
                         <Copy />
                     </Button> */}
-                    <Button variant="link" onClick={() => navigator.clipboard.writeText(route('papers.show', row.original.id))}>
+                    <Button variant="link" onClick={() => navigator.clipboard.writeText(route('papers.show', row.original.slug))}>
                         <Copy />
                     </Button>
                     <Button variant="link" onClick={() => router.get(`/papers/${row.original.slug}/edit`)}>

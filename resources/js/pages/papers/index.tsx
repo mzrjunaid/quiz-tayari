@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
 import { BreadcrumbItem, Filters, PaginatedData, Paper } from '@/types';
-import PaperTable from './components/paper-table';
+import PaperTable from './Components/PaperTable';
 
 interface DataTableProps {
     papers: PaginatedData<Paper>;

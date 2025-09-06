@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Quiz Tayari',
+        title: 'Homepage',
         href: '/',
     },
 ];
@@ -15,7 +15,7 @@ export default function Welcome() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Quiz Tayari">
+            <Head title="Homepage">
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />

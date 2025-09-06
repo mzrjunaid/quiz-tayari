@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\McqController;
 use App\Http\Controllers\McqsRephraseController;
+use App\Http\Controllers\PaperController;
 use App\Http\Controllers\SampleQuiz;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -49,7 +50,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}/delete-permanently', [McqController::class, 'forceDelete'])->name('mcqs.delete-permanently');
     });
 
-    Route::resource('papers', \App\Http\Controllers\PaperController::class);
+    // Route::resource('papers', \App\Http\Controllers\PaperController::class);
+    Route::group(['prefix' => 'papers'], function () {
+        Route::get('/', [PaperController::class, 'index'])->name('papers.index');
+        Route::get('/create', [PaperController::class, 'create'])->name('papers.create');
+        Route::get('/{paper}', [PaperController::class, 'show'])->name('papers.show');
+        Route::get('/{paper}/edit', [PaperController::class, 'edit'])->name('papers.edit');
+    });
 });
 
 require __DIR__ . '/settings.php';
