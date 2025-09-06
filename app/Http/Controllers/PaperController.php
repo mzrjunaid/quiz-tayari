@@ -224,7 +224,7 @@ class PaperController extends Controller
             ->sortBy('short')
             ->values();
 
-        return Inertia::render('papers/edit', [
+        return Inertia::render('Papers/Edit', [
             'paper' => (new PaperResource($paper))->resolve(),
             'subjects' => $subjects,
             'departments' => $departments,

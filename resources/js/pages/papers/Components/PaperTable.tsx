@@ -10,9 +10,10 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, Copy, Edit, Search } from 'lucide-react';
+import { ArrowUpDown, Edit, Search, Trash } from 'lucide-react';
 import * as React from 'react';
 
+import ButtonTooltip from '@/components/button-tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -166,16 +167,22 @@ export const columns: ColumnDef<Paper>[] = [
         enableHiding: false,
         cell: ({ row }) => {
             return (
-                <div className="flex flex-row">
+                <div className="flex flex-row gap-2">
                     {/* <Button variant="link" onClick={() => navigator.clipboard.writeText(row.original.id)}>
                         <Copy />
                     </Button> */}
-                    <Button variant="link" onClick={() => navigator.clipboard.writeText(route('papers.show', row.original.slug))}>
-                        <Copy />
-                    </Button>
-                    <Button variant="link" onClick={() => router.get(`/papers/${row.original.slug}/edit`)}>
-                        <Edit />
-                    </Button>
+
+                    <ButtonTooltip text="Edit">
+                        <Link href={route('papers.show', row.original.slug)}>
+                            <Edit className="size-4" />
+                        </Link>
+                    </ButtonTooltip>
+
+                    <ButtonTooltip text="Delete">
+                        <Link href={route('papers.delete', row.original.slug)}>
+                            <Trash className="size-4" />
+                        </Link>
+                    </ButtonTooltip>
                 </div>
             );
         },

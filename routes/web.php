@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/create', [PaperController::class, 'create'])->name('papers.create');
         Route::get('/{paper}', [PaperController::class, 'show'])->name('papers.show');
         Route::get('/{paper}/edit', [PaperController::class, 'edit'])->name('papers.edit');
+        Route::get('/{paper}/delete', [PaperController::class, 'destroy'])->name('papers.delete');
     });
 });
 
