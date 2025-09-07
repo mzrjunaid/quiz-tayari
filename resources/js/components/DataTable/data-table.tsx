@@ -107,7 +107,7 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
         setSearchValue('');
         setActiveFilter('');
         setVerifiedFilter('');
-        router.get(url, {}, { preserveState: true, replace: true });
+        router.get(url, {}, { only: ['mcqs', 'filters', 'stats'], preserveState: true, replace: true });
     };
 
     // Initialize sorting from URL

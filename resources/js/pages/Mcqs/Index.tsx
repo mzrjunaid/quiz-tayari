@@ -159,7 +159,7 @@ export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
                     </Button>
                 </div>
             </div>
-            <DataTable mcqs={mcqs} columns={columns} filters={filters} url="/mcqs" stats={stats} />
+            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.index')} stats={stats} />
         </DashboardLayout>
     );
 }

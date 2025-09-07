@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMcqRequest;
 use App\Http\Resources\McqResource;
 use App\Models\Mcq;
+use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -444,8 +445,12 @@ class McqController extends Controller
             $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
             return $mcq;
         });
+
+        $papers = Paper::query()->select(['id', 'title'])->get();
+
         return Inertia::render('Mcqs/AssignPaper', [
-            'mcqs' => $mcqs,
+            'mcqs' =>  $mcqs,
+            'papers' => $papers,
             'filters' => [
                 'search' => $search,
                 'is_active' => $isActive,
