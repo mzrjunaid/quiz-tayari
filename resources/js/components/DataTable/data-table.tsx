@@ -12,9 +12,7 @@ import { useMemo, useState } from 'react';
 import { useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { statusRecord, verificationRecord } from '@/lib/recordUtils';
 import { X } from 'lucide-react';
 
 export interface DataTableProps {
@@ -90,6 +88,8 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
     };
 
     const handleSortChange = (sortBy: string, sortOrder: 'asc' | 'desc') => {
+        console.log(sortBy);
+        console.log(sortOrder);
         updateFilters({ sort_by: sortBy, sort_order: sortOrder });
     };
 
@@ -239,72 +239,17 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                         </Button>
                     )}
                 </div>
-
-                {/* Column Visibility */}
-                {/* <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                            Columns <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {column.id}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                    </DropdownMenuContent>
-                </DropdownMenu> */}
             </div>
 
             {/* Active Filters Display */}
-            {hasActiveFilters && (
+            {/* {hasActiveFilters && (
                 <div className="mt-2 flex flex-wrap gap-2">
                     {searchValue && <Badge variant="secondary">Search: {searchValue}</Badge>}
                     {activeFilter && <Badge variant="secondary">Status: {statusRecord[activeFilter]}</Badge>}
                     {verifiedFilter && <Badge variant="secondary">Verified: {verificationRecord[verifiedFilter]}</Badge>}
                 </div>
-            )}
-            {/* <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filter mcq"
-                    defaultValue={(table.getColumn('question')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('question')?.setFilterValue(event.target.value)}
-                    className="max-w-sm"
-                />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div> */}
+            )} */}
+
             <div className="mt-4 overflow-hidden rounded-md border">
                 <Table>
                     <TableHeader>
@@ -339,52 +284,6 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                     </TableBody>
                 </Table>
             </div>
-            {/* <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
-                <div className="space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => handlePageChange(mcqs.current_page - 1)} disabled={mcqs.current_page <= 1}>
-                        Previous
-                    </Button>
-                    <span className="text-sm">
-                        {mcqs.current_page} of {mcqs.last_page}
-                    </span>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(mcqs.current_page + 1)}
-                        disabled={mcqs.current_page >= mcqs.last_page}
-                    >
-                        Next
-                    </Button>
-                </div>
-                <div>
-                    <Input
-                        type="number"
-                        placeholder="Go to Page"
-                        min={1}
-                        max={mcqs.last_page}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                const pageIndex = Number((e.target as HTMLInputElement).value);
-                                if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
-                                    handlePageChange(pageIndex);
-                                }
-                            }
-                        }}
-                        onBlur={(e) => {
-                            const pageIndex = Number(e.target.value);
-                            if (pageIndex >= 1 && pageIndex <= mcqs.last_page) {
-                                handlePageChange(pageIndex);
-                            } else {
-                                e.target.value = String(mcqs.current_page); // Reset to current page if invalid
-                            }
-                        }}
-                        className="w-24"
-                    />
-                </div>
-            </div> */}
 
             {/* Pagination */}
             <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

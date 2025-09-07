@@ -27,7 +27,7 @@ class McqController extends Controller
             'search' => 'nullable|string|max:255', // Optional search string
             'is_active' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
             'is_verified' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
-            'sort_by' => 'nullable|string|in:created_at,updated_at,name,id', // Allowed sort fields
+            'sort_by' => 'nullable|string|in:created_at,updated_at,question,id', // Allowed sort fields
             'sort_order' => 'nullable|in:asc,desc', // Allowed sort orders
             'per_page' => 'nullable|integer|min:1|max:100', // Pagination limit
         ]);
@@ -62,6 +62,7 @@ class McqController extends Controller
                 'option_b',
                 'option_c',
                 'option_d',
+                'option_e',
                 'correct_answer',
                 'is_active',
                 'is_verified',
@@ -281,7 +282,6 @@ class McqController extends Controller
         }
     }
 
-
     public function store(StoreMcqRequest $request)
     {
         $validated = $request->getProcessedData();
@@ -352,6 +352,116 @@ class McqController extends Controller
                     'message' => 'Failed to create MCQ: ' . $e->getMessage()
                 ]);
         }
+    }
+
+    /**
+     * Assign Papers
+     */
+
+    public function assignPaper(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'search' => 'nullable|string|max:255', // Optional search string
+            'is_active' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
+            'is_verified' => 'nullable|in:0,1,all', // Must be '0', '1', or 'all'
+            'sort_by' => 'nullable|string|in:created_at,updated_at,question,id', // Allowed sort fields
+            'sort_order' => 'nullable|in:asc,desc', // Allowed sort orders
+            'per_page' => 'nullable|integer|min:1|max:100', // Pagination limit
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422); // Unprocessable Entity
+        }
+
+        // Get filter parameters
+        $search = $request->get('search');
+        $isActive = $request->get('is_active');
+        $isVerified = $request->get('is_verified');
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $perPage = $request->get('per_page', 10);
+
+        // Validate sort parameters
+        $allowedSorts = ['id', 'question', 'created_at', 'is_active', 'is_verified'];
+        $sortBy = in_array($sortBy, $allowedSorts) ? $sortBy : 'created_at';
+        $sortOrder = in_array($sortOrder, ['asc', 'desc']) ? $sortOrder : 'desc';
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? $perPage : 10;
+
+        $mcqs = Mcq::query()
+            ->select([
+                'id',
+                'slug',
+                'question',
+                'is_active',
+                'is_verified',
+                'created_at',
+            ])
+            // Search filter
+            ->when($search, function ($query, $search) {
+                $columns = ['question', 'option_a', 'option_b', 'option_c', 'option_d'];
+
+                $query->whereIn('id', function ($subQuery) use ($search, $columns) {
+                    $subQuery->select('id')->from('mcqs');
+
+                    foreach ($columns as $column) {
+                        $subQuery->orWhere($column, 'LIKE', "%{$search}%");
+                    }
+                });
+            })
+
+            // Active status filter
+            ->when($isActive !== 'all', function ($query) use ($isActive) {
+                if ($isActive !== null) {
+                    $query->where('is_active', $isActive === '1');
+                }
+            })
+
+            // Verified status filter
+            ->when($isVerified !== 'all', function ($query) use ($isVerified) {
+                if ($isVerified !== null) {
+                    $query->where('is_verified', $isVerified === '1');
+                }
+            })
+
+            // Sorting
+            ->orderBy($sortBy, $sortOrder)
+            // Secondary sort for consistency
+            ->when($sortBy !== 'id', function ($query) {
+                $query->orderBy('id', 'desc');
+            })
+            ->paginate($perPage)
+            ->withQueryString(); // Preserves all query parameters
+
+
+        $deleted = Mcq::onlyTrashed()->count();
+
+        // Add serial numbers to the collection
+        $mcqs->through(function ($mcq, $key) use ($mcqs) {
+            // Calculate the serial number based on pagination
+            $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
+            return $mcq;
+        });
+        return Inertia::render('Mcqs/AssignPaper', [
+            'mcqs' => $mcqs,
+            'filters' => [
+                'search' => $search,
+                'is_active' => $isActive,
+                'is_verified' => $isVerified,
+                'sort_by' => $sortBy,
+                'sort_order' => $sortOrder,
+                'per_page' => (int) $perPage, // Ensure it's an integer
+                'page' => $mcqs->currentPage(), // Add current page to filters
+            ],
+            'stats' => [
+                'total' => $mcqs->total(),
+                'active' => Mcq::where('is_active', true)->count(),
+                'verified' => Mcq::where('is_verified', true)->count(),
+                'deleted' => $deleted,
+            ]
+        ]);
     }
 
     /**

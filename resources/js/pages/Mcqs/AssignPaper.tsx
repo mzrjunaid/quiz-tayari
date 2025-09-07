@@ -19,6 +19,12 @@ import {
 } from '@/components/ui/dialog';
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: route('dashboard') },
+    { title: 'MCQs List', href: route('mcqs.index') },
+    { title: 'Assign Paper', href: route('mcqs.assign-paper') },
+];
+
 interface DataTableProps {
     mcqs: PaginatedData<Mcqs>;
     filters: Filters;
@@ -29,10 +35,6 @@ interface DataTableProps {
         deleted: number;
     };
 }
-
-const rightOptions = (option: string, column: string, value: string) => {
-    return <div className={`max-w-xs break-words whitespace-normal capitalize ${option === column && 'font-semibold text-gray-900'}`}>{value}</div>;
-};
 
 const columns: ColumnDef<Mcqs>[] = [
     {
@@ -57,31 +59,6 @@ const columns: ColumnDef<Mcqs>[] = [
                 </Link>
             </div>
         ),
-    },
-    {
-        accessorKey: 'option_a',
-        header: () => <div className="capitalize">Option A</div>,
-        cell: ({ row }) => rightOptions(row.original.correct_answer, 'A', row.getValue('option_a')),
-    },
-    {
-        accessorKey: 'option_b',
-        header: () => <div className="capitalize">Option B</div>,
-        cell: ({ row }) => rightOptions(row.original.correct_answer, 'B', row.getValue('option_b')),
-    },
-    {
-        accessorKey: 'option_c',
-        header: () => <div className="capitalize">Option C</div>,
-        cell: ({ row }) => rightOptions(row.original.correct_answer, 'C', row.getValue('option_c')),
-    },
-    {
-        accessorKey: 'option_d',
-        header: () => <div className="capitalize">Option D</div>,
-        cell: ({ row }) => rightOptions(row.original.correct_answer, 'D', row.getValue('option_d')),
-    },
-    {
-        accessorKey: 'option_e',
-        header: () => <div className="capitalize">Option E</div>,
-        cell: ({ row }) => rightOptions(row.original.correct_answer, 'E', row.getValue('option_e')),
     },
     {
         id: 'actions',
@@ -135,30 +112,9 @@ const columns: ColumnDef<Mcqs>[] = [
     },
 ];
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: route('dashboard'),
-    },
-    {
-        title: 'MCQs',
-        href: route('mcqs.index'),
-    },
-];
-
-export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
+export default function AssignPaper({ mcqs, filters, stats }: DataTableProps) {
     return (
-        <DashboardLayout title="MCQs" breadcrumbs={breadcrumbs}>
-            <div className="relative w-full">
-                <div className="float-right mb-2 flex gap-4">
-                    <Button variant="secondary" asChild>
-                        <Link href={route('mcqs.assign-paper')}>Assign Paper</Link>
-                    </Button>
-                    <Button variant="default" asChild>
-                        <Link href={route('mcqs.create')}>Add New</Link>
-                    </Button>
-                </div>
-            </div>
+        <DashboardLayout title="Assgin Paper" breadcrumbs={breadcrumbs}>
             <DataTable mcqs={mcqs} columns={columns} filters={filters} url="/mcqs" stats={stats} />
         </DashboardLayout>
     );

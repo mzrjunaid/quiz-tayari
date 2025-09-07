@@ -31,12 +31,12 @@ interface Props {
 
 type FormValues = z.infer<typeof formSchema>;
 
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: route('dashboard') },
+    { title: 'MCQs List', href: route('mcqs.index') },
+    { title: 'Create', href: route('mcqs.create') },
+];
 export default function Edit({ subjects, topics, tags, exam_types, questionTypes }: Props) {
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'MCQs List', href: '/mcqs' },
-        { title: 'Create', href: '/mcqs/create' },
-    ];
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 

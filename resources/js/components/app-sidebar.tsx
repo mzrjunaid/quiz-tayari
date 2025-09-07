@@ -3,11 +3,11 @@ import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, LayoutGrid, List, Paperclip, ScrollText, Trash } from 'lucide-react';
+import { LayoutGrid, List, Paperclip, ScrollText, Trash, UserCircle2 } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavUser } from './nav-user';
 
-const mainNavItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: route('dashboard'),
@@ -30,16 +30,19 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
+const adminFooterNavItems: NavItem[] = [
     {
         title: 'MCQs - Trash Bin',
         href: route('mcqs.trashbin'),
         icon: Trash,
     },
+];
+
+const userFooterNavItems: NavItem[] = [
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Login',
+        href: route('login'),
+        icon: UserCircle2,
     },
 ];
 
@@ -59,10 +62,11 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>{auth.user && <NavMain items={mainNavItems} />}</SidebarContent>
+            <SidebarContent>{auth.user && <NavMain items={adminNavItems} />}</SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                {!auth.user && <NavFooter items={userFooterNavItems} className="mt-auto" />}
+                {auth.user && <NavFooter items={adminFooterNavItems} className="mt-auto" />}
                 {auth.user && <NavUser />}
             </SidebarFooter>
         </Sidebar>
