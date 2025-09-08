@@ -30,15 +30,15 @@ export default function EditPaper() {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
-            href: '/dashboard',
+            href: route('dashboard'),
         },
         {
             title: 'Papers',
-            href: '/papers',
+            href: route('papers.index'),
         },
         {
             title: 'Edit Paper',
-            href: `/papers/${paper.slug}/edit`,
+            href: route('papers.edit', paper.slug),
         },
     ];
 

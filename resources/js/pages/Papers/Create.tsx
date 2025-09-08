@@ -18,15 +18,15 @@ type FormValues = z.infer<typeof paperSchema>;
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: route('dashboard'),
     },
     {
         title: 'Papers',
-        href: '/papers',
+        href: route('papers.index'),
     },
     {
         title: 'Add Paper',
-        href: '/papers/create',
+        href: route('papers.create'),
     },
 ];
 

@@ -22,7 +22,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [McqsRephraseController::class, 'index'])->name('rephrase.index');
         Route::get('/{id}', [McqsRephraseController::class, 'show'])->name('rephrase.show');
         Route::post('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('rephrase.edit');
-        Route::get('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('rephrase.edit');
         Route::get('/{mcqsRephrase}/delete', [McqsRephraseController::class, 'destroy'])->name('rephrase.delete');
         Route::get('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'rephrase'])->name('rephrase.rephrase');
         Route::get('/{mcqsRephrase}/rephrase/confirm', [McqsRephraseController::class, 'confirmRephrase'])->name('rephrase.confirm-rephrase');
