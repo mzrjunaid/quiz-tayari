@@ -470,6 +470,64 @@ class McqController extends Controller
     }
 
     /**
+     * Attach Paper Ids with MCQs
+     */
+
+    public function updatePaperIds(Request $request)
+    {
+        try {
+            // Get the paperIds array from the request
+            $paperIds = $request->input('paperIds');
+
+            // Validate that paperIds exists and is an array
+            if (!$paperIds || !is_array($paperIds)) {
+                return redirect()->route('mcqs.assign-paper')
+                    ->with('error', 'No paper IDs provided or invalid format.');
+            }
+
+            // Counter for tracking successful updates
+            $updatedCount = 0;
+
+            // Loop through each MCQ ID and its corresponding Paper ID
+            foreach ($paperIds as $mcqId => $paperId) {
+                // Find the MCQ by ID
+                $mcq = Mcq::find($mcqId);
+
+                // Find the Paper by ID
+                $paper = Paper::find($paperId);
+
+                // Check if both MCQ and Paper exist
+                if ($mcq && $paper) {
+                    // Update the MCQ with the paper ID
+                    // Assuming your MCQ model has a 'paper_id' column
+                    $mcq->paper_id = $paperId;
+                    $mcq->save();
+
+                    $updatedCount++;
+                } else {
+                    // Log or handle cases where MCQ or Paper doesn't exist
+                    Log::warning("MCQ ID: {$mcqId} or Paper ID: {$paperId} not found");
+                }
+            }
+
+            // Return success message with count
+            if ($updatedCount > 0) {
+                return redirect()->route('mcqs.assign-paper')
+                    ->with('message', "Paper IDs assigned successfully! Updated {$updatedCount} MCQ(s).");
+            } else {
+                return redirect()->route('mcqs.assign-paper')
+                    ->with('error', 'No MCQs were updated. Please check the provided IDs.');
+            }
+        } catch (Exception $e) {
+            // Handle any exceptions
+            Log::error('Error updating paper IDs: ' . $e->getMessage());
+
+            return redirect()->route('mcqs.assign-paper')
+                ->with('error', 'An error occurred while assigning paper IDs. Please try again.');
+        }
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show($slug)

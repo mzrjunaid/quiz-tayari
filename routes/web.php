@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [McqController::class, 'index'])->name('mcqs.index');
         Route::get('/create', [McqController::class, 'create'])->name('mcqs.create');
         Route::get('/assign-paper', [McqController::class, 'assignPaper'])->name('mcqs.assign-paper');
+        Route::put('/update-ids', [McqController::class, 'updatePaperIds'])->name('mcqs.update-ids');
         Route::post('/store', [McqController::class, 'store'])->name('mcqs.store');
         // Route::get('/{id}', [McqController::class, 'show'])->name('mcqs.show');
         Route::get('/{slug}', [McqController::class, 'show'])->where('slug', '[a-zA-Z0-9\-_]+')
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['prefix' => 'papers'], function () {
         Route::get('/', [PaperController::class, 'index'])->name('papers.index');
         Route::get('/create', [PaperController::class, 'create'])->name('papers.create');
+        Route::post('/store', [PaperController::class, 'store'])->name('papers.store');
         Route::get('/{paper}', [PaperController::class, 'show'])->name('papers.show');
         Route::get('/{paper}/edit', [PaperController::class, 'edit'])->name('papers.edit');
         Route::get('/{paper}/delete', [PaperController::class, 'destroy'])->name('papers.delete');

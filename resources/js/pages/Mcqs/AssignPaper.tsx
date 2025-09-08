@@ -1,5 +1,5 @@
 import { BreadcrumbItem, Filters, Mcqs, PaginatedData } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Verified } from 'lucide-react';
@@ -35,7 +35,6 @@ interface DataTableProps {
 }
 
 export default function AssignPaper({ mcqs, papers, filters, stats }: DataTableProps) {
-    // const [questionIds, setQuestionIds] = useState([]);
     const [paperIds, setPaperIds] = useState<Record<string, string>>({});
 
     // Handle paper selection for individual MCQs
@@ -103,8 +102,20 @@ export default function AssignPaper({ mcqs, papers, filters, stats }: DataTableP
         ],
         [papers, paperIds],
     );
+
+    const attachPaperIds = () => {
+        router.put(route('mcqs.update-ids'), {
+            paperIds,
+        });
+    };
+
     return (
-        <DashboardLayout title="Assgin Paper" breadcrumbs={breadcrumbs}>
+        <DashboardLayout title="Assign Paper" breadcrumbs={breadcrumbs}>
+            <div className="flex w-full justify-end">
+                <Button variant="default" onClick={() => attachPaperIds()}>
+                    Save
+                </Button>
+            </div>
             <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.assign-paper')} stats={stats} />
         </DashboardLayout>
     );
