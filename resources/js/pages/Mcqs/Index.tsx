@@ -2,7 +2,7 @@ import { BreadcrumbItem, Filters, Mcqs, PaginatedData } from '@/types';
 import { Link, router } from '@inertiajs/react';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Edit, Trash, Verified } from 'lucide-react';
+import { ArrowUpDown, Check, Edit, Trash, Verified } from 'lucide-react';
 
 import ButtonTooltip from '@/components/button-tooltip';
 import DataTable from '@/components/DataTable/data-table';
@@ -93,6 +93,23 @@ const columns: ColumnDef<Mcqs>[] = [
                     replace: true,
                 });
             };
+
+            const updatePublish = (is_verified: boolean) => {
+                router.patch(
+                    `/mcqs/${row.original?.slug}/field`,
+                    {
+                        field: 'is_verified',
+                        value: is_verified,
+                    },
+                    {
+                        preserveScroll: true,
+                        onError: (e) => {
+                            console.log(e);
+                            // setPublish(!is_verified); // revert the change if error occurs
+                        },
+                    },
+                );
+            };
             return (
                 <div className="flex flex-row gap-3">
                     <ButtonTooltip text="Edit">
@@ -124,10 +141,16 @@ const columns: ColumnDef<Mcqs>[] = [
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    {row.original.is_verified && (
+                    {row.original.is_verified ? (
                         <ButtonTooltip text="Published">
                             <Verified className="size-4" />
                         </ButtonTooltip>
+                    ) : (
+                        <Button variant="link" asChild onClick={() => updatePublish(true)}>
+                            <span>
+                                <Check />
+                            </span>
+                        </Button>
                     )}
                 </div>
             );

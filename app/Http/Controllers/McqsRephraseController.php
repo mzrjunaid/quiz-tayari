@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mcq;
 use App\Models\McqsRephrase;
+use App\Models\Paper;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -219,9 +220,12 @@ class McqsRephraseController extends Controller
 
         $mcq = McqsRephrase::where('q_id', $id)->first();
 
+        $papers = Paper::query()->select(['id', 'title'])->get();
+
         // dd($request->all());
 
         return Inertia::render('McqsRephrase/Edit', [
+            'papers' => $papers,
             'subjects' => $subjects,
             'topics' => $topics,
             'tags' => $tags,

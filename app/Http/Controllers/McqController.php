@@ -399,6 +399,7 @@ class McqController extends Controller
                 'is_active',
                 'is_verified',
                 'created_at',
+                'paper_id',
             ])
             // Search filter
             ->when($search, function ($query, $search) {

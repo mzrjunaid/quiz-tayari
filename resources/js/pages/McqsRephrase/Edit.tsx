@@ -14,7 +14,11 @@ import * as z from 'zod';
 
 // Import the extracted components
 import { Checkbox } from '@/components/ui/checkbox';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import { formSchema } from '@/types/zodSchema';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { ClassificationSection } from '../../components/mcqComponents/ClassificationSection';
 import { CorrectAnswerSection } from '../../components/mcqComponents/CorrectAnswerSection';
 import { QuestionOptionsSection } from '../../components/mcqComponents/QuestionOptionsSection';
@@ -22,6 +26,10 @@ import { TagsExamTypesSection } from '../../components/mcqComponents/TagsExamTyp
 
 interface Props {
     mcq: OldMcqs;
+    papers: {
+        id: string;
+        title: string;
+    }[];
     rephrased?: string;
     explanation?: string;
     subject?: string;
@@ -44,6 +52,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Edit({
     mcq,
+    papers,
     subjects,
     subject,
     topics,
@@ -149,9 +158,6 @@ export default function Edit({
             setShowAddTag(false);
         }
     };
-
-    console.log(form.formState);
-    console.log(form.formState.errors);
 
     const addNewExamType = () => {
         if (newExamTypeName.trim()) {
@@ -324,6 +330,63 @@ export default function Edit({
                             }}
                             className="space-y-6"
                         >
+                            {/* Paper Selection */}
+
+                            <FormField
+                                control={form.control}
+                                name="paper"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Paper</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
+                                                    >
+                                                        {field.value
+                                                            ? papers.find((paper: { id: string; title: string }) => paper.id === field.value)?.title
+                                                            : 'Select language'}
+                                                        <ChevronsUpDown className="opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[200px] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search framework..." className="h-9" />
+                                                    <CommandList>
+                                                        <CommandEmpty>No framework found.</CommandEmpty>
+                                                        <CommandGroup>
+                                                            {papers.map((paper: { id: string; title: string }) => (
+                                                                <CommandItem
+                                                                    value={paper.id}
+                                                                    key={paper.title}
+                                                                    onSelect={() => {
+                                                                        form.setValue('paper', paper.id);
+                                                                    }}
+                                                                >
+                                                                    {paper.title}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            'ml-auto',
+                                                                            paper.id === field.value ? 'opacity-100' : 'opacity-0',
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormDescription>This is the language that will be used in the dashboard.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                             {/* Question Type Selection */}
                             <FormField
                                 control={form.control}

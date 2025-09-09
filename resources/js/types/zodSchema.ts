@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const formSchema = z
     .object({
+        paper: z.string().optional(),
         question: z.string().min(1, 'Question is required').min(10, 'Question must be at least 10 characters'),
         explanation: z.string().min(1, 'Explanation is required').min(10, 'Explanation must be at least 10 characters'),
         option_a: z.string().min(1, 'Option A is required'),

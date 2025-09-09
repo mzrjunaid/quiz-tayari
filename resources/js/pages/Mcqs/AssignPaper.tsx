@@ -1,12 +1,12 @@
-import { BreadcrumbItem, Filters, Mcqs, PaginatedData } from '@/types';
+import { BreadcrumbItem, Filters, PaginatedData } from '@/types';
 import { Link, router } from '@inertiajs/react';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Verified } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 
-import ButtonTooltip from '@/components/button-tooltip';
 import DataTable from '@/components/DataTable/data-table';
 import { SelectCombobox } from '@/components/select-combobox';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
 import { useMemo, useState } from 'react';
@@ -16,6 +16,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'MCQs List', href: route('mcqs.index') },
     { title: 'Assign Paper', href: route('mcqs.assign-paper') },
 ];
+
+interface Mcqs {
+    id: string;
+    slug: string;
+    question: string;
+    is_active: boolean;
+    is_verified: boolean;
+    created_at: string;
+    paper_id: string;
+}
 
 interface DataTableProps {
     mcqs: PaginatedData<Mcqs>;
@@ -89,10 +99,13 @@ export default function AssignPaper({ mcqs, papers, filters, stats }: DataTableP
                         <div className="flex flex-row justify-end gap-3">
                             {row.original.is_verified && (
                                 <div className="flex gap-1 align-middle">
-                                    <span>Verified</span>
-                                    <ButtonTooltip text="Published">
-                                        <Verified className="size-4" />
-                                    </ButtonTooltip>
+                                    <Badge>Verified</Badge>
+                                </div>
+                            )}
+                            {/* <div>{row.original.paper_id}</div> */}
+                            {row.original.paper_id && (
+                                <div className="flex gap-1 align-middle">
+                                    <Badge>Assigned</Badge>
                                 </div>
                             )}
                         </div>
