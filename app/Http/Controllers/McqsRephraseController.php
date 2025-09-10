@@ -220,7 +220,7 @@ class McqsRephraseController extends Controller
 
         $mcq = McqsRephrase::where('q_id', $id)->first();
 
-        $papers = Paper::query()->select(['id', 'title'])->get();
+        $papers = Paper::query()->select(['id', 'title'])->latest()->get();
 
         // dd($request->all());
 

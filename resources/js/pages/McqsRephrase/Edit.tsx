@@ -7,7 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, OldMcqs } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { debounce } from 'lodash';
+import { debounce, truncate } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -104,6 +104,7 @@ export default function Edit({
                   option_d: mcq.option_D || '',
                   option_e: '',
                   correct_answer: mcq.right_choice || 'A',
+                  paper: '',
                   subject: subject || '',
                   topic: topic || '',
                   difficulty_level: 'medium',
@@ -129,6 +130,7 @@ export default function Edit({
                   option_d: '',
                   option_e: '',
                   correct_answer: 'A',
+                  paper: '',
                   subject: '',
                   topic: '',
                   difficulty_level: 'medium',
@@ -331,7 +333,6 @@ export default function Edit({
                             className="space-y-6"
                         >
                             {/* Paper Selection */}
-
                             <FormField
                                 control={form.control}
                                 name="paper"
@@ -346,9 +347,13 @@ export default function Edit({
                                                         role="combobox"
                                                         className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
                                                     >
-                                                        {field.value
-                                                            ? papers.find((paper: { id: string; title: string }) => paper.id === field.value)?.title
-                                                            : 'Select language'}
+                                                        {truncate(field.value, { length: 22 })
+                                                            ? truncate(
+                                                                  papers.find((paper: { id: string; title: string }) => paper.id === field.value)
+                                                                      ?.title,
+                                                                  { length: 22 },
+                                                              )
+                                                            : 'Select Paper'}
                                                         <ChevronsUpDown className="opacity-50" />
                                                     </Button>
                                                 </FormControl>

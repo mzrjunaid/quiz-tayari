@@ -114,6 +114,14 @@ export default function Show() {
                                             <>{mcq.correct_answers?.map((answer, i) => <span key={i}>"{answer}"</span>)}</>
                                         )}
                                     </div>
+                                    <hr className="my-4" />
+                                    <div>
+                                        <span className="font-bold text-blue-600">Paper </span>
+                                        <p>
+                                            {mcq.paper.title} - ({mcq.paper.department}) - ({mcq.paper.testing_service.short})
+                                        </p>
+                                        <p>{mcq.paper.scheduled_at.date_only}</p>
+                                    </div>
                                 </div>
                             ) : (
                                 !error && <p>Loading...</p>

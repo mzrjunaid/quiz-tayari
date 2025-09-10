@@ -224,6 +224,8 @@ class McqController extends Controller
                 ['id' => 3, 'name' => 'True/False', 'value' => 'true_false'],
                 ['id' => 4, 'name' => 'Single Answer (A only)', 'value' => 'single_a'],
             ],
+
+            'papers' => Paper::query()->select(['id', 'title'])->latest()->get()
         ]);
     }
 
@@ -302,6 +304,7 @@ class McqController extends Controller
                 'option_e' => $validated['option_e'] ?? null,
                 'correct_answer' => $validated['correct_answer'],
                 'correct_answers' =>  $validated['correct_answers'] ?? null,
+                'paper_id' => $validated['paper'],
                 'subject' => $validated['subject'],
                 'topic' => $validated['topic'],
                 'difficulty_level' => $validated['difficulty_level'] ?? 'medium',
@@ -401,6 +404,8 @@ class McqController extends Controller
                 'created_at',
                 'paper_id',
             ])
+            // return only mcqs where papaer is not assign
+            ->whereDoesntHave('paper')
             // Search filter
             ->when($search, function ($query, $search) {
                 $columns = ['question', 'option_a', 'option_b', 'option_c', 'option_d'];
@@ -437,9 +442,6 @@ class McqController extends Controller
             ->paginate($perPage)
             ->withQueryString(); // Preserves all query parameters
 
-
-        $deleted = Mcq::onlyTrashed()->count();
-
         // Add serial numbers to the collection
         $mcqs->through(function ($mcq, $key) use ($mcqs) {
             // Calculate the serial number based on pagination
@@ -463,9 +465,8 @@ class McqController extends Controller
             ],
             'stats' => [
                 'total' => $mcqs->total(),
-                'active' => Mcq::where('is_active', true)->count(),
-                'verified' => Mcq::where('is_verified', true)->count(),
-                'deleted' => $deleted,
+                'active' => $mcqs->where('is_active', true)->count(),
+                'verified' => $mcqs->where('is_verified', true)->count(),
             ]
         ]);
     }

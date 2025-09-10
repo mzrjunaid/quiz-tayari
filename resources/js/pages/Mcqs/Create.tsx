@@ -7,7 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { debounce } from 'lodash';
+import { debounce, truncate } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -17,9 +17,17 @@ import { ClassificationSection } from '@/components/mcqComponents/Classification
 import { CorrectAnswerSection } from '@/components/mcqComponents/CorrectAnswerSection';
 import { QuestionOptionsSection } from '@/components/mcqComponents/QuestionOptionsSection';
 import { TagsExamTypesSection } from '@/components/mcqComponents/TagsExamTypesSection';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import { formSchema } from '@/types/zodSchema';
+import { Check, ChevronsUpDown } from 'lucide-react';
 
 interface Props {
+    papers: {
+        id: string;
+        title: string;
+    }[];
     subjects: Array<{ id: string; name: string }>;
     topics: Array<{ id: string; name: string; subject_id: string }>;
     tags: Array<{ id: string; name: string }>;
@@ -36,7 +44,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'MCQs List', href: route('mcqs.index') },
     { title: 'Create', href: route('mcqs.create') },
 ];
-export default function Edit({ subjects, topics, tags, exam_types, questionTypes }: Props) {
+export default function Edit({ papers, subjects, topics, tags, exam_types, questionTypes }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -65,6 +73,7 @@ export default function Edit({ subjects, topics, tags, exam_types, questionTypes
             option_d: '',
             option_e: '',
             correct_answer: '',
+            paper: '',
             subject: '',
             topic: '',
             difficulty_level: 'medium',
@@ -75,7 +84,6 @@ export default function Edit({ subjects, topics, tags, exam_types, questionTypes
             language: 'en',
             current_affair: false,
             general_knowledge: false,
-            is_rephrased_added: false,
         },
     });
 
@@ -256,6 +264,65 @@ export default function Edit({ subjects, topics, tags, exam_types, questionTypes
                             }}
                             className="space-y-6"
                         >
+                            {/* Paper Selection */}
+                            <FormField
+                                control={form.control}
+                                name="paper"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Paper</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
+                                                    >
+                                                        {truncate(field.value, { length: 22 })
+                                                            ? truncate(
+                                                                  papers.find((paper: { id: string; title: string }) => paper.id === field.value)
+                                                                      ?.title,
+                                                                  { length: 22 },
+                                                              )
+                                                            : 'Select Paper'}
+                                                        <ChevronsUpDown className="opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[200px] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search framework..." className="h-9" />
+                                                    <CommandList>
+                                                        <CommandEmpty>No framework found.</CommandEmpty>
+                                                        <CommandGroup>
+                                                            {papers.map((paper: { id: string; title: string }) => (
+                                                                <CommandItem
+                                                                    value={paper.id}
+                                                                    key={paper.title}
+                                                                    onSelect={() => {
+                                                                        form.setValue('paper', paper.id);
+                                                                    }}
+                                                                >
+                                                                    {paper.title}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            'ml-auto',
+                                                                            paper.id === field.value ? 'opacity-100' : 'opacity-0',
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                             {/* Question Type Selection */}
                             <FormField
                                 control={form.control}

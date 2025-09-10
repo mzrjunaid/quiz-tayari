@@ -164,9 +164,11 @@ export default function DataTable({ mcqs, columns, filters, url, stats }: DataTa
                     <div className="text-sm">
                         <span className="font-medium">Verified:</span> {stats.verified}
                     </div>
-                    <div className="text-sm">
-                        <span className="font-medium">Deleted:</span> {stats.deleted}
-                    </div>
+                    {stats.deleted && (
+                        <div className="text-sm">
+                            <span className="font-medium">Deleted:</span> {stats.deleted}
+                        </div>
+                    )}
                 </div>
             )}
 

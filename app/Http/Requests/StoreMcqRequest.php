@@ -63,6 +63,7 @@ class StoreMcqRequest extends FormRequest
             'option_c' => 'nullable|string',
             'option_d' => 'nullable|string',
             'option_e' => 'nullable|string',
+            'paper' => 'required|string',
             'subject' => 'nullable|string|max:255',
             'topic' => 'nullable|string|max:255',
             'difficulty_level' => 'required|string|in:easy,medium,hard',

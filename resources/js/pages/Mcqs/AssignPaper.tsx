@@ -2,7 +2,7 @@ import { BreadcrumbItem, Filters, PaginatedData } from '@/types';
 import { Link, router } from '@inertiajs/react';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Check } from 'lucide-react';
 
 import DataTable from '@/components/DataTable/data-table';
 import { SelectCombobox } from '@/components/select-combobox';
@@ -95,12 +95,34 @@ export default function AssignPaper({ mcqs, papers, filters, stats }: DataTableP
                 id: 'actions',
                 enableHiding: false,
                 cell: ({ row }) => {
+                    const updatePublish = (is_verified: boolean) => {
+                        router.patch(
+                            `/mcqs/${row.original?.slug}/field`,
+                            {
+                                field: 'is_verified',
+                                value: is_verified,
+                            },
+                            {
+                                preserveScroll: true,
+                                onError: (e) => {
+                                    console.log(e);
+                                    // setPublish(!is_verified); // revert the change if error occurs
+                                },
+                            },
+                        );
+                    };
                     return (
                         <div className="flex flex-row justify-end gap-3">
-                            {row.original.is_verified && (
+                            {row.original.is_verified ? (
                                 <div className="flex gap-1 align-middle">
                                     <Badge>Verified</Badge>
                                 </div>
+                            ) : (
+                                <Button variant="link" asChild onClick={() => updatePublish(true)}>
+                                    <span>
+                                        <Check />
+                                    </span>
+                                </Button>
                             )}
                             {/* <div>{row.original.paper_id}</div> */}
                             {row.original.paper_id && (
