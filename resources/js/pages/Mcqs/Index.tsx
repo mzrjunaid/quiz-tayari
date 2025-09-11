@@ -172,15 +172,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
     return (
         <DashboardLayout title="MCQs" breadcrumbs={breadcrumbs}>
-            <div className="relative w-full">
-                <div className="float-right mb-2 flex gap-4">
-                    <Button variant="secondary" asChild>
-                        <Link href={route('mcqs.assign-paper')}>Assign Paper</Link>
-                    </Button>
-                    <Button variant="default" asChild>
-                        <Link href={route('mcqs.create')}>Add New</Link>
-                    </Button>
-                </div>
+            <div className="mb-2 flex flex-row justify-end gap-4">
+                <Button variant="secondary" asChild>
+                    <Link href={route('mcqs.assign-paper')}>Assign Paper</Link>
+                </Button>
+                <Button variant="default" asChild>
+                    <Link href={route('mcqs.create')}>Add New</Link>
+                </Button>
             </div>
             <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.index')} stats={stats} />
         </DashboardLayout>

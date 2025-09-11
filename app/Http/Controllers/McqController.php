@@ -652,10 +652,13 @@ class McqController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreMcqRequest $request, Mcq $mcq)
+    public function update(StoreMcqRequest $request, $slug)
     {
+
+        $mcq = $this->findMcqBySlug($slug);
         // validate the request
         $validated = $request->validated();
+
 
         DB::beginTransaction();
         try {

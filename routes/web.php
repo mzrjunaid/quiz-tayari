@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('mcqs.show');
         Route::get('/{slug}/edit', [McqController::class, 'edit'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.edit');
-        Route::post('/{slug}/update', [McqController::class, 'update'])->where('slug', '[a-zA-Z0-9\-_]+')
+        Route::patch('/{slug}/update', [McqController::class, 'update'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.update');
         Route::patch('/{slug}/field', [McqController::class, 'toggleField'])->where('slug', '[a-zA-Z0-9\-_]+')->name('mcqs.update-field');
         Route::delete('/{slug}', [McqController::class, 'destroy'])->where('slug', '[a-zA-Z0-9\-_]+')

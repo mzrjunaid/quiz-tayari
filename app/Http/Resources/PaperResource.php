@@ -37,7 +37,7 @@ class PaperResource extends JsonResource
                 'datetime' => $this->scheduled_at?->toISOString(),
                 'human' => $this->scheduled_at?->diffForHumans(),
                 'formatted' => $this->scheduled_at?->format('M j, Y \a\t g:i A'),
-                'date_only' => $this->scheduled_at?->format('Y-m-d'),
+                'date_only' => $this->scheduled_at?->format('d-m-Y'),
                 'time_only' => $this->scheduled_at?->format('H:i'),
             ]),
 

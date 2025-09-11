@@ -31,16 +31,17 @@ export default function Show() {
 
     const [publish, setPublish] = useState(mcq?.is_verified);
 
-    const handleRephrase = () => {
-        router.get(
-            `/rephrase/${mcq?.id}/rephrase`,
-            {
-                id: mcq?.id,
-            },
-            {
-                preserveScroll: true,
-            },
-        ); // TODO: implement rephrase logic
+    const handleShare = () => {
+        console.log('Share Button');
+        // router.get(
+        //     `/rephrase/${mcq?.id}/rephrase`,
+        //     {
+        //         id: mcq?.id,
+        //     },
+        //     {
+        //         preserveScroll: true,
+        //     },
+        // ); // TODO: implement rephrase logic
     };
 
     const handleEdit = () => {
@@ -80,12 +81,14 @@ export default function Show() {
                                 <Label htmlFor="airplane-mode">{publish ? 'Published' : 'Unpublished'}</Label>
                                 <Switch id="airplane-mode" checked={publish} onCheckedChange={(checked) => updatePublish(checked)} />
                             </div>
-                            <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
-                                <Edit /> Edit
-                            </Button>
-                            <Button variant="default" className="btn btn-primary cursor-pointer" onClick={() => handleRephrase()}>
-                                <Share /> Share
-                            </Button>
+                            <div className='grid grid-cols-2 gap-2'>
+                                <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
+                                    <Edit /> Edit
+                                </Button>
+                                <Button variant="default" className="btn btn-primary cursor-pointer" onClick={() => handleShare()}>
+                                    <Share /> Share
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     <div className="grid auto-rows-min gap-4 md:grid-cols-2">
@@ -118,9 +121,9 @@ export default function Show() {
                                     <div>
                                         <span className="font-bold text-blue-600">Paper </span>
                                         <p>
-                                            {mcq.paper.title} - ({mcq.paper.department}) - ({mcq.paper.testing_service.short})
+                                            {mcq.paper.title} ({mcq.paper.testing_service.short}) - {mcq.paper.department} - {mcq.paper.subject} -{' '}
+                                            {mcq.paper.scheduled_at.date_only}
                                         </p>
-                                        <p>{mcq.paper.scheduled_at.date_only}</p>
                                     </div>
                                 </div>
                             ) : (
@@ -177,7 +180,6 @@ export default function Show() {
                             <div className="flex flex-col gap-2">{mcq ? mcq.explanation : ''}</div>
                         </div>
                     )}
-                    <pre>{JSON.stringify(mcq, null, 2)}</pre>
                 </div>
             </div>
         </AppLayout>

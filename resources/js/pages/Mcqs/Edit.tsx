@@ -23,7 +23,6 @@ import { TagsExamTypesSection } from '../../components/mcqComponents/TagsExamTyp
 interface Props {
     mcq: Mcqs;
     rephrased?: string;
-    explanation?: string;
     subject?: string;
     topic?: string;
     core_concept: string;
@@ -42,7 +41,7 @@ interface Props {
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam_types, questionTypes, explanation, rephrased }: Props) {
+export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam_types, questionTypes, rephrased }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'MCQs List', href: route('mcqs.index') },
         { title: 'Show', href: route('mcqs.show', mcq.id) },
@@ -72,12 +71,13 @@ export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam
         defaultValues: mcq
             ? {
                   question: isRephrasedAdded ? rephrased : mcq.question,
-                  explanation: explanation || '',
+                  explanation: mcq.explanation || '',
                   option_a: mcq.options.A || '',
                   option_b: mcq.options.B || '',
                   option_c: mcq.options.C || '',
                   option_d: mcq.options.D || '',
                   option_e: mcq.options.E || '',
+                  paper: mcq.paper.id || '',
                   correct_answer: mcq.correct_answer || 'A',
                   subject: mcq.subject || '',
                   topic: mcq.topic || '',
@@ -253,7 +253,7 @@ export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam
                 }),
             };
 
-            await router.post(route('mcqs.store'), formattedValues);
+            await router.patch(route('mcqs.update', mcq.slug), formattedValues);
             // Clear draft after successful submission
             localStorage.removeItem('mcq_draft');
         } catch (error) {
