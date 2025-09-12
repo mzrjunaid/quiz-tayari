@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\McqResource;
 use App\Models\Admin;
 use App\Models\Mcq;
 use App\Models\McqsRephrase;
@@ -16,10 +17,13 @@ class AdminController extends Controller
      */
     public function index()
     {
+
         $stats = [
-            'mcqs' => Mcq::count(),
-            'papers' => Paper::count(),
-            'old_mcqs' => McqsRephrase::count(),
+            'mcqs_stats' => [
+                'total_mcqs' => Mcq::count(),
+                'total_papers' => Paper::count(),
+                'old_mcqs' => McqsRephrase::count(),
+            ],
             'recent_activity' => [
                 'mcqs_today' => Mcq::whereDate('created_at', today())->count(),
                 'updated_today' => Mcq::whereDate('updated_at', today())->count(),
@@ -35,10 +39,14 @@ class AdminController extends Controller
             ]
         ];
 
-        dd($stats);
+        $mcq = Mcq::with('paper')->select(['slug', 'question', 'subject', 'topic', 'paper_id', 'is_active', 'is_verified'])->latest()->limit(5)->get();
 
-        return Inertia::render('Dashboard', [
-            'stats' => $stats
+
+        // dd($stats);
+
+        return Inertia::render('dashboard', [
+            'stats' => $stats,
+            'latest_mcqs' => $mcq,
         ]);
     }
 

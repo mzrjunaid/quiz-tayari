@@ -73,7 +73,7 @@ class McqResource extends JsonResource
             'deleted_at_human' => $this->deleted_at?->diffForHumans(),
             'created_at_datetime' => $this->created_at?->format('M d, Y h:i A'),
             'updated_at_datetime' => $this->updated_at?->format('M d, Y h:i A'),
-            'deleted_at_datetime' => $this->deleted_at?->fromat('M d, Y h:i A'),
+            'deleted_at_datetime' => $this->deleted_at?->format('M d, Y h:i A'),
 
             // Computed Properties
             'has_multiple_correct_answers' => $this->hasMultipleCorrectAnswers(),
@@ -103,15 +103,28 @@ class McqResource extends JsonResource
      *
      * @return array<string, mixed>|null
      */
-    private function getCreatedByUser(): ?array
+    private function getCreatedByUser()
     {
-        return $this->whenLoaded('creator', function () {
-            return [
+        // First try to use already loaded relationship
+        if ($this->relationLoaded('creator')) {
+            return $this->creator ? [
                 'id' => $this->creator->id,
                 'name' => $this->creator->name,
                 'email' => $this->creator->email,
-            ];
-        }) ?: ($this->created_by ? ['id' => $this->created_by] : null);
+            ] : null;
+        }
+
+        // If not loaded and we have created_by ID, load it
+        if ($this->created_by) {
+            $creator = $this->creator; // This will trigger lazy loading
+            return $creator ? [
+                'id' => $creator->id,
+                'name' => $creator->name,
+                'email' => $creator->email,
+            ] : ['id' => $this->created_by];
+        }
+
+        return null;
     }
 
     /**
@@ -119,15 +132,58 @@ class McqResource extends JsonResource
      *
      * @return array<string, mixed>|null
      */
-    private function getUpdatedByUser(): ?array
+    private function getUpdatedByUser()
     {
-        return $this->whenLoaded('updater', function () {
-            return [
+        // First try to use already loaded relationship
+        if ($this->relationLoaded('updater')) {
+            return $this->updater ? [
                 'id' => $this->updater->id,
                 'name' => $this->updater->name,
                 'email' => $this->updater->email,
-            ];
-        }) ?: ($this->updated_by ? ['id' => $this->updated_by] : null);
+            ] : null;
+        }
+
+        // If not loaded and we have created_by ID, load it
+        if ($this->updated_by) {
+            $updater = $this->updater; // This will trigger lazy loading
+            return $updater ? [
+                'id' => $updater->id,
+                'name' => $updater->name,
+                'email' => $updater->email,
+            ] : ['id' => $this->updated_by];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get verified by user information
+     *
+     * @return array<string, mixed>|null
+     */
+
+    private function getVerifiedByUser()
+    {
+        // First try to use already loaded relationship
+        if ($this->relationLoaded('verifier')) {
+            return $this->verifier ? [
+                'id' => $this->verifier->id,
+                'name' => $this->verifier->name,
+                'email' => $this->verifier->email,
+            ] : null;
+        }
+
+        // If not loaded and we have created_by ID, load it
+        if ($this->verified_by) {
+            $verifier = $this->verifier; // This will trigger lazy loading
+            return $verifier ? [
+                'id' => $verifier->id,
+                'name' => $verifier->name,
+                'email' => $verifier->email,
+            ] : ['id' => $this->verified_by];
+        }
+
+        return null;
     }
 
     /**
@@ -150,21 +206,7 @@ class McqResource extends JsonResource
         });
     }
 
-    /**
-     * Get verified by user information
-     *
-     * @return array<string, mixed>|null
-     */
-    private function getVerifiedByUser(): ?array
-    {
-        return $this->whenLoaded('verifier', function () {
-            return [
-                'id' => $this->verifier->id,
-                'name' => $this->verifier->name,
-                'email' => $this->verifier->email,
-            ];
-        }) ?: ($this->verified_by ? ['id' => $this->verified_by] : null);
-    }
+
 
     /**
      * Check if question has multiple correct answers

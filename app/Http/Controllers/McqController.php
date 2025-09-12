@@ -636,6 +636,7 @@ class McqController extends Controller
 
         return Inertia::render('Mcqs/Edit', [
             'mcq' => new McqResource($mcq),
+            'papers' => Paper::query()->select(['id', 'title'])->latest()->get(),
             'subjects' => $subjects,
             'topics' => $topics,
             'tags' => $tags,
@@ -673,6 +674,7 @@ class McqController extends Controller
                 'option_e' => $validated['option_e'],
                 'correct_answer' => $validated['correct_answer'],
                 'correct_answers' => !empty($validated['correct_answers']) ? json_encode($validated['correct_answers']) : null,
+                'paper_id' => $validated['paper'],
                 'subject' => $validated['subject'],
                 'topic' => $validated['topic'],
                 'difficulty_level' => $validated['difficulty_level'] ?? 'medium',

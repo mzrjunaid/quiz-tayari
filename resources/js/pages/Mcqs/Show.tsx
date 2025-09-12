@@ -81,7 +81,7 @@ export default function Show() {
                                 <Label htmlFor="airplane-mode">{publish ? 'Published' : 'Unpublished'}</Label>
                                 <Switch id="airplane-mode" checked={publish} onCheckedChange={(checked) => updatePublish(checked)} />
                             </div>
-                            <div className='grid grid-cols-2 gap-2'>
+                            <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
                                     <Edit /> Edit
                                 </Button>
@@ -118,13 +118,16 @@ export default function Show() {
                                         )}
                                     </div>
                                     <hr className="my-4" />
-                                    <div>
-                                        <span className="font-bold text-blue-600">Paper </span>
-                                        <p>
-                                            {mcq.paper.title} ({mcq.paper.testing_service.short}) - {mcq.paper.department} - {mcq.paper.subject} -{' '}
-                                            {mcq.paper.scheduled_at.date_only}
-                                        </p>
-                                    </div>
+                                    {mcq.paper && (
+                                        <div>
+                                            <span className="font-bold text-blue-600">Paper </span>
+
+                                            <p>
+                                                {mcq.paper.title} ({mcq.paper.testing_service.short}) - {mcq.paper.department} - {mcq.paper.subject} -{' '}
+                                                {mcq.paper.scheduled_at.date_only}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             ) : (
                                 !error && <p>Loading...</p>

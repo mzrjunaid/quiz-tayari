@@ -42,6 +42,29 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface DashboardProps<T = unknown> {
+    latest_mcqs?: T[];
+    stats: {
+        mcqs_stats: {
+            total_mcqs: number;
+            total_papers: number;
+            old_mcqs: number;
+        };
+        recent_activity: {
+            mcqs_today: number;
+            updated_today: number;
+            papers_this_week: number;
+        };
+        rephrase_stats: {
+            total_rephrased: number;
+            pending_count: number;
+        };
+        data_entry_metrics: {
+            avg_mcqs_per_paper: number;
+        };
+    };
+}
+
 export interface OldMcqs {
     q_id: string;
     q_statement: string;

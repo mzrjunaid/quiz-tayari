@@ -340,7 +340,6 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
                     </Button>
                 </div>
             </div>
-            <pre>{JSON.stringify(papers, null, 2)}</pre>
         </div>
     );
 }

@@ -4,17 +4,21 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Mcqs } from '@/types';
+import { BreadcrumbItem, Mcqs, Paper } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { debounce } from 'lodash';
+import { debounce, truncate } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 // Import the extracted components
 import { Checkbox } from '@/components/ui/checkbox';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import { formSchema } from '@/types/zodSchema';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { ClassificationSection } from '../../components/mcqComponents/ClassificationSection';
 import { CorrectAnswerSection } from '../../components/mcqComponents/CorrectAnswerSection';
 import { QuestionOptionsSection } from '../../components/mcqComponents/QuestionOptionsSection';
@@ -22,6 +26,7 @@ import { TagsExamTypesSection } from '../../components/mcqComponents/TagsExamTyp
 
 interface Props {
     mcq: Mcqs;
+    papers: Paper[];
     rephrased?: string;
     subject?: string;
     topic?: string;
@@ -41,7 +46,7 @@ interface Props {
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam_types, questionTypes, rephrased }: Props) {
+export default function Edit({ mcq, papers, subjects, subject, topics, topic, tags, exam_types, questionTypes, rephrased }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'MCQs List', href: route('mcqs.index') },
         { title: 'Show', href: route('mcqs.show', mcq.id) },
@@ -77,7 +82,7 @@ export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam
                   option_c: mcq.options.C || '',
                   option_d: mcq.options.D || '',
                   option_e: mcq.options.E || '',
-                  paper: mcq.paper.id || '',
+                  paper: (mcq.paper && mcq.paper.id) || '',
                   correct_answer: mcq.correct_answer || 'A',
                   subject: mcq.subject || '',
                   topic: mcq.topic || '',
@@ -302,6 +307,66 @@ export default function Edit({ mcq, subjects, subject, topics, topic, tags, exam
                             }}
                             className="space-y-6"
                         >
+                            {/* Paper Selection */}
+                            <FormField
+                                control={form.control}
+                                name="paper"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Paper</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
+                                                    >
+                                                        {truncate(field.value, { length: 22 })
+                                                            ? truncate(
+                                                                  papers.find((paper: { id: string; title: string }) => paper.id === field.value)
+                                                                      ?.title,
+                                                                  { length: 22 },
+                                                              )
+                                                            : 'Select Paper'}
+                                                        <ChevronsUpDown className="opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[200px] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search framework..." className="h-9" />
+                                                    <CommandList>
+                                                        <CommandEmpty>No framework found.</CommandEmpty>
+                                                        <CommandGroup>
+                                                            {papers.map((paper: { id: string; title: string }) => (
+                                                                <CommandItem
+                                                                    value={paper.id}
+                                                                    key={paper.title}
+                                                                    onSelect={() => {
+                                                                        form.setValue('paper', paper.id);
+                                                                    }}
+                                                                >
+                                                                    {paper.title}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            'ml-auto',
+                                                                            paper.id === field.value ? 'opacity-100' : 'opacity-0',
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormDescription>This is the language that will be used in the dashboard.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                             {/* Question Type Selection */}
                             <FormField
                                 control={form.control}
