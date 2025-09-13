@@ -112,28 +112,31 @@ export default function Show() {
             <Head title="Mcqs Rephrase" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 p-3 md:min-h-min dark:border-sidebar-border">
-                    <div className="mb-4 items-center justify-between md:flex">
-                        <h1 className="relative mb-4 text-2xl font-semibold md:mb-0">
-                            Status:{' '}
-                            {mcq && <span className={`ms-2 rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>}
-                        </h1>
-                        <div className="flex items-center justify-between gap-2 md:justify-normal">
-                            <div className="flex items-center space-x-2">
-                                <Label htmlFor="active-mcq">{active ? 'Active' : 'Inactive'}</Label>
-                                <Switch id="active-mcq" checked={active} onCheckedChange={(checked) => updateField('is_active', checked)} />
+                    <div className="mb-4 flex gap-3">
+                        <div className="flex flex-col gap-2 md:w-full md:flex-row md:justify-between">
+                            <div>
+                                {mcq && (
+                                    <span className={`rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>
+                                )}
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Label htmlFor="publish-mcq">{publish ? 'Published' : 'Unpublished'}</Label>
-                                <Switch id="publish-mcq" checked={publish} onCheckedChange={(checked) => updateField('is_verified', checked)} />
+                            <div className="flex gap-2">
+                                <div className="flex items-center space-x-1">
+                                    <Label htmlFor="active-mcq">{active ? 'Active' : 'Inactive'}</Label>
+                                    <Switch id="active-mcq" checked={active} onCheckedChange={(checked) => updateField('is_active', checked)} />
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                    <Label htmlFor="publish-mcq">{publish ? 'Published' : 'Unpublished'}</Label>
+                                    <Switch id="publish-mcq" checked={publish} onCheckedChange={(checked) => updateField('is_verified', checked)} />
+                                </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
-                                    <Edit /> Edit
-                                </Button>
-                                <Button variant="default" className="btn btn-primary cursor-pointer" onClick={() => handleShare()}>
-                                    <Share /> Share
-                                </Button>
-                            </div>
+                        </div>
+                        <div className="absolute top-3 right-2 flex gap-2 md:relative md:top-auto md:right-auto">
+                            <Button variant="outline" size="icon" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>
+                                <Edit />
+                            </Button>
+                            <Button variant="secondary" size="icon" className="cursor-pointer" onClick={() => handleShare()}>
+                                <Share />
+                            </Button>
                         </div>
                     </div>
                     <div className="grid auto-rows-min gap-4 md:grid-cols-2">

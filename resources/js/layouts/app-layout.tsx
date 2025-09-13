@@ -13,6 +13,6 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
         <FlashHandler />
         {children}
-        <Toaster position="top-right" duration={4000} closeButton={true} richColors={true} expand={true} visibleToasts={5} />
+        <Toaster position="top-center" duration={4000} expand={false} visibleToasts={5} />
     </AppLayoutTemplate>
 );
