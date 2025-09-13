@@ -177,8 +177,6 @@ export default function CreatePaper() {
     const titleLength = form.watch('title')?.length || 0;
     const descriptionLength = form.watch('description')?.length || 0;
 
-    console.log(form.formState);
-
     return (
         <DashboardLayout title="Add Paper" breadcrumbs={breadcrumbs}>
             {submitError && (

@@ -1,15 +1,20 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { statusColors } from '@/lib/recordUtils';
 import { BreadcrumbItem, Mcqs } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { truncate } from 'lodash';
 import { Edit, Share } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Show() {
+    const { loading, dismiss } = useToast();
+
+    let loadingToastId: string | number | null = null;
+
     const { mcq, error } = usePage().props as {
         mcq?: Mcqs;
         error?: string;
@@ -29,8 +34,6 @@ export default function Show() {
         },
     ];
 
-    const [publish, setPublish] = useState(mcq?.is_verified);
-
     const handleShare = () => {
         console.log('Share Button');
         // router.get(
@@ -48,23 +51,61 @@ export default function Show() {
         router.get(`/mcqs/${mcq?.slug}/edit`);
     };
 
-    const updatePublish = (is_verified: boolean) => {
-        setPublish(is_verified);
+    // Initialize with boolean values to prevent uncontrolled/controlled switch
+    const [active, setActive] = useState(Boolean(mcq?.is_active));
+    const [publish, setPublish] = useState(Boolean(mcq?.is_verified));
+
+    const updateField = (field: 'is_active' | 'is_verified', value: boolean) => {
+        // Update local state immediately for better UX
+        if (field === 'is_active') {
+            setActive(value);
+            // If deactivating, also unpublish
+            if (!value) {
+                setPublish(false);
+            }
+        } else if (field === 'is_verified') {
+            setPublish(value);
+            // If publishing, also activate
+            if (value) {
+                setActive(true);
+            }
+        }
+
         router.patch(
             `/mcqs/${mcq?.slug}/field`,
+            { field, value },
             {
-                field: 'is_verified',
-                value: is_verified,
-            },
-            {
+                onStart: () => {
+                    loadingToastId = loading('Updating...', {
+                        duration: Infinity,
+                    });
+                },
                 preserveScroll: true,
-                onError: (e) => {
-                    console.log(e);
-                    setPublish(!is_verified); // revert the change if error occurs
+                onSuccess: () => {
+                    if (loadingToastId) dismiss(loadingToastId);
+                },
+                onError: () => {
+                    // Revert all state changes on error
+                    setActive(Boolean(mcq?.is_active));
+                    setPublish(Boolean(mcq?.is_verified));
+                },
+                onFinish: () => {
+                    if (loadingToastId) {
+                        dismiss(loadingToastId);
+                        loadingToastId = null;
+                    }
                 },
             },
         );
     };
+
+    // Update state when mcq data is loaded
+    useEffect(() => {
+        if (mcq) {
+            setActive(Boolean(mcq.is_active));
+            setPublish(Boolean(mcq.is_verified));
+        }
+    }, [mcq]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -78,8 +119,12 @@ export default function Show() {
                         </h1>
                         <div className="flex items-center justify-between gap-2 md:justify-normal">
                             <div className="flex items-center space-x-2">
-                                <Label htmlFor="airplane-mode">{publish ? 'Published' : 'Unpublished'}</Label>
-                                <Switch id="airplane-mode" checked={publish} onCheckedChange={(checked) => updatePublish(checked)} />
+                                <Label htmlFor="active-mcq">{active ? 'Active' : 'Inactive'}</Label>
+                                <Switch id="active-mcq" checked={active} onCheckedChange={(checked) => updateField('is_active', checked)} />
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Label htmlFor="publish-mcq">{publish ? 'Published' : 'Unpublished'}</Label>
+                                <Switch id="publish-mcq" checked={publish} onCheckedChange={(checked) => updateField('is_verified', checked)} />
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" className="btn btn-secondary cursor-pointer" onClick={() => handleEdit()}>

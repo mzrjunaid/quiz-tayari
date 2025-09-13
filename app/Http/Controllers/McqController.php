@@ -330,9 +330,8 @@ class McqController extends Controller
 
             return redirect()
                 ->route('mcqs.index')
-                ->with('flash', [
-                    'type' => 'success',
-                    'message' => 'MCQ created successfully'
+                ->with([
+                    'success' => 'MCQ created successfully'
                 ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -351,9 +350,8 @@ class McqController extends Controller
 
             return back()
                 ->withInput()
-                ->with('flash', [
-                    'type' => 'error',
-                    'message' => 'Failed to create MCQ: ' . $e->getMessage()
+                ->with([
+                    'error' => 'Failed to create MCQ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -703,13 +701,8 @@ class McqController extends Controller
             ]);
 
             return redirect()->route('mcqs.index')
-                ->with('flash', [
+                ->with([
                     'success' => 'MCQ updated successfully.',
-                    'data' => [
-                        'id' => $mcq->id,
-                        'slug' => $mcq->slug,
-                        'question' => Str::limit($mcq->question, 100)
-                    ]
                 ]);
         } catch (ValidationException $e) {
             DB::rollBack();
@@ -725,7 +718,7 @@ class McqController extends Controller
             ]);
             return back()
                 ->withInput()
-                ->with('flash', [
+                ->with([
                     'error' => 'Failed to update MCQ. Please try again.'
                 ]);
         }
@@ -736,11 +729,9 @@ class McqController extends Controller
      */
     public function toggleField(Request $validated, $slug)
     {
-
         $mcq = $this->findMcqBySlug($slug);
         if (!$mcq) {
-            return redirect()->back()->with('flash', [
-                'type' => 'error',
+            return redirect()->back()->with([
                 'message' => 'MCQ not found'
             ]);
         }
@@ -750,31 +741,41 @@ class McqController extends Controller
             'value' => 'required|boolean'
         ]);
 
-
-
-        // dd($validated);
         try {
             $field = $validated['field'];
             $value = $validated['value'];
-
             $user = Auth::id();
 
             $updateToggle = [
-                'is_verified' => $value,
+                $field => $value,
             ];
 
-            // Only update verified_by when toggling is_verified
+            // Business logic: if verifying (is_verified = true), also set is_active = true
+            // if unverifying (is_verified = false), keep is_active as is
             if ($field === 'is_verified') {
-                $updateToggle['verified_by'] = $value ? $user : null; // Set to user if verified, null if unverified
+                $updateToggle['verified_by'] = $value ? $user : null;
+
+                // Only force is_active to true when verifying
+                // Don't change is_active when unverifying
+                if ($value) {
+                    $updateToggle['is_active'] = true;
+                }
             }
 
-            // dd($updateToggle);
+            // Business rule: if deactivating (is_active = false), also unverify
+            if ($field === 'is_active' && !$value) {
+                $updateToggle['is_verified'] = false;
+                $updateToggle['verified_by'] = null;
+            }
 
             $mcq->update($updateToggle);
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'message' => ucfirst(str_replace('_', ' ', $field)) . ' toggled successfully',
+            // Return the updated MCQ data for frontend sync
+            // For Inertia, return back with updated props
+            return redirect()->back()->with([
+                'success' => ucfirst(str_replace('is_', ' ', $field)) . ' MCQ Status Updated Successfully',
+                // Optionally pass updated MCQ data
+                'mcq' => $mcq->fresh()
             ]);
         } catch (Exception $e) {
             Log::error('Toggle failed:', [
@@ -797,18 +798,16 @@ class McqController extends Controller
     {
         $mcq = $this->findMcqBySlug($slug);
         if (!$mcq) {
-            return redirect()->back()->with('flash', [
-                'type' => 'error',
-                'message' => 'MCQ not found'
+            return redirect()->back()->with([
+                'error' => 'MCQ not found'
             ]);
         }
 
         try {
             $mcq->delete();
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'message' => 'MCQ deleted successfully',
+            return redirect()->back()->with([
+                'success' => 'MCQ deleted successfully',
             ]);
         } catch (Exception $e) {
             Log::error('Delete failed:', [
@@ -816,9 +815,8 @@ class McqController extends Controller
                 'mcq_id' => $mcq->id,
             ]);
 
-            return redirect()->back()->with('flash', [
-                'type' => 'error',
-                'message' => 'Failed to delete MCQ'
+            return redirect()->back()->with([
+                'error' => 'Failed to delete MCQ'
             ]);
         }
     }
