@@ -412,8 +412,6 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
                     </div>
                 </div>
             </div>
-
-            <pre>{JSON.stringify(papers, null, 2)}</pre>
         </div>
     );
 }
