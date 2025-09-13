@@ -1,9 +1,9 @@
 import { DashboardLayout } from '@/layouts/dashboard/dashboard-layout';
-import { BreadcrumbItem, Filters, PaginatedData, Paper } from '@/types';
+import { BreadcrumbItem, Filters, LinkPaginatedData, Paper } from '@/types';
 import PaperTable from './Components/PaperTable';
 
 interface DataTableProps {
-    papers: PaginatedData<Paper>;
+    papers: LinkPaginatedData<Paper>;
     filters: Filters;
     stats?: {
         total: number;
