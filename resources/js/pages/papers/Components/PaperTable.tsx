@@ -16,13 +16,14 @@ import * as React from 'react';
 import ButtonTooltip from '@/components/button-tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Filters, PaginatedData, Paper, SerializableFilterValue } from '@/types';
+import { Filters, LinkPaginatedData, Paper, SerializableFilterValue } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { useDebouncedCallback } from 'use-debounce';
 
 interface DataTableProps {
-    papers: PaginatedData<Paper>;
+    papers: LinkPaginatedData<Paper>;
     filters: Filters;
 }
 
@@ -196,22 +197,33 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
     const [rowSelection, setRowSelection] = React.useState({});
 
     const [pagination, setPagination] = React.useState({
-        pageIndex: papers.current_page - 1,
-        pageSize: papers.per_page,
+        pageIndex: (papers.meta.current_page || 1) - 1,
+        pageSize: papers.meta.per_page || 10,
     });
 
     const [searchValue, setSearchValue] = React.useState(filters?.search || '');
 
-    // Debounced search to avoid too many requests
+    // Sync pagination state when papers data changes
+    React.useEffect(() => {
+        setPagination({
+            pageIndex: (papers.meta.current_page || 1) - 1,
+            pageSize: papers.meta.per_page || 10,
+        });
+    }, [papers.meta.current_page, papers.meta.per_page]);
+
+    // Debounced search
     const debouncedSearch = useDebouncedCallback((value: string) => {
         updateFilters({ search: value || undefined });
     }, 300);
 
     // Update filters and navigate
     const updateFilters = (newFilters: Partial<Record<keyof Filters, SerializableFilterValue>>) => {
-        const updatedFilters: Partial<Record<keyof Filters, SerializableFilterValue>> = { ...filters, ...newFilters };
+        const updatedFilters: Partial<Record<keyof Filters, SerializableFilterValue>> = {
+            ...filters,
+            ...newFilters,
+        };
 
-        // Remove values that would break Inertia's serialization
+        // Clean up undefined/empty values
         (Object.keys(updatedFilters) as Array<keyof Filters>).forEach((key) => {
             const value = updatedFilters[key];
             if (value === undefined || value === '' || (typeof value === 'number' && Number.isNaN(value))) {
@@ -220,13 +232,8 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
         });
 
         // If page size changed, reset to first page
-        if ('per_page' in newFilters) {
+        if ('per_page' in newFilters && newFilters.per_page !== filters?.per_page) {
             updatedFilters.page = 1;
-            setPagination((prev) => ({
-                ...prev,
-                pageIndex: 0,
-                pageSize: newFilters.per_page as number,
-            }));
         }
 
         router.get('/papers', updatedFilters, {
@@ -235,6 +242,17 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
             replace: true,
             preserveScroll: true,
         });
+    };
+
+    const handlePageChange = (page: number) => {
+        updateFilters({ page });
+    };
+
+    const handlePerPageChange = (perPage: string) => {
+        const perPageNum = Number(perPage);
+        if (Number.isNaN(perPageNum)) return;
+
+        updateFilters({ per_page: perPageNum, page: 1 });
     };
 
     const table = useReactTable({
@@ -249,7 +267,7 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        pageCount: papers.last_page,
+        pageCount: papers.meta.last_page,
         onPaginationChange: setPagination, // Add this handler
         state: {
             sorting,
@@ -327,19 +345,75 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
+            {/* Pagination */}
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Results Info */}
+                <div className="text-sm text-muted-foreground">
+                    Showing {papers.meta.from || 0} to {papers.meta.to || 0} of {papers.meta.total} results
                 </div>
-                <div className="space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                        Previous
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                        Next
-                    </Button>
+
+                <div className="flex items-center gap-4">
+                    {/* Per Page Selector */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm">Show:</span>
+                        <Select value={String(papers.meta.per_page)} onValueChange={handlePerPageChange}>
+                            <SelectTrigger className="w-20">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="25">25</SelectItem>
+                                <SelectItem value="50">50</SelectItem>
+                                <SelectItem value="100">100</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* Page Navigation */}
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(papers.meta.current_page - 1)}
+                            disabled={papers.meta.current_page <= 1}
+                        >
+                            Previous
+                        </Button>
+
+                        <span className="text-sm whitespace-nowrap">
+                            Page {papers.meta.current_page} of {papers.meta.last_page}
+                        </span>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(papers.meta.current_page + 1)}
+                            disabled={papers.meta.current_page >= papers.meta.last_page}
+                        >
+                            Next
+                        </Button>
+
+                        {/* Go to Page Input */}
+                        <Input
+                            type="number"
+                            placeholder="Page"
+                            min={1}
+                            max={papers.meta.last_page}
+                            className="w-20"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    const page = Number((e.target as HTMLInputElement).value);
+                                    if (page >= 1 && page <= papers.meta.last_page) {
+                                        handlePageChange(page);
+                                    }
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
+
+            <pre>{JSON.stringify(papers, null, 2)}</pre>
         </div>
     );
 }
