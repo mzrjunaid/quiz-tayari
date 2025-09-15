@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bookmark, BookOpen, Bot, Brain, ChevronDown, Eye, FileText, Filter, Play, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
+import { Bookmark, BookOpen, Bot, Brain, ChevronDown, Eye, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import HeroMcqPreview from './Components/HeroMcqCard';
+import HeroSection from './Components/HeroSection';
 
 const MCQHomepage = () => {
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
@@ -179,94 +179,11 @@ const MCQHomepage = () => {
 
     return (
         <div className="min-h-screen bg-white text-black">
-            {/* Navigation */}
-            {/* <nav className="fixed top-0 right-0 left-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between py-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black">
-                                <Brain className="h-6 w-6 text-white" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-xl font-bold text-black">Pak Quiz</span>
-                                <span className="text-xs text-gray-600">AI-Powered Learning</span>
-                            </div>
-                        </div>
-                        <div className="hidden space-x-8 md:flex">
-                            <a href="#mcqs" className="font-medium text-gray-700 transition-colors hover:text-black">
-                                MCQs
-                            </a>
-                            <a href="#tests" className="font-medium text-gray-700 transition-colors hover:text-black">
-                                Tests
-                            </a>
-                            <a href="#subjects" className="font-medium text-gray-700 transition-colors hover:text-black">
-                                Subjects
-                            </a>
-                            <a href="#analytics" className="font-medium text-gray-700 transition-colors hover:text-black">
-                                Analytics
-                            </a>
-                        </div>
-                        <div className="flex space-x-4">
-                            <button className="px-4 py-2 font-medium text-gray-700 transition-colors hover:text-black">Login</button>
-                            <button className="rounded-lg bg-black px-6 py-2 font-medium text-white transition-all hover:bg-gray-800">
-                                Get Started
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav> */}
-
             {/* Hero Section with MCQ Preview */}
-            <section className="bg-gray-50 px-4 pt-24 pb-16 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-7xl">
-                    <div className="grid items-center gap-12 lg:grid-cols-2">
-                        <div>
-                            <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-black px-4 py-2 text-white">
-                                <Bot className="h-4 w-4" />
-                                <span className="text-sm font-medium">AI-Enhanced Learning</span>
-                            </div>
-
-                            <h1 className="mb-6 text-5xl leading-tight font-bold text-black lg:text-6xl">
-                                Master MCQs with
-                                <span className="block text-gray-600">Intelligent Practice</span>
-                            </h1>
-
-                            <p className="mb-8 text-xl leading-relaxed text-gray-600">
-                                Access thousands of AI-enhanced multiple choice questions across subjects, jobs, and testing services. Practice
-                                smarter, not harder.
-                            </p>
-
-                            <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                                <button className="flex items-center justify-center space-x-2 rounded-lg bg-black px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-gray-800">
-                                    <Play className="h-5 w-5" />
-                                    <span>Start Practicing</span>
-                                </button>
-                                <button className="flex items-center justify-center space-x-2 rounded-lg border-2 border-gray-300 bg-white px-8 py-4 text-lg font-semibold text-black transition-all hover:border-gray-400">
-                                    <Eye className="h-5 w-5" />
-                                    <span>View Demo</span>
-                                </button>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-6">
-                                {stats.slice(0, 2).map((stat, index) => (
-                                    <div key={index} className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-                                        <div className="mb-2 flex items-center justify-center">
-                                            <stat.icon className="h-8 w-8 text-gray-600" />
-                                        </div>
-                                        <div className="text-2xl font-bold text-black">{stat.number}</div>
-                                        <div className="text-sm text-gray-600">{stat.label}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <HeroMcqPreview currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
-                    </div>
-                </div>
-            </section>
+            <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
 
             {/* Search and Filter Section */}
-            <section className="border-b border-gray-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
+            <section className="hidden border-b border-gray-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>

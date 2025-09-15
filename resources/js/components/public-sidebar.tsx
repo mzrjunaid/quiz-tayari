@@ -9,8 +9,8 @@ import { NavUser } from './nav-user';
 
 const adminNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: route('dashboard'),
+        title: 'Home',
+        href: route('home'),
         icon: LayoutGrid,
     },
     {
@@ -46,10 +46,10 @@ const userFooterNavItems: NavItem[] = [
     },
 ];
 
-export function AppSidebar() {
+export function PublicSidebar() {
     const { auth } = usePage<SharedData>().props;
     return (
-        <Sidebar collapsible="icon" variant="floating">
+        <Sidebar collapsible="offcanvas" variant="sidebar">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

@@ -23,7 +23,7 @@ export default function HeroMcqPreview({ sampleMCQs, currentMCQ }: Props) {
         /* Live MCQ Preview */
     }
     return (
-        <div className="relative">
+        <div className="relative hidden lg:block">
             <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-xl">
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center space-x-2">

@@ -1,44 +1,15 @@
 // import AppLayout from '@/layouts/app-layout';
-import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Homepage',
-        href: '/',
-    },
-];
+import { PublicLayout } from '@/layouts/frontend/public-layout';
+import MCQHomepage from './Homepage/Homepage';
 
 export default function Welcome() {
     // const { auth } = usePage<SharedData>().props;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Homepage">
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
-                {/* <link rel="preconnect" href="https://fonts.bunny.net" />
-                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" /> */}
-            </Head>
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* PlaceholderPattern component can be used here if needed */}
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* PlaceholderPattern component can be used here if needed */}
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* PlaceholderPattern component can be used here if needed */}
-                    </div>
-                </div>
-                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    {/* PlaceholderPattern component can be used here if needed */}
-                </div>
-            </div>
-        </AppLayout>
+        <PublicLayout title="Hompage">
+            <MCQHomepage />
+            {/* <div>Homepage</div> */}
+        </PublicLayout>
     );
 }
 

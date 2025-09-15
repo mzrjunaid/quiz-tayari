@@ -1,5 +1,6 @@
 // import { BreadcrumbItem } from '@/types';
-import { AppSidebar } from '@/components/app-sidebar';
+import { PublicSidebar } from '@/components/public-sidebar';
+import PublicHeader from '@/components/site-header';
 
 // import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -18,12 +19,12 @@ export function PublicLayout({ children, title }: Props) {
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
             </Head>
-            <SidebarProvider className="flex flex-col">
-                {/* <SiteHeader /> */}
-                <div className="flex flex-1">
-                    <AppSidebar />
-                    <SidebarInset>{children}</SidebarInset>
-                </div>
+            <SidebarProvider defaultOpen={false}>
+                <PublicSidebar />
+                <SidebarInset>
+                    <PublicHeader />
+                    {children}
+                </SidebarInset>
             </SidebarProvider>
         </>
     );
