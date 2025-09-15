@@ -48,7 +48,7 @@ export default function Dashboard({ stats, latest_mcqs }: DashboardProps<Mcqs>) 
                                 </TableHeader>
                                 <TableBody>
                                     {latest_mcqs?.map((mcq, index) => (
-                                        <TableRow key={mcq.id}>
+                                        <TableRow key={index}>
                                             <TableCell className="w-[10px] text-center">{index + 1}</TableCell>
                                             <TableCell className="w-[400px] break-words whitespace-normal">
                                                 <Link href={route('mcqs.show', mcq.slug)} className="">
