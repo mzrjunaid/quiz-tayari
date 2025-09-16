@@ -1,6 +1,9 @@
+import McqCard from '@/components/mcqComponents/SingleMcq';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bookmark, BookOpen, Bot, Brain, ChevronDown, Eye, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { Bookmark, BookOpen, Bot, Brain, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
@@ -30,6 +33,8 @@ const MCQHomepage = () => {
             aiEnhanced: true,
             tags: ['Algorithm', 'Binary Search', 'Complexity'],
             testService: 'GATE',
+            explanation:
+                'Paris is the capital and most populous city of France. It has been the capital since the 6th century and is located in the north-central part of the country along the Seine River.',
         },
         {
             id: 2,
@@ -183,33 +188,28 @@ const MCQHomepage = () => {
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
 
             {/* Search and Filter Section */}
-            <section className="hidden border-b border-gray-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
+            <section className="border-b border-gray-200 bg-white px-4 py-6 sm:px-6 md:py-12 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
-                            <h2 className="mb-2 text-3xl font-bold text-black">Explore MCQs</h2>
-                            <p className="text-gray-600">Find the perfect questions for your preparation</p>
+                            <h2 className="mb-2 text-xl font-bold text-black md:text-3xl">Explore MCQs</h2>
+                            <p className="text-sm text-muted-foreground md:text-xl">Find the perfect questions for your preparation</p>
                         </div>
 
-                        <div className="flex flex-col items-center space-x-4">
+                        <div className="flex flex-row items-center space-x-4">
                             <div className="relative">
                                 <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Search MCQs, topics, or keywords..."
-                                    className="w-80 rounded-lg border border-gray-300 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-gray-400 focus:outline-none"
+                                    className="rounded-lg border border-gray-300 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-gray-400 focus:outline-none"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <button
-                                onClick={() => setShowFilters(!showFilters)}
-                                className="flex items-center space-x-2 rounded-lg border border-gray-300 px-4 py-3 transition-colors hover:bg-gray-50"
-                            >
+                            <Button variant="outline" onClick={() => setShowFilters(!showFilters)} size="icon" className="">
                                 <Filter className="h-5 w-5" />
-                                <span>Filters</span>
-                                <ChevronDown className={`h-4 w-4 transform transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -278,7 +278,7 @@ const MCQHomepage = () => {
                     )}
 
                     {/* MCQ Results */}
-                    <div className="grid gap-8 lg:grid-cols-3">
+                    <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
                         <div className="lg:col-span-2">
                             <div className="mb-6 flex items-center justify-between">
                                 <h3 className="text-xl font-semibold text-black">MCQs ({filteredMCQs.length} found)</h3>
@@ -299,75 +299,9 @@ const MCQHomepage = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-4 md:space-y-6">
                                 {filteredMCQs.map((mcq, index) => (
-                                    <div key={mcq.id} className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-lg">
-                                        <div className="mb-4 flex items-start justify-between">
-                                            <div className="flex items-center space-x-2">
-                                                <span className="rounded-full bg-black px-3 py-1 text-xs font-medium text-white">{mcq.subject}</span>
-                                                <span
-                                                    className={`rounded-full px-3 py-1 text-xs font-medium ${
-                                                        mcq.difficulty === 'Easy'
-                                                            ? 'bg-green-100 text-green-700'
-                                                            : mcq.difficulty === 'Medium'
-                                                              ? 'bg-yellow-100 text-yellow-700'
-                                                              : 'bg-red-100 text-red-700'
-                                                    }`}
-                                                >
-                                                    {mcq.difficulty}
-                                                </span>
-                                                {mcq.aiEnhanced && (
-                                                    <span className="flex items-center space-x-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                                                        <Bot className="h-3 w-3" />
-                                                        <span>AI</span>
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <Button className="text-gray-100 hover:text-gray-600">
-                                                <Bookmark className="h-5 w-5" />
-                                            </Button>
-                                        </div>
-
-                                        <h4 className="mb-4 text-lg font-semibold text-black">
-                                            Q{index + 1}. {mcq.question}
-                                        </h4>
-
-                                        <div className="mb-4 grid gap-3 sm:grid-cols-2">
-                                            {mcq.options.map((option, optIndex) => (
-                                                <div key={optIndex} className="flex items-center space-x-3 rounded bg-gray-50 p-3 text-sm">
-                                                    <div className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-300">
-                                                        <span className="text-xs font-medium text-gray-600">
-                                                            {String.fromCharCode(65 + optIndex)}
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-gray-700">{option}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                                            <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                                <span>
-                                                    <Eye className="mr-1 inline h-4 w-4" />
-                                                    {mcq.views}
-                                                </span>
-                                                <span>
-                                                    <Target className="mr-1 inline h-4 w-4" />
-                                                    {mcq.attempts}
-                                                </span>
-                                                <span className="text-green-600">{mcq.successRate}% Success</span>
-                                            </div>
-
-                                            <div className="flex items-center space-x-2">
-                                                <button className="rounded bg-gray-100 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200">
-                                                    Practice
-                                                </button>
-                                                <button className="rounded bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-gray-800">
-                                                    Add to Test
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <McqCard mcq={mcq} index={index} />
                                 ))}
                             </div>
                         </div>
@@ -393,25 +327,31 @@ const MCQHomepage = () => {
                             </div>
 
                             {/* Most Repeating MCQs */}
-                            <div className="rounded-lg border border-gray-200 bg-white p-6">
-                                <h3 className="mb-4 flex items-center text-lg font-semibold text-black">
+                            <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6">
+                                <h3 className="mb-2 flex items-center text-lg font-semibold text-black md:mb-4">
                                     <TrendingUp className="mr-2 h-5 w-5" />
                                     Most Repeating MCQs
                                 </h3>
                                 <div className="space-y-3">
                                     {mostRepeatingMCQs.map((mcq, index) => (
-                                        <div key={index} className="border-b border-gray-100 pb-3 last:border-b-0">
-                                            <p className="truncate text-sm font-medium text-black">{mcq.question}</p>
+                                        <div key={index} className="mb:pb-3 overflow-hidden border-b border-gray-100 pb-2 last:border-b-0">
+                                            <Link href="#" className="text-sm font-medium whitespace-normal text-black hover:underline">
+                                                {mcq.question}
+                                            </Link>
                                             <div className="mt-1 flex items-center justify-between">
-                                                <span className="text-xs text-gray-500">{mcq.subject}</span>
+                                                <span className="max-w-40 truncate text-xs text-gray-500">{mcq.subject} testing out suggestion</span>
                                                 <span className="text-xs text-gray-600">{mcq.attempts.toLocaleString()} attempts</span>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <button className="mt-4 w-full rounded bg-gray-100 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200">
+                                <Button
+                                    variant="secondary"
+                                    className="mt-2 w-full md:mt-4"
+                                    // className="mt-4 w-full rounded bg-gray-100 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200"
+                                >
                                     View All Trending
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Quick Stats */}
