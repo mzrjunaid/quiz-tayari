@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Link } from '@inertiajs/react';
 import { Bot, ChevronDown, ChevronUp, Eye, Share2, Tag } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // TypeScript interfaces
 interface MCQ {
@@ -24,6 +24,7 @@ interface MCQ {
 interface MCQComponentProps {
     mcq?: MCQ;
     index?: number;
+    mcqMode: boolean;
 }
 
 // Mock data for demonstration
@@ -42,28 +43,60 @@ const mockMCQ: MCQ = {
     testService: 'GATE',
 };
 
-const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
+const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMode }) => {
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
-    // const [showTestingServices, setShowTestingServices] = useState<boolean>(false);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
+    // Handle mcqMode changes
+    useEffect(() => {
+        if (!mcqMode) {
+            // Reading mode: preselect the correct answer
+            setSelectedAnswer(mcq.correctAnswer);
+            setShowExplanation(true); // Optionally show explanation in reading mode
+        } else {
+            // Quiz mode: clear selection and hide explanation
+            setSelectedAnswer(null);
+            setShowExplanation(false);
+        }
+    }, [mcqMode, mcq.correctAnswer]);
+
     const handleOptionSelect = (optIndex: number): void => {
+        // Only allow selection in quiz mode
+        if (!mcqMode) return;
+
         setSelectedAnswer(optIndex);
+        // Optionally show explanation after selection in quiz mode
+        if (optIndex !== null) {
+            setShowExplanation(true);
+        }
     };
 
     const getOptionClasses = (optIndex: number): string => {
-        const baseClasses = 'flex items-center space-x-3 rounded-md p-3 text-sm cursor-pointer transition-all duration-200';
+        const baseClasses = 'flex items-center space-x-3 rounded-md p-3 text-sm transition-all duration-200';
 
-        if (selectedAnswer === null) {
-            return `${baseClasses} bg-gray-50 hover:bg-gray-100 border border-transparent`;
-        }
+        // Add cursor style based on mode
+        const cursorClass = mcqMode ? 'cursor-pointer' : 'cursor-default';
 
-        if (optIndex === mcq.correctAnswer) {
-            return `${baseClasses} bg-green-50 border-2 border-green-200 hover:bg-green-100`;
-        } else if (optIndex === selectedAnswer && optIndex !== mcq.correctAnswer) {
-            return `${baseClasses} bg-red-50 border-2 border-red-200 hover:bg-red-100`;
+        if (mcqMode) {
+            // Quiz mode: original logic
+            if (selectedAnswer === null) {
+                return `${baseClasses} ${cursorClass} bg-gray-50 hover:bg-gray-100 border border-transparent`;
+            }
+
+            if (optIndex === mcq.correctAnswer) {
+                return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200 hover:bg-green-100`;
+            } else if (optIndex === selectedAnswer && optIndex !== mcq.correctAnswer) {
+                return `${baseClasses} ${cursorClass} bg-red-50 border-2 border-red-200 hover:bg-red-100`;
+            } else {
+                return `${baseClasses} ${cursorClass} bg-gray-50 opacity-60 border border-transparent`;
+            }
         } else {
-            return `${baseClasses} bg-gray-50 opacity-60 border border-transparent`;
+            // Reading mode: show correct answer highlighted, others dimmed
+            if (optIndex === mcq.correctAnswer) {
+                return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`;
+            } else {
+                return `${baseClasses} ${cursorClass} bg-gray-50 opacity-50 border border-transparent`;
+            }
         }
     };
 
@@ -95,6 +128,10 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
                                 AI
                             </Badge>
                         )}
+                        {/* Mode indicator */}
+                        <Badge variant="outline" className={mcqMode ? 'border-red-300 text-red-700' : 'border-green-300 text-green-700'}>
+                            {mcqMode ? '📝 Quiz' : '📖 Study'}
+                        </Badge>
                     </div>
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="#">
@@ -125,6 +162,13 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
                     Q{index + 1}. {mcq.question}
                 </h4>
 
+                {/* Mode instruction
+                {!mcqMode && (
+                    <p className="mb-3 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-700">
+                        📖 Study Mode: The correct answer is highlighted in green
+                    </p>
+                )} */}
+
                 {/* Options */}
                 <div className="mb-2 grid gap-2 sm:grid-cols-2 sm:gap-3 md:mb-4">
                     {mcq.options.map((option: string, optIndex: number) => (
@@ -132,40 +176,24 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
                             <div className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 bg-white">
                                 <span className="text-xs font-medium text-gray-600">{String.fromCharCode(65 + optIndex)}</span>
                             </div>
-                            <span className="flex-1 text-gray-700">{option}</span>
-                            {selectedAnswer !== null && optIndex === mcq.correctAnswer && (
+                            <span className="flex-1 text-gray-700 font-semibold">{option}</span>
+
+                            {/* Show correct indicator */}
+                            {((mcqMode && selectedAnswer !== null) || !mcqMode) && optIndex === mcq.correctAnswer && (
                                 <Badge variant="secondary" className="bg-green-100 text-xs text-green-700">
                                     ✓ Correct
+                                </Badge>
+                            )}
+
+                            {/* Show selected indicator in quiz mode */}
+                            {mcqMode && selectedAnswer === optIndex && optIndex !== mcq.correctAnswer && (
+                                <Badge variant="secondary" className="bg-red-100 text-xs text-red-700">
+                                    ✗ Wrong
                                 </Badge>
                             )}
                         </div>
                     ))}
                 </div>
-
-                {/* Testing Services Section */}
-                {/* <div className="mb-4 border-t border-gray-200 pt-4">
-                    <Collapsible open={showTestingServices} onOpenChange={setShowTestingServices}>
-                        <CollapsibleTrigger asChild>
-                            <Button variant="ghost" className="h-auto w-full justify-between p-0">
-                                <div className="flex items-center space-x-2 text-sm font-medium text-gray-700">
-                                    <TestTube className="h-4 w-4" />
-                                    <span>Available in Tests ({mcq.testingServices?.length})</span>
-                                </div>
-                                {showTestingServices ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                            </Button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="mt-3 space-y-2">
-                            {mcq.testingServices?.map((service: string, serviceIndex: number) => (
-                                <div key={serviceIndex} className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
-                                    <span className="text-sm text-gray-700">{service}</span>
-                                    <Button variant="ghost" size="sm">
-                                        Add to {service}
-                                    </Button>
-                                </div>
-                            ))}
-                        </CollapsibleContent>
-                    </Collapsible>
-                </div> */}
 
                 {/* MCQ Explanation Accordion */}
                 {mcq.explanation && (
@@ -184,7 +212,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
                             <CollapsibleContent className="mt-1 md:mt-3">
                                 <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                                     <p className="text-sm leading-relaxed text-gray-700">{mcq.explanation}</p>
-                                    {selectedAnswer !== null && (
+                                    {mcqMode && selectedAnswer !== null && (
                                         <div className="mt-3 border-t border-blue-200 pt-3">
                                             <Badge
                                                 variant="secondary"
@@ -195,6 +223,13 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0 }) => {
                                                 {selectedAnswer === mcq.correctAnswer
                                                     ? '🎉 Excellent! You got it right!'
                                                     : `❌ The correct answer is option ${String.fromCharCode(65 + mcq.correctAnswer)}.`}
+                                            </Badge>
+                                        </div>
+                                    )}
+                                    {!mcqMode && (
+                                        <div className="mt-3 border-t border-blue-200 pt-3">
+                                            <Badge variant="secondary" className="bg-green-100 text-green-700">
+                                                📚 Correct answer: Option {String.fromCharCode(65 + mcq.correctAnswer)}
                                             </Badge>
                                         </div>
                                     )}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\McqController;
 use App\Http\Controllers\McqsRephraseController;
 use App\Http\Controllers\PaperController;
@@ -12,9 +13,7 @@ use Inertia\Inertia;
 Route::get('/hello', [SampleQuiz::class, 'index']);
 
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::get('/', [HomepageController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');

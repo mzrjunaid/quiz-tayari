@@ -7,12 +7,19 @@ import AppLogo from './app-logo';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { SidebarMenuButton, SidebarTrigger, useSidebar } from './ui/sidebar';
+import { SidebarMenuButton, SidebarTrigger } from './ui/sidebar';
 import { UserMenuContent } from './user-menu-content';
 
-export default function PublicHeader() {
+interface Props {
+    setMcqMode: (mode: boolean) => void;
+    mcqMode: boolean;
+}
+
+export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
+    const handleMcqToggle = (): void => {
+        setMcqMode(!mcqMode);
+    };
     const { auth } = usePage<SharedData>().props;
-    const { state } = useSidebar();
     const isMobile = useIsMobile();
     const getInitials = useInitials();
     return (
@@ -40,8 +47,8 @@ export default function PublicHeader() {
                             Analytics
                         </a>
                     </div>
-                    {auth.user ? (
-                        <div className="me-4 flex items-center space-x-4">
+                    <div className="me-4 flex items-center space-x-4">
+                        {auth.user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <SidebarMenuButton size="lg" className="focus-visible:ring-0">
@@ -64,25 +71,28 @@ export default function PublicHeader() {
                                 <DropdownMenuContent
                                     className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
                                     align="end"
-                                    side={isMobile ? 'bottom' : state === 'collapsed' ? 'bottom' : 'bottom'}
+                                    side="bottom"
                                 >
                                     <UserMenuContent user={auth.user} />
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            {/* <Button variant="link" size="icon" className="text-gray-800 md:block size-6" asChild>
-                                <UserCircle2 className="" />
-                            </Button> */}
-                        </div>
-                    ) : (
-                        <div className="flex items-center space-x-4">
-                            <Button variant="link" size="icon" className="text-gray-800 md:block" onClick={() => router.get(route('login'))}>
-                                <UserCircle2 className="size-6" />
+                        ) : (
+                            <Button
+                                variant="link"
+                                size="icon"
+                                className="size-6 md:block md:size-8"
+                                onClick={() => router.get(route('login'))}
+                                asChild
+                            >
+                                <UserCircle2 />
                             </Button>
-                            <Button variant="outline" size="sm" className="hidden text-gray-800 lg:block">
-                                Get Started
+                        )}
+                        {!isMobile && (
+                            <Button variant="outline" size="sm" className="hidden text-gray-800 lg:block" onClick={handleMcqToggle}>
+                                {mcqMode ? 'MCQ Mode' : 'Reading Mode'}
                             </Button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </nav>

@@ -7,7 +7,11 @@ import { Bookmark, BookOpen, Bot, Brain, FileText, Filter, Search, Target, Trend
 import { useEffect, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
-const MCQHomepage = () => {
+interface Props {
+    mcqMode: boolean;
+}
+
+const MCQHomepage = ({ mcqMode }: Props) => {
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
     const [selectedTestService, setSelectedTestService] = useState('All Services');
@@ -284,10 +288,10 @@ const MCQHomepage = () => {
                                 <h3 className="text-xl font-semibold text-black">MCQs ({filteredMCQs.length} found)</h3>
                                 <div className="flex items-center space-x-2">
                                     <Select>
-                                        <SelectTrigger className="rounded border border-gray-300 px-3 py-1 text-sm focus:ring-2 focus:ring-gray-400 focus:outline-none">
+                                        <SelectTrigger>
                                             <SelectValue placeholder="Sort By" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent align="end">
                                             <SelectGroup>
                                                 <SelectItem value="most_popular">Most Popular</SelectItem>
                                                 <SelectItem value="newest">Newest</SelectItem>
@@ -301,7 +305,7 @@ const MCQHomepage = () => {
 
                             <div className="space-y-4 md:space-y-6">
                                 {filteredMCQs.map((mcq, index) => (
-                                    <McqCard mcq={mcq} index={index} />
+                                    <McqCard mcq={mcq} index={index} mcqMode={mcqMode} />
                                 ))}
                             </div>
                         </div>

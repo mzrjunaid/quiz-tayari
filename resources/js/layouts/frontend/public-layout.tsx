@@ -1,6 +1,7 @@
 // import { BreadcrumbItem } from '@/types';
 import { PublicSidebar } from '@/components/public-sidebar';
 import PublicHeader from '@/components/site-header';
+import { Button } from '@/components/ui/button';
 
 // import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -9,9 +10,14 @@ import { Head } from '@inertiajs/react';
 interface Props {
     children: React.ReactNode;
     title: string;
+    setMcqMode: (mode: boolean) => void;
+    mcqMode: boolean;
 }
 
-export function PublicLayout({ children, title }: Props) {
+export function PublicLayout({ children, title, mcqMode, setMcqMode }: Props) {
+    const handleMcqToggle = (): void => {
+        setMcqMode(!mcqMode);
+    };
     return (
         <>
             <Head title={title}>
@@ -21,9 +27,12 @@ export function PublicLayout({ children, title }: Props) {
             </Head>
             <SidebarProvider defaultOpen={false}>
                 <PublicSidebar />
-                <SidebarInset>
-                    <PublicHeader />
+                <SidebarInset className="relative">
+                    <PublicHeader mcqMode={mcqMode} setMcqMode={setMcqMode} />
                     {children}
+                    <Button variant="default" size="sm" className="fixed right-2 bottom-5 lg:hidden" onClick={handleMcqToggle}>
+                        {mcqMode ? 'MCQ Mode' : 'Reading Mode'}
+                    </Button>
                 </SidebarInset>
             </SidebarProvider>
         </>
