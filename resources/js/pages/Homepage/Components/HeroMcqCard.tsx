@@ -24,14 +24,14 @@ export default function HeroMcqPreview({ sampleMCQs, currentMCQ }: Props) {
     }
     return (
         <div className="relative hidden lg:block">
-            <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-xl">
+            <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-xl dark:bg-gray-700 dark:text-foreground">
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                         <div className="h-3 w-3 animate-pulse rounded-full bg-green-400"></div>
-                        <span className="text-sm font-medium text-gray-600">Live MCQ Preview</span>
+                        <span className="text-sm font-medium text-gray-600 dark:text-foreground">Live MCQ Preview</span>
                     </div>
                     {sampleMCQs[currentMCQ].aiEnhanced && (
-                        <div className="flex items-center space-x-1 rounded-full bg-black px-3 py-1 text-xs text-white">
+                        <div className="flex items-center space-x-1 rounded-full bg-gray-900 px-3 py-1 text-xs text-white">
                             <Bot className="h-3 w-3" />
                             <span>AI Enhanced</span>
                         </div>

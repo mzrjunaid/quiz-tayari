@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from '@inertiajs/react';
 import { Bot, ChevronDown, ChevronUp, Eye, Share2, Tag } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -46,6 +47,7 @@ const mockMCQ: MCQ = {
 const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMode }) => {
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const isMobile = useIsMobile();
 
     // Handle mcqMode changes
     useEffect(() => {
@@ -80,22 +82,22 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
         if (mcqMode) {
             // Quiz mode: original logic
             if (selectedAnswer === null) {
-                return `${baseClasses} ${cursorClass} bg-gray-50 hover:bg-gray-100 border border-transparent`;
+                return `${baseClasses} ${cursorClass} bg-gray-50 dark:bg-gray-400 hover:bg-gray-100 border border-transparent`;
             }
 
             if (optIndex === mcq.correctAnswer) {
                 return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200 hover:bg-green-100`;
             } else if (optIndex === selectedAnswer && optIndex !== mcq.correctAnswer) {
-                return `${baseClasses} ${cursorClass} bg-red-50 border-2 border-red-200 hover:bg-red-100`;
+                return `${baseClasses} ${cursorClass} bg-gray-50 dark:bg-gray-400 border-2 border-red-200 hover:bg-red-100`;
             } else {
-                return `${baseClasses} ${cursorClass} bg-gray-50 opacity-60 border border-transparent`;
+                return `${baseClasses} ${cursorClass} bg-gray-50 dark:bg-gray-400 opacity-60 border border-transparent`;
             }
         } else {
             // Reading mode: show correct answer highlighted, others dimmed
             if (optIndex === mcq.correctAnswer) {
                 return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`;
             } else {
-                return `${baseClasses} ${cursorClass} bg-gray-50 opacity-50 border border-transparent`;
+                return `${baseClasses} ${cursorClass} bg-gray-50 dark:bg-gray-400 opacity-50 border border-transparent`;
             }
         }
     };
@@ -103,22 +105,22 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
     const getDifficultyBadgeVariant = (difficulty: string) => {
         switch (difficulty) {
             case 'Easy':
-                return 'bg-green-100 text-green-700 hover:bg-green-200';
+                return 'bg-green-100 py-1 text-green-700 hover:bg-green-200';
             case 'Medium':
-                return 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200';
+                return 'bg-yellow-100 py-1 text-yellow-700 hover:bg-yellow-200';
             case 'Hard':
-                return 'bg-red-100 text-red-700 hover:bg-red-200';
+                return 'bg-red-100 py-1 text-red-700 hover:bg-red-200';
             default:
-                return 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+                return 'bg-gray-100 py-1 text-gray-700 hover:bg-gray-200';
         }
     };
 
     return (
-        <Card className="transition-shadow hover:shadow-lg">
+        <Card className="transition-shadow hover:shadow-lg dark:bg-gray-700 dark:text-foreground">
             <CardContent className="p-4 md:p-6">
                 {/* Header with Subject and Share */}
                 <div className="mb-2 flex items-center justify-between md:mb-4">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-2 space-x-2">
                         <Badge variant="default" className="bg-black text-white hover:bg-gray-800">
                             <span className="max-w-26 truncate md:max-w-36">{mcq.subject}</span>
                         </Badge>
@@ -141,24 +143,26 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                 </div>
 
                 {/* Tags Section */}
-                {mcq.tags && (
-                    <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center md:mb-4">
-                        <div className="flex items-center space-x-2">
-                            <Tag className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm font-medium text-gray-700">Tags:</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {mcq.tags.map((tag: string, tagIndex: number) => (
-                                <Badge key={tagIndex} variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200">
-                                    <span className="max-w-20 truncate">{tag}</span>
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                {!isMobile
+                    ? mcq.tags && (
+                          <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center md:mb-4">
+                              <div className="flex items-center space-x-2">
+                                  <Tag className="h-4 w-4 text-gray-500" />
+                                  <span className="text-sm font-medium text-gray-700">Tags:</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                  {mcq.tags.map((tag: string, tagIndex: number) => (
+                                      <Badge key={tagIndex} variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200">
+                                          <span className="max-w-20 truncate">{tag}</span>
+                                      </Badge>
+                                  ))}
+                              </div>
+                          </div>
+                      )
+                    : ''}
 
                 {/* Question */}
-                <h4 className="mb-2 text-lg font-semibold text-black md:mb-4">
+                <h4 className="mb-2 text-lg font-semibold md:mb-4">
                     Q{index + 1}. {mcq.question}
                 </h4>
 
@@ -176,7 +180,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                             <div className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 bg-white">
                                 <span className="text-xs font-medium text-gray-600">{String.fromCharCode(65 + optIndex)}</span>
                             </div>
-                            <span className="flex-1 text-gray-700 font-semibold">{option}</span>
+                            <span className="flex-1 font-semibold text-gray-800">{option}</span>
 
                             {/* Show correct indicator */}
                             {((mcqMode && selectedAnswer !== null) || !mcqMode) && optIndex === mcq.correctAnswer && (
@@ -201,7 +205,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                         <Collapsible open={showExplanation} onOpenChange={setShowExplanation}>
                             <CollapsibleTrigger asChild>
                                 <Button variant="ghost" className="h-auto w-full justify-between">
-                                    <span className="text-sm font-medium text-gray-700">Explanation</span>
+                                    <span className="text-sm font-medium">Explanation</span>
                                     {showExplanation ? (
                                         <ChevronUp className="h-4 w-4 text-gray-500" />
                                     ) : (
@@ -241,7 +245,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
 
                 {/* Footer */}
                 <div className="flex items-center justify-between border-t border-gray-200 pt-2 md:pt-4">
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center space-x-4 text-sm">
                         <span className="flex items-center">
                             <Eye className="mr-1 inline h-4 w-4" />
                             {mcq.views}
@@ -253,7 +257,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
 
                     <div className="flex items-center space-x-2">
                         {mcq.testService && (
-                            <Badge variant="outline" className="font-semibold">
+                            <Badge variant="secondary" className="px-3 py-1 font-semibold">
                                 {mcq.testService}
                             </Badge>
                         )}

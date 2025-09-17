@@ -1,7 +1,7 @@
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Link } from '@inertiajs/react';
 import { Bookmark, BookOpen, Bot, Brain, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -187,31 +187,36 @@ const MCQHomepage = ({ mcqMode }: Props) => {
     });
 
     return (
-        <div className="min-h-screen bg-white text-black">
+        <div className="min-h-screen bg-gray-100 text-black">
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
 
             {/* Search and Filter Section */}
-            <section className="border-b border-gray-200 bg-white px-4 py-6 sm:px-6 md:py-12 lg:px-8">
+            <section className="border-b border-gray-200 px-4 py-6 sm:px-6 md:py-12 lg:px-8 dark:bg-gray-800 dark:text-foreground">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
-                            <h2 className="mb-2 text-xl font-bold text-black md:text-3xl">Explore MCQs</h2>
+                            <h2 className="mb-2 text-xl font-bold md:text-3xl">Explore MCQs</h2>
                             <p className="text-sm text-muted-foreground md:text-xl">Find the perfect questions for your preparation</p>
                         </div>
 
-                        <div className="flex flex-row items-center space-x-4">
-                            <div className="relative">
-                                <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+                        <div className="flex w-full flex-row items-center space-x-4 md:w-auto">
+                            <div className="relative w-full flex-1">
+                                <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />
                                 <Input
                                     type="text"
                                     placeholder="Search MCQs, topics, or keywords..."
-                                    className="rounded-lg border border-gray-300 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-gray-400 focus:outline-none"
+                                    className="rounded-lg bg-white py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-700"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <Button variant="outline" onClick={() => setShowFilters(!showFilters)} size="icon" className="">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowFilters(!showFilters)}
+                                size="icon"
+                                className="dark:border-gray-700 dark:bg-gray-700"
+                            >
                                 <Filter className="h-5 w-5" />
                             </Button>
                         </div>
@@ -285,19 +290,17 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                     <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
                         <div className="lg:col-span-2">
                             <div className="mb-6 flex items-center justify-between">
-                                <h3 className="text-xl font-semibold text-black">MCQs ({filteredMCQs.length} found)</h3>
+                                <h3 className="text-xl font-semibold">MCQs ({filteredMCQs.length} found)</h3>
                                 <div className="flex items-center space-x-2">
                                     <Select>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="bg-white dark:border-gray-400 dark:bg-gray-700">
                                             <SelectValue placeholder="Sort By" />
                                         </SelectTrigger>
                                         <SelectContent align="end">
-                                            <SelectGroup>
-                                                <SelectItem value="most_popular">Most Popular</SelectItem>
-                                                <SelectItem value="newest">Newest</SelectItem>
-                                                <SelectItem value="difficulty">Difficulty</SelectItem>
-                                                <SelectItem value="success_rate">Success Rate</SelectItem>
-                                            </SelectGroup>
+                                            <SelectItem value="most_popular">Most Popular</SelectItem>
+                                            <SelectItem value="newest">Newest</SelectItem>
+                                            <SelectItem value="difficulty">Difficulty</SelectItem>
+                                            <SelectItem value="success_rate">Success Rate</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -313,8 +316,8 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                         {/* Sidebar */}
                         <div className="space-y-8">
                             {/* Features Overview */}
-                            <div className="rounded-lg bg-gray-50 p-6">
-                                <h3 className="mb-4 text-lg font-semibold text-black">Platform Features</h3>
+                            <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-700">
+                                <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
                                 <div className="space-y-4">
                                     {features.map((feature, index) => (
                                         <div key={index} className="flex items-center space-x-3">
@@ -322,8 +325,8 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                                 <feature.icon className="h-5 w-5 text-white" />
                                             </div>
                                             <div>
-                                                <h4 className="text-sm font-medium text-black">{feature.title}</h4>
-                                                <p className="text-xs text-gray-600">{feature.count}</p>
+                                                <h4 className="text-sm font-medium text-foreground">{feature.title}</h4>
+                                                <p className="text-xs text-gray-600 dark:text-gray-300">{feature.count}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -331,29 +334,27 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                             </div>
 
                             {/* Most Repeating MCQs */}
-                            <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6">
-                                <h3 className="mb-2 flex items-center text-lg font-semibold text-black md:mb-4">
+                            <div className="rounded-lg border border-gray-700 bg-white p-4 md:p-6 dark:bg-gray-700">
+                                <h3 className="mb-2 flex items-center text-lg font-semibold md:mb-4">
                                     <TrendingUp className="mr-2 h-5 w-5" />
                                     Most Repeating MCQs
                                 </h3>
                                 <div className="space-y-3">
                                     {mostRepeatingMCQs.map((mcq, index) => (
                                         <div key={index} className="mb:pb-3 overflow-hidden border-b border-gray-100 pb-2 last:border-b-0">
-                                            <Link href="#" className="text-sm font-medium whitespace-normal text-black hover:underline">
+                                            <Link href="#" className="text-sm font-semibold whitespace-normal text-black hover:underline">
                                                 {mcq.question}
                                             </Link>
                                             <div className="mt-1 flex items-center justify-between">
-                                                <span className="max-w-40 truncate text-xs text-gray-500">{mcq.subject} testing out suggestion</span>
-                                                <span className="text-xs text-gray-600">{mcq.attempts.toLocaleString()} attempts</span>
+                                                <span className="max-w-40 truncate text-xs text-gray-500 dark:text-gray-300">{mcq.subject}</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-300">
+                                                    {mcq.attempts.toLocaleString()} attempts
+                                                </span>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <Button
-                                    variant="secondary"
-                                    className="mt-2 w-full md:mt-4"
-                                    // className="mt-4 w-full rounded bg-gray-100 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-200"
-                                >
+                                <Button variant="outline" className="mt-2 w-full md:mt-4">
                                     View All Trending
                                 </Button>
                             </div>

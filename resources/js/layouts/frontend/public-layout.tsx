@@ -31,7 +31,7 @@ export function PublicLayout({ children, title, mcqMode, setMcqMode }: Props) {
                     <PublicHeader mcqMode={mcqMode} setMcqMode={setMcqMode} />
                     {children}
                     <Button variant="default" size="sm" className="fixed right-2 bottom-5 lg:hidden" onClick={handleMcqToggle}>
-                        {mcqMode ? 'MCQ Mode' : 'Reading Mode'}
+                        {mcqMode ? 'Reading Mode' : 'MCQ Mode'}
                     </Button>
                 </SidebarInset>
             </SidebarProvider>
