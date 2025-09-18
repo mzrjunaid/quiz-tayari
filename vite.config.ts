@@ -5,6 +5,15 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    server: {
+        host: true,
+        port: 5173,
+        cors: true,
+        hmr: {
+            host: '192.168.1.100', // your machine’s LAN IP
+        },
+    },
+
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],

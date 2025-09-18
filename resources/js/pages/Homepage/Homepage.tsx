@@ -32,7 +32,6 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Computer Science',
             difficulty: 'Medium',
             views: 1250,
-            attempts: 890,
             successRate: 78,
             aiEnhanced: true,
             tags: ['Algorithm', 'Binary Search', 'Complexity'],
@@ -48,7 +47,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Biology',
             difficulty: 'Easy',
             views: 2150,
-            attempts: 1560,
+
             successRate: 92,
             aiEnhanced: true,
             tags: ['Cell Biology', 'Organelles'],
@@ -62,7 +61,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Mathematics',
             difficulty: 'Easy',
             views: 1890,
-            attempts: 1234,
+
             successRate: 85,
             aiEnhanced: false,
             tags: ['Calculus', 'Derivatives', 'Trigonometry'],
@@ -76,7 +75,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Chemistry',
             difficulty: 'Easy',
             views: 1670,
-            attempts: 1123,
+
             successRate: 88,
             aiEnhanced: true,
             tags: ['Atmosphere', 'Gases'],
@@ -90,7 +89,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Geography',
             difficulty: 'Medium',
             views: 980,
-            attempts: 678,
+
             successRate: 65,
             aiEnhanced: false,
             tags: ['World Geography', 'Capitals'],
@@ -104,7 +103,6 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             subject: 'Computer Science',
             difficulty: 'Medium',
             views: 1456,
-            attempts: 967,
             successRate: 74,
             aiEnhanced: true,
             tags: ['OOP', 'Inheritance', 'Programming'],
@@ -187,12 +185,12 @@ const MCQHomepage = ({ mcqMode }: Props) => {
     });
 
     return (
-        <div className="min-h-screen bg-gray-100 text-black">
+        <div className="min-h-screen">
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
 
             {/* Search and Filter Section */}
-            <section className="border-b border-gray-200 px-4 py-6 sm:px-6 md:py-12 lg:px-8 dark:bg-gray-800 dark:text-foreground">
+            <section className="border-b px-4 py-6 sm:px-6 md:py-12 lg:px-8 dark:bg-gray-800 dark:text-foreground">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
@@ -316,7 +314,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                         {/* Sidebar */}
                         <div className="space-y-8">
                             {/* Features Overview */}
-                            <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-700">
+                            <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-700">
                                 <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
                                 <div className="space-y-4">
                                     {features.map((feature, index) => (
@@ -334,7 +332,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                             </div>
 
                             {/* Most Repeating MCQs */}
-                            <div className="rounded-lg border border-gray-700 bg-white p-4 md:p-6 dark:bg-gray-700">
+                            <div className="rounded-lg bg-white p-4 shadow-md md:p-6 dark:bg-gray-700">
                                 <h3 className="mb-2 flex items-center text-lg font-semibold md:mb-4">
                                     <TrendingUp className="mr-2 h-5 w-5" />
                                     Most Repeating MCQs
@@ -354,7 +352,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                         </div>
                                     ))}
                                 </div>
-                                <Button variant="outline" className="mt-2 w-full md:mt-4">
+                                <Button variant="secondary" className="mt-2 w-full md:mt-4">
                                     View All Trending
                                 </Button>
                             </div>

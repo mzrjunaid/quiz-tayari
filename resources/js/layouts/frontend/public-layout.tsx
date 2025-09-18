@@ -1,4 +1,5 @@
 // import { BreadcrumbItem } from '@/types';
+import AppMode from '@/components/app-mode';
 import { PublicSidebar } from '@/components/public-sidebar';
 import PublicHeader from '@/components/site-header';
 import { Button } from '@/components/ui/button';
@@ -30,9 +31,12 @@ export function PublicLayout({ children, title, mcqMode, setMcqMode }: Props) {
                 <SidebarInset className="relative">
                     <PublicHeader mcqMode={mcqMode} setMcqMode={setMcqMode} />
                     {children}
-                    <Button variant="default" size="sm" className="fixed right-2 bottom-5 lg:hidden" onClick={handleMcqToggle}>
-                        {mcqMode ? 'Reading Mode' : 'MCQ Mode'}
-                    </Button>
+                    <div className="fixed right-2 bottom-5 flex gap-2 lg:hidden">
+                        <Button variant="default" size="sm" onClick={handleMcqToggle}>
+                            {mcqMode ? 'Reading Mode' : 'MCQ Mode'}
+                        </Button>
+                        <AppMode />
+                    </div>
                 </SidebarInset>
             </SidebarProvider>
         </>
