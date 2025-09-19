@@ -35,7 +35,7 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
 
                         <h1 className="mb-6 text-3xl leading-tight font-bold text-foreground md:text-5xl lg:text-6xl">
                             Master MCQs with
-                            <span className="block text-muted-foreground">Intelligent Practice</span>
+                            <span className="block text-muted-foreground/65">Intelligent Practice</span>
                         </h1>
 
                         <p className="mb-8 text-sm leading-relaxed md:text-xl">
@@ -58,13 +58,16 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
                             {stats.slice(0, 2).map((stat, index) => (
                                 <div
                                     key={index}
-                                    className="rounded-lg border bg-accent border-accent text-accent-foreground p-4 text-center shadow-xl dark:border-white/20 dark:bg-white/20"
+                                    // className="flex items-center rounded-lg border border-accent bg-card p-4 text-center text-card-foreground shadow-xl dark:border-white/20 dark:bg-white/20"
+                                    className="flex items-center rounded-lg bg-card p-4 text-center"
                                 >
-                                    <div className="mb-2 flex items-center justify-center">
+                                    <div className="flex items-center justify-center rounded-full border-2  p-2.5">
                                         <stat.icon className="h-6 w-6" />
                                     </div>
-                                    <div className="font-bold md:text-xl">{stat.number}</div>
-                                    <div className="text-xs md:text-sm">{stat.label}</div>
+                                    <div className="w-full">
+                                        <div className="font-bold md:text-xl">{stat.number}</div>
+                                        <div className="text-xs md:text-sm">{stat.label}</div>
+                                    </div>
                                 </div>
                             ))}
                         </div>

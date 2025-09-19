@@ -29,12 +29,11 @@ export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between py-4">
                     <SidebarTrigger className="ms-4 flex items-center transition-all md:left-0 xl:absolute" />
-                    <div className="flex items-center space-x-3">
-                        <AppLogo />
-                        {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black">
-                            <Brain className="h-6 w-6 text-white" />
-                        </div> */}
-                    </div>
+                    <Button variant="link" className="flex items-center space-x-3" asChild>
+                        <Link href="/" prefetch>
+                            <AppLogo />
+                        </Link>
+                    </Button>
                     <div className="hidden space-x-8 md:flex">
                         <Link className="block w-full" href={route('home')} prefetch onClick={cleanup}>
                             Home
@@ -74,7 +73,7 @@ export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
                             <Button
                                 variant="link"
                                 size="icon"
-                                className="size-6 md:block md:size-8"
+                                className="text-foreground md:block md:size-6"
                                 onClick={() => router.get(route('login'))}
                                 asChild
                             >

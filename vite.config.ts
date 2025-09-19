@@ -10,7 +10,7 @@ export default defineConfig({
         port: 5173,
         cors: true,
         hmr: {
-            host: '192.168.18.62', // your machine’s LAN IP
+            host: '192.168.1.100', // your machine’s LAN IP
         },
     },
 

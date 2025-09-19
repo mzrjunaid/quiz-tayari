@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from '@inertiajs/react';
@@ -82,7 +82,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
         if (mcqMode) {
             // Quiz mode: original logic
             if (selectedAnswer === null) {
-                return `${baseClasses} ${cursorClass} bg-gray-50 dark:bg-gray-400 hover:bg-gray-100 border border-transparent`;
+                return `${baseClasses} ${cursorClass} bg-background dark:bg-gray-400 hover:bg-accent border border-transparent`;
             }
 
             if (optIndex === mcq.correctAnswer) {
@@ -116,16 +116,16 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
     };
 
     return (
-        <Card className="transition-shadow hover:shadow-lg bg-secondary-foreground dark:bg-gray-700 dark:text-foreground">
-            <CardContent className="p-4 md:p-6">
+        <Card className="bg-card border-0 transition-shadow hover:shadow-lg">
+            <CardHeader>
                 {/* Header with Subject and Share */}
-                <div className="mb-2 flex items-center justify-between md:mb-4">
+                <div className="flex items-center justify-between">
                     <div className="flex flex-wrap items-center gap-2 space-x-2">
-                        <Badge variant="default" className="bg-black text-white hover:bg-gray-800">
+                        <Badge variant="default">
                             <span className="max-w-26 truncate md:max-w-36">{mcq.subject}</span>
                         </Badge>
                         {mcq.aiEnhanced && (
-                            <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                            <Badge variant="secondary">
                                 <Bot className="mr-1 h-3 w-3" />
                                 AI
                             </Badge>
@@ -145,7 +145,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                 {/* Tags Section */}
                 {!isMobile
                     ? mcq.tags && (
-                          <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center md:mb-4">
+                          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
                               <div className="flex items-center space-x-2">
                                   <Tag className="h-4 w-4 text-gray-500" />
                                   <span className="text-sm font-medium text-gray-700">Tags:</span>
@@ -160,7 +160,8 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                           </div>
                       )
                     : ''}
-
+            </CardHeader>
+            <CardContent>
                 {/* Question */}
                 <h4 className="mb-2 text-lg font-semibold md:mb-4">
                     Q{index + 1}. {mcq.question}
@@ -180,7 +181,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                             <div className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 bg-white">
                                 <span className="text-xs font-medium text-gray-600">{String.fromCharCode(65 + optIndex)}</span>
                             </div>
-                            <span className="flex-1 font-semibold text-gray-800">{option}</span>
+                            <span className="flex-1 font-semibold">{option}</span>
 
                             {/* Show correct indicator */}
                             {((mcqMode && selectedAnswer !== null) || !mcqMode) && optIndex === mcq.correctAnswer && (
@@ -201,7 +202,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
 
                 {/* MCQ Explanation Accordion */}
                 {mcq.explanation && (
-                    <div className="mb-2 border-t border-gray-200 pt-2 md:mb-4 md:pt-4">
+                    <div className="border-t border-primary/65 pt-2">
                         <Collapsible open={showExplanation} onOpenChange={setShowExplanation}>
                             <CollapsibleTrigger asChild>
                                 <Button variant="ghost" className="h-auto w-full justify-between">
@@ -215,7 +216,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                             </CollapsibleTrigger>
                             <CollapsibleContent className="mt-1 md:mt-3">
                                 <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                                    <p className="text-sm leading-relaxed text-gray-700">{mcq.explanation}</p>
+                                    <p className="text-sm leading-relaxed text-accent-foreground">{mcq.explanation}</p>
                                     {mcqMode && selectedAnswer !== null && (
                                         <div className="mt-3 border-t border-blue-200 pt-3">
                                             <Badge
@@ -242,28 +243,26 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                         </Collapsible>
                     </div>
                 )}
-
-                {/* Footer */}
-                <div className="flex items-center justify-between border-t border-gray-200 pt-2 md:pt-4">
-                    <div className="flex items-center space-x-4 text-sm">
-                        <span className="flex items-center">
-                            <Eye className="mr-1 inline h-4 w-4" />
-                            {mcq.views}
-                        </span>
-                        <Badge variant="secondary" className={getDifficultyBadgeVariant(mcq.difficulty)}>
-                            {mcq.difficulty}
-                        </Badge>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                        {mcq.testService && (
-                            <Badge variant="secondary" className="px-3 py-1 font-semibold">
-                                {mcq.testService}
-                            </Badge>
-                        )}
-                    </div>
-                </div>
             </CardContent>
+            <CardFooter className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 text-sm">
+                    <span className="flex items-center">
+                        <Eye className="mr-1 inline h-4 w-4" />
+                        {mcq.views}
+                    </span>
+                    <Badge variant="secondary" className={getDifficultyBadgeVariant(mcq.difficulty)}>
+                        {mcq.difficulty}
+                    </Badge>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                    {mcq.testService && (
+                        <Badge variant="secondary" className="px-3 py-1 font-semibold">
+                            {mcq.testService}
+                        </Badge>
+                    )}
+                </div>
+            </CardFooter>
         </Card>
     );
 };
