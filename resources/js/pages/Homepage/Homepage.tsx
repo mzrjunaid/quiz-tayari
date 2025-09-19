@@ -190,7 +190,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
 
             {/* Search and Filter Section */}
-            <section className="border-b px-4 py-6 sm:px-6 md:py-12 lg:px-8 dark:bg-gray-800 dark:text-foreground">
+            <section className="border-b px-4 py-6 sm:px-6 md:py-12 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
@@ -314,7 +314,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                         {/* Sidebar */}
                         <div className="space-y-8">
                             {/* Features Overview */}
-                            <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-700">
+                            <div className="rounded-lg bg-primary-foreground p-6 shadow-md dark:bg-gray-700">
                                 <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
                                 <div className="space-y-4">
                                     {features.map((feature, index) => (

@@ -78,7 +78,7 @@
 }
 
 :root {
-    --background: oklch(100% 0 0); /* pure white */
+    --background: oklch(95% 0.02 260); /* pure white */
     --foreground: oklch(27% 0.05 263); /* dark indigo-gray text */
 
     --card: oklch(100% 0 0);
@@ -90,8 +90,8 @@
     --primary: oklch(60% 0.2 264); /* brand indigo */
     --primary-foreground: oklch(98% 0 0); /* white text */
 
-    --secondary: oklch(95% 0.02 260); /* very light gray */
-    --secondary-foreground: oklch(35% 0.05 263);
+    --secondary: oklch(27% 0.05 263); /* very light gray */
+    --secondary-foreground: oklch(0.8695 0.0638 273.31);
 
     --muted: oklch(93% 0.01 260); /* light gray background */
     --muted-foreground: oklch(55% 0.02 260); /* gray text */

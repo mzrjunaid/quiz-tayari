@@ -116,7 +116,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
     };
 
     return (
-        <Card className="transition-shadow hover:shadow-lg dark:bg-gray-700 dark:text-foreground">
+        <Card className="transition-shadow hover:shadow-lg bg-secondary-foreground dark:bg-gray-700 dark:text-foreground">
             <CardContent className="p-4 md:p-6">
                 {/* Header with Subject and Share */}
                 <div className="mb-2 flex items-center justify-between md:mb-4">

@@ -24,7 +24,7 @@ interface Props {
 
 export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
     return (
-        <section className="bg-secondary px-4 pt-6 pb-12 sm:px-6 md:pt-12 lg:px-8">
+        <section className="px-4 pt-6 pb-12 sm:px-6 md:pt-12 lg:px-8">
             <div className="mx-auto max-w-7xl">
                 <div className="grid items-center gap-12 lg:grid-cols-2">
                     <div>
@@ -58,7 +58,7 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
                             {stats.slice(0, 2).map((stat, index) => (
                                 <div
                                     key={index}
-                                    className="rounded-lg border bg-white p-4 text-center shadow-xl dark:border-white/20 dark:bg-white/20"
+                                    className="rounded-lg border bg-accent border-accent text-accent-foreground p-4 text-center shadow-xl dark:border-white/20 dark:bg-white/20"
                                 >
                                     <div className="mb-2 flex items-center justify-center">
                                         <stat.icon className="h-6 w-6" />
