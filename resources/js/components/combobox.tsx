@@ -44,12 +44,12 @@ export function SelectBySearch({ data, placeholder, buttonStyle, contentStyle, o
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" role="combobox" aria-expanded={open} className={`w-[200px] justify-between ${buttonStyle}`}>
+                <Button variant="secondary" role="combobox" aria-expanded={open} className={`justify-between ${buttonStyle}`}>
                     {selectedOption?.label ?? placeholder}
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className={`w-[200px] p-0 ${contentStyle}`}>
+            <PopoverContent className={`p-0 ${contentStyle}`}>
                 <Command>
                     <CommandInput placeholder={placeholder} className="h-9" />
                     <CommandList>

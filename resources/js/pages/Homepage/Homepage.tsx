@@ -228,42 +228,37 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                             const value = selected?.label;
                                             if (value) setSelectedSubject(value);
                                         }}
+                                        buttonStyle="w-full"
+                                        contentStyle="md:w-[390px]"
                                     />
                                 </div>
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-gray-700">Job Type</label>
-                                    <Select value={selectedSubject} onValueChange={(value) => setSelectedSubject(value)}>
-                                        <SelectTrigger className="bg-input font-semibold transition-all focus:ring focus:ring-primary focus:outline-0">
-                                            <SelectValue className="px-3 py-2" placeholder="Select Testing Service" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {subjects.map((subject) => (
-                                                <SelectItem key={subject} value={subject}>
-                                                    {subject}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <SelectBySearch
+                                        data={jobTypes}
+                                        placeholder="Select Job Types"
+                                        onChange={(selected) => {
+                                            const value = selected?.label;
+                                            if (value) setSelectedJobType(value);
+                                        }}
+                                        buttonStyle="w-full"
+                                        contentStyle="md:w-[390px]"
+                                    />
                                 </div>
 
                                 <div>
                                     <label className="mb-2 block text-sm font-medium text-gray-700">Testing Service</label>
-                                    <Select value={selectedTestService} onValueChange={(value) => setSelectedTestService(value)}>
-                                        <SelectTrigger>
-                                            <SelectValue
-                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-gray-400 focus:outline-none"
-                                                placeholder="Select Testing Service"
-                                            />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {testServices.map((service) => (
-                                                <SelectItem key={service} value={service}>
-                                                    {service}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <SelectBySearch
+                                        data={testServices}
+                                        placeholder="Select Job Types"
+                                        onChange={(selected) => {
+                                            const value = selected?.label;
+                                            if (value) setSelectedTestService(value);
+                                        }}
+                                        buttonStyle="w-full"
+                                        contentStyle="md:w-[390px]"
+                                    />
                                 </div>
                             </div>
                         </div>
