@@ -82,7 +82,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
         if (mcqMode) {
             // Quiz mode: original logic
             if (selectedAnswer === null) {
-                return `${baseClasses} ${cursorClass} bg-background dark:bg-gray-400 hover:bg-accent border border-transparent`;
+                return `${baseClasses} ${cursorClass} bg-background hover:bg-accent border border-transparent`;
             }
 
             if (optIndex === mcq.correctAnswer) {
@@ -116,7 +116,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
     };
 
     return (
-        <Card className="bg-card border-0 transition-shadow hover:shadow-lg">
+        <Card className="border-0 bg-card transition-shadow hover:shadow-lg">
             <CardHeader>
                 {/* Header with Subject and Share */}
                 <div className="flex items-center justify-between">
@@ -131,7 +131,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                             </Badge>
                         )}
                         {/* Mode indicator */}
-                        <Badge variant="outline" className={mcqMode ? 'border-red-300 text-red-700' : 'border-green-300 text-green-700'}>
+                        <Badge variant="outline" className={mcqMode ? 'border-destructive text-destructive' : 'border-success text-success'}>
                             {mcqMode ? '📝 Quiz' : '📖 Study'}
                         </Badge>
                     </div>
@@ -152,7 +152,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                               </div>
                               <div className="flex flex-wrap gap-2">
                                   {mcq.tags.map((tag: string, tagIndex: number) => (
-                                      <Badge key={tagIndex} variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200">
+                                      <Badge key={tagIndex} variant="outline">
                                           <span className="max-w-20 truncate">{tag}</span>
                                       </Badge>
                                   ))}
@@ -166,13 +166,6 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                 <h4 className="mb-2 text-lg font-semibold md:mb-4">
                     Q{index + 1}. {mcq.question}
                 </h4>
-
-                {/* Mode instruction
-                {!mcqMode && (
-                    <p className="mb-3 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-700">
-                        📖 Study Mode: The correct answer is highlighted in green
-                    </p>
-                )} */}
 
                 {/* Options */}
                 <div className="mb-2 grid gap-2 sm:grid-cols-2 sm:gap-3 md:mb-4">
@@ -202,7 +195,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
 
                 {/* MCQ Explanation Accordion */}
                 {mcq.explanation && (
-                    <div className="border-t border-primary/65 pt-2">
+                    <div className="border-t pt-2">
                         <Collapsible open={showExplanation} onOpenChange={setShowExplanation}>
                             <CollapsibleTrigger asChild>
                                 <Button variant="ghost" className="h-auto w-full justify-between">

@@ -1,3 +1,4 @@
+import { SelectBySearch } from '@/components/combobox';
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -188,9 +189,8 @@ const MCQHomepage = ({ mcqMode }: Props) => {
         <div className="min-h-screen">
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
-
             {/* Search and Filter Section */}
-            <section className="border-b px-4 py-6 sm:px-6 md:py-12 lg:px-8">
+            <section className="border-y px-4 py-6 sm:px-6 md:py-12 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
@@ -198,23 +198,18 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                             <p className="text-sm text-muted-foreground md:text-xl">Find the perfect questions for your preparation</p>
                         </div>
 
-                        <div className="flex w-full flex-row items-center space-x-4 md:w-auto">
+                        <div className="flex w-full flex-row items-center space-x-4 md:max-w-sm">
                             <div className="relative w-full flex-1">
                                 <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />
                                 <Input
                                     type="text"
                                     placeholder="Search MCQs, topics, or keywords..."
-                                    className="rounded-lg bg-white py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-700"
+                                    className="w-full rounded-lg bg-input py-5 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:outline-none"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowFilters(!showFilters)}
-                                size="icon"
-                                className="dark:border-gray-700 dark:bg-gray-700"
-                            >
+                            <Button variant="outline" onClick={() => setShowFilters(!showFilters)} size="icon">
                                 <Filter className="h-5 w-5" />
                             </Button>
                         </div>
@@ -222,40 +217,30 @@ const MCQHomepage = ({ mcqMode }: Props) => {
 
                     {/* Filters */}
                     {showFilters && (
-                        <div className="mb-8 rounded-lg bg-gray-50 p-6">
+                        <div className="mb-8 rounded-lg bg-accent p-6 shadow">
                             <div className="grid gap-6 md:grid-cols-3">
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">Subject</label>
+                                    <label className="mb-2 block text-sm font-medium">Subject</label>
+                                    <SelectBySearch
+                                        data={subjects}
+                                        placeholder="Select Subject"
+                                        onChange={(selected) => {
+                                            const value = selected?.label;
+                                            if (value) setSelectedSubject(value);
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">Job Type</label>
                                     <Select value={selectedSubject} onValueChange={(value) => setSelectedSubject(value)}>
-                                        <SelectTrigger>
-                                            <SelectValue
-                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-gray-400 focus:outline-none"
-                                                placeholder="Select Testing Service"
-                                            />
+                                        <SelectTrigger className="bg-input font-semibold transition-all focus:ring focus:ring-primary focus:outline-0">
+                                            <SelectValue className="px-3 py-2" placeholder="Select Testing Service" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {subjects.map((subject) => (
                                                 <SelectItem key={subject} value={subject}>
                                                     {subject}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-gray-700">Job Type</label>
-                                    <Select value={selectedJobType} onValueChange={(value) => setSelectedJobType(value)}>
-                                        <SelectTrigger>
-                                            <SelectValue
-                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-gray-400 focus:outline-none"
-                                                placeholder="Select Testing Service"
-                                            />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {jobTypes.map((job) => (
-                                                <SelectItem key={job} value={job}>
-                                                    {job}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -305,6 +290,12 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                             </div>
 
                             <div className="space-y-4 md:space-y-6">
+                                {/* Mode instruction */}
+                                {!mcqMode && (
+                                    <p className="mb-3 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-700">
+                                        📖 Study Mode: The correct answer is highlighted in green
+                                    </p>
+                                )}
                                 {filteredMCQs.map((mcq, index) => (
                                     <McqCard mcq={mcq} index={index} mcqMode={mcqMode} />
                                 ))}
@@ -314,7 +305,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                         {/* Sidebar */}
                         <div className="space-y-8">
                             {/* Features Overview */}
-                            <div className="rounded-lg bg-primary-foreground p-6 shadow-md dark:bg-gray-700">
+                            <div className="rounded-lg bg-card p-6 shadow-md dark:bg-card">
                                 <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
                                 <div className="space-y-4">
                                     {features.map((feature, index) => (
@@ -332,7 +323,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                             </div>
 
                             {/* Most Repeating MCQs */}
-                            <div className="rounded-lg bg-white p-4 shadow-md md:p-6 dark:bg-gray-700">
+                            <div className="rounded-lg bg-card p-4 shadow-md md:p-6">
                                 <h3 className="mb-2 flex items-center text-lg font-semibold md:mb-4">
                                     <TrendingUp className="mr-2 h-5 w-5" />
                                     Most Repeating MCQs
@@ -340,7 +331,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                 <div className="space-y-3">
                                     {mostRepeatingMCQs.map((mcq, index) => (
                                         <div key={index} className="mb:pb-3 overflow-hidden border-b border-gray-100 pb-2 last:border-b-0">
-                                            <Link href="#" className="text-sm font-semibold whitespace-normal text-black hover:underline">
+                                            <Link href="#" className="text-sm font-semibold whitespace-normal hover:underline">
                                                 {mcq.question}
                                             </Link>
                                             <div className="mt-1 flex items-center justify-between">
@@ -352,7 +343,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                         </div>
                                     ))}
                                 </div>
-                                <Button variant="secondary" className="mt-2 w-full md:mt-4">
+                                <Button variant="outline" className="mt-2 w-full md:mt-4">
                                     View All Trending
                                 </Button>
                             </div>
@@ -373,25 +364,29 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                     </div>
                 </div>
             </section>
-
             {/* Call to Action */}
-            <section className="bg-black px-4 py-16 text-white sm:px-6 lg:px-8">
+            <section className="bg-accent px-4 py-16 text-accent-foreground sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-4xl text-center">
                     <h2 className="mb-6 text-4xl font-bold">Ready to Excel in Your Exams?</h2>
-                    <p className="mb-8 text-xl text-gray-300">
-                        Join thousands of students who have improved their scores with our AI-powered MCQ platform
-                    </p>
+                    <p className="mb-8 text-xl">Join thousands of students who have improved their scores with our AI-powered MCQ platform</p>
                     <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
-                        <button className="rounded-lg bg-white px-8 py-4 text-lg font-semibold text-black transition-all hover:bg-gray-100">
+                        <Button
+                            variant="default"
+                            size="lg"
+                            className="rounded-2xl px-12 py-8 text-lg font-semibold transition-all"
+                            // className="rounded-lg bg-white px-8 !py-4 text-lg font-semibold text-black transition-all hover:bg-gray-100"
+                        >
                             Start Free Trial
-                        </button>
-                        <button className="rounded-lg border border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black">
+                        </Button>
+                        <Button variant="outline" size="lg" className="rounded-2xl px-12 py-8 text-lg font-semibold transition-all">
+                            View Demo
+                        </Button>
+                        {/* <button className="rounded-lg border border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black">
                             View Pricing
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </section>
-
             {/* Footer */}
             <footer className="border-t border-gray-200 bg-gray-50 py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

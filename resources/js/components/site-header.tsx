@@ -5,6 +5,7 @@ import { SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ChevronsUpDown, UserCircle2 } from 'lucide-react';
 import AppLogo from './app-logo';
+import AppMode from './app-mode';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -18,9 +19,6 @@ interface Props {
 
 export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
     const cleanup = useMobileNavigation();
-    const handleMcqToggle = (): void => {
-        setMcqMode(!mcqMode);
-    };
     const { auth } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     const getInitials = useInitials();
@@ -80,11 +78,7 @@ export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
                                 <UserCircle2 />
                             </Button>
                         )}
-                        {!isMobile && (
-                            <Button variant="default" size="sm" onClick={handleMcqToggle}>
-                                {mcqMode ? 'Reading Mode' : 'MCQ Mode'}
-                            </Button>
-                        )}
+                        {!isMobile && <AppMode mcqMode={mcqMode} setMcqMode={setMcqMode} />}
                     </div>
                 </div>
             </div>

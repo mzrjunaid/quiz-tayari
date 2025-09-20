@@ -2,7 +2,26 @@ import { Button } from '@/components/ui/button';
 import { useAppearance } from '@/hooks/use-appearance';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
-export default function AppMode() {
+interface Props {
+    setMcqMode: (mode: boolean) => void;
+    mcqMode: boolean;
+    className?: string;
+}
+
+const modeButton = (appearance: string) => {
+    const baseClass = 'h-5 w-5 cursor-pointer text-secondary-foreground hover:text-primary';
+
+    switch (appearance) {
+        case 'light':
+            return <Moon className={baseClass} />;
+        case 'dark':
+            return <Sun className={baseClass} />;
+        default:
+            return <Monitor className={baseClass} />;
+    }
+};
+
+export default function AppMode({ mcqMode, setMcqMode, className }: Props) {
     const { appearance, updateAppearance } = useAppearance();
 
     // toggle function
@@ -12,11 +31,18 @@ export default function AppMode() {
         else updateAppearance('light');
     };
 
+    const handleMcqToggle = (): void => {
+        setMcqMode(!mcqMode);
+    };
+
     return (
-        <Button onClick={toggleMode} variant="outline" size="icon">
-            {appearance === 'light' && <Moon className="h-5 w-5" />}
-            {appearance === 'dark' && <Sun className="h-5 w-5" />}
-            {appearance === 'system' && <Monitor className="h-5 w-5" />}
-        </Button>
+        <div className={`flex items-center gap-2 ${className}`}>
+            <Button variant="default" size="sm" onClick={handleMcqToggle}>
+                {mcqMode ? 'Study Mode' : 'MCQ Mode'}
+            </Button>
+            <Button onClick={toggleMode} variant="link" size="icon" className='ms-2' asChild>
+                {modeButton(appearance)}
+            </Button>
+        </div>
     );
 }

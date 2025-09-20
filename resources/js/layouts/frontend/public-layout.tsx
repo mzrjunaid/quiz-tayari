@@ -2,10 +2,10 @@
 import AppMode from '@/components/app-mode';
 import { PublicSidebar } from '@/components/public-sidebar';
 import PublicHeader from '@/components/site-header';
-import { Button } from '@/components/ui/button';
 
 // import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Head } from '@inertiajs/react';
 
 interface Props {
@@ -16,9 +16,7 @@ interface Props {
 }
 
 export function PublicLayout({ children, title, mcqMode, setMcqMode }: Props) {
-    const handleMcqToggle = (): void => {
-        setMcqMode(!mcqMode);
-    };
+    const isMobile = useIsMobile();
     return (
         <>
             <Head title={title}>
@@ -31,12 +29,7 @@ export function PublicLayout({ children, title, mcqMode, setMcqMode }: Props) {
                 <SidebarInset className="relative">
                     <PublicHeader mcqMode={mcqMode} setMcqMode={setMcqMode} />
                     {children}
-                    <div className="fixed right-2 bottom-5 flex gap-2">
-                        <Button variant="default" size="sm" onClick={handleMcqToggle}>
-                            {mcqMode ? 'Reading Mode' : 'MCQ Mode'}
-                        </Button>
-                        <AppMode />
-                    </div>
+                    {isMobile && <AppMode mcqMode={mcqMode} setMcqMode={setMcqMode} className="fixed right-2 bottom-5" />}
                 </SidebarInset>
             </SidebarProvider>
         </>
