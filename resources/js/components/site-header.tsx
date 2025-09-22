@@ -1,11 +1,11 @@
 import { useInitials } from '@/hooks/use-initials';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ChevronsUpDown, UserCircle2 } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppMode from './app-mode';
+import { PublicNavigationMenu } from './public-nav';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
-    const cleanup = useMobileNavigation();
     const { auth } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     const getInitials = useInitials();
@@ -26,20 +25,16 @@ export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
         <nav className="sticky top-0 right-0 left-0 z-50 border-b shadow-sm backdrop-blur-lg">
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between py-4">
+                    {/* Mobile Sidebar Trigger */}
                     <SidebarTrigger className="ms-4 flex items-center transition-all md:left-0 xl:absolute" />
+                    {/* Site Logo */}
                     <Button variant="link" className="flex items-center space-x-3" asChild>
                         <Link href="/" prefetch>
                             <AppLogo />
                         </Link>
                     </Button>
-                    <div className="hidden space-x-8 md:flex">
-                        <Link className="block w-full" href={route('home')} prefetch onClick={cleanup}>
-                            Home
-                        </Link>
-                        <Link href="#tests">Tests</Link>
-                        <Link href="#subjects">Subjects</Link>
-                        <Link href="#analytics">Analytics</Link>
-                    </div>
+                    {/* Navigation Menu */}
+                    <PublicNavigationMenu />
                     <div className="me-4 flex items-center space-x-4">
                         {auth.user ? (
                             <DropdownMenu>
