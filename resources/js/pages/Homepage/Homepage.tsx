@@ -185,14 +185,15 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
         const matchesSearch =
             searchQuery === '' ||
             mcq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            mcq.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            mcq.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            mcq.paper?.department.toLowerCase().includes(searchQuery.toLowerCase());
 
         return matchesSubject && matchesJob && matchesService && matchesSearch;
     });
 
     return (
         <div className="min-h-screen">
-            <pre>{JSON.stringify(mcqs, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
             {/* Search and Filter Section */}

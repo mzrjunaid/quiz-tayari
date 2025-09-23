@@ -16,18 +16,13 @@ export function SitePagination() {
                     <PaginationPrevious size="sm" href="#" />
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationLink size="sm" href="#">
+                    <PaginationLink size="sm" href="#" isActive>
                         1
                     </PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationLink size="sm" href="#" isActive>
+                    <PaginationLink size="sm" href="#" >
                         2
-                    </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink size="sm" href="#">
-                        3
                     </PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
@@ -38,16 +33,7 @@ export function SitePagination() {
                         4
                     </PaginationLink>
                 </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink size="sm" href="#">
-                        5
-                    </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink size="sm" href="#">
-                        6
-                    </PaginationLink>
-                </PaginationItem>
+
                 <PaginationItem>
                     <PaginationNext size="sm" href="#" />
                 </PaginationItem>

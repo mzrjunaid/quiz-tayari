@@ -60,7 +60,6 @@ export default function OptionsComponent({
         const isCorrect = correctAnswers.includes(optKey);
         const isSelected = selectedAnswers.includes(optKey);
 
-        // const hasWrong = selectedAnswers.some((o) => !correctAnswers.includes(o));
         // const allCorrect = correctAnswers.every((c) => selectedAnswers.includes(c)) && selectedAnswers.length === correctAnswers.length;
 
         if (mcqMode) {
@@ -104,6 +103,9 @@ export default function OptionsComponent({
             ? `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`
             : `${baseClasses} ${cursorClass} bg-gray-50 opacity-50 border border-transparent`;
     };
+
+    // const hasWrong = selectedAnswers.some((o) => !correctAnswers.includes(o));
+
     return (
         <div className="mb-2 grid gap-2 sm:grid-cols-2 sm:gap-3 md:mb-4">
             {optionEntries.map(([key, value]) => (

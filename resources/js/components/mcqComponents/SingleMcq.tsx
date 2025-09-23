@@ -164,8 +164,10 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                 {/* Header with Subject and Share */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-wrap items-center gap-2 space-x-2">
-                        <Badge variant="default">
-                            <span className="max-w-26 truncate md:max-w-36">{mcq?.subject}</span>
+                        <Badge variant="default" asChild>
+                            <Link href="#" title={`View all Papers from ${mcq.subject}`}>
+                                <span className="max-w-26 truncate md:max-w-36">{mcq?.subject}</span>
+                            </Link>
                         </Badge>
                         <Badge variant="secondary">
                             <Bot className="mr-1 h-3 w-3" />
@@ -278,13 +280,18 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
                     )}
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    {mcq?.paper && (
-                        <Badge variant="secondary" className="px-3 py-1 font-semibold">
-                            {mcq.paper.testing_service.short} - {mcq.paper.department}
+                {mcq?.paper && (
+                    <div className="flex items-center space-x-2">
+                        <Badge variant="secondary" className="px-3 py-1 font-semibold hover:!bg-accent" asChild>
+                            <Link href="#">{mcq.paper.testing_service.short}</Link>
                         </Badge>
-                    )}
-                </div>
+                        <Badge variant="default" className="hidden px-3 py-1 font-semibold sm:block" asChild>
+                            <Link href="#" title={`View all Papers from ${mcq.paper.department}`}>
+                                <span className="truncate sm:max-w-26 md:max-w-36">{mcq.paper.department}</span>
+                            </Link>
+                        </Badge>
+                    </div>
+                )}
             </CardFooter>
         </Card>
     );
