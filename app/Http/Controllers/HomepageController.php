@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\McqResource;
 use App\Models\Homepage;
+use App\Models\Mcq;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +15,17 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        return Inertia::render('welcome',);
+
+        $mcqs = Mcq::latest()->paginate('6')->appends(request()->query());
+
+
+        // dd($mcqs);
+
+
+        return Inertia::render('welcome', [
+            'testing' => 'Hello from the controller',
+            'mcqs' =>  McqResource::collection($mcqs),
+        ]);
     }
 
     /**

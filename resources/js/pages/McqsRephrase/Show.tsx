@@ -32,7 +32,7 @@ export default function Show() {
 
     const handleRephrase = () => {
         router.get(
-            `/rephrase/${mcq?.q_id}/rephrase`,
+            route('rephrase.rephrase', mcq?.q_id),
             {
                 q_id: mcq?.q_id,
                 q_statement: mcq?.q_statement,
@@ -45,7 +45,7 @@ export default function Show() {
 
     const handleEdit = () => {
         router.post(
-            `/rephrase/${mcq?.q_id}/edit`,
+            route('rephrase.edit', mcq?.q_id),
             {
                 core_concept: core_concept,
                 tags_new: tags,

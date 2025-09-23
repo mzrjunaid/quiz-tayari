@@ -83,10 +83,10 @@ class StoreMcqRequest extends FormRequest
 
         // Dynamic rules based on question type or presence of correct_answers
         if ($this->input('question_type') === 'multiple' || $this->has('correct_answers')) {
-            $rules['correct_answers'] = 'required|array|min:1';
+            $rules['correct_answers'] = 'array|min:1';
             $rules['correct_answers.*'] = 'string|in:A,B,C,D,E';
         } else {
-            $rules['correct_answer'] = 'required|string|in:A,B,C,D,E';
+            $rules['correct_answer'] = 'string|in:A,B,C,D,E';
         }
 
         return $rules;

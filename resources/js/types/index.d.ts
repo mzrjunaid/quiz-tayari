@@ -36,9 +36,9 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
+    email_verified_at?: string | null;
+    created_at?: string;
+    updated_at?: string;
     [key: string]: unknown; // This allows for additional properties...
 }
 
@@ -79,7 +79,7 @@ export interface OldMcqs {
 
 export interface Mcqs {
     id: string;
-    serial_number?: number;
+    serial_number: number | null;
     slug: string;
     question: string;
     explanation: string;
@@ -90,8 +90,8 @@ export interface Mcqs {
         D?: string;
         E?: string;
     };
-    correct_answer: string;
-    correct_answers: string[];
+    correct_answer: string | null;
+    correct_answers: string[] | null;
     subject: string;
     topic: string;
     difficulty_level: 'easy' | 'medium' | 'hard' | undefined;
@@ -101,17 +101,23 @@ export interface Mcqs {
     is_verified: boolean;
     current_affair: boolean;
     general_knowledge: boolean;
-    created_by: User;
-    updated_by: User;
-    verified_by: User;
+    created_by: User | null;
+    updated_by: User | null;
+    verified_by: User | null;
     tags: string[];
     exam_types: string[];
-    paper: Paper;
-    created_at_human: string;
-    updated_at_human: string;
-    created_at_datetime: string;
-    updated_at_datetime: string;
-    deleted_at_datetime: string;
+    paper: Paper | null;
+    created_at: string | null;
+    updated_at: string | null;
+    deleted_at: string | null;
+    created_at_human: string | null;
+    updated_at_human: string | null;
+    deleted_at_human: string | null;
+    created_at_datetime: string | null;
+    updated_at_datetime: string | null;
+    deleted_at_datetime: string | null;
+    has_multiple_correct_answers?: true;
+    option_count?: 4;
     status: string;
 }
 
@@ -152,7 +158,7 @@ export type LinkPaginatedData<T> = {
 export interface Paper {
     id: string;
     slug: string;
-    serial_number?: number;
+    serial_number?: number | null;
     title: string;
     description: string;
     testing_service: {

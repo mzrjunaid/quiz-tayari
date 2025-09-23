@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Deleted MCQs',
-        href: '/deleted/mcqs',
+        href: route('mcqs.trashbin'),
     },
 ];
 
@@ -135,7 +135,7 @@ export const columns: ColumnDef<Mcqs>[] = [
 export default function Deleted({ mcqs, filters }: Props) {
     return (
         <DashboardLayout title="Deleted MCQs" breadcrumbs={breadcrumbs}>
-            <DataTable mcqs={mcqs} columns={columns} filters={filters} url="/deleted/mcqs" />
+            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.trashbin')} />
         </DashboardLayout>
     );
 }

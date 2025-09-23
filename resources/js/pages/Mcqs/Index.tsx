@@ -31,7 +31,7 @@ interface DataTableProps {
 }
 
 const rightOptions = (option: string, column: string, value: string) => {
-    return <div className={`max-w-xs break-words whitespace-normal capitalize ${option === column && 'font-semibold text-gray-900'}`}>{value}</div>;
+    return <div className={`max-w-xs break-words whitespace-normal capitalize ${option === column && 'font-semibold text-primary'}`}>{value}</div>;
 };
 
 const columns: ColumnDef<Mcqs>[] = [
@@ -52,7 +52,7 @@ const columns: ColumnDef<Mcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/mcqs/${row.original.slug}`} className="hover:underline">
+                <Link href={route('mcqs.show', row.original.slug)} className="hover:underline">
                     {row.getValue('question')}
                 </Link>
             </div>
@@ -89,14 +89,14 @@ const columns: ColumnDef<Mcqs>[] = [
         cell: ({ row }) => {
             const handleDelete = () => {
                 const slug = row.original.slug;
-                router.delete(`/mcqs/${slug}`, {
+                router.delete(route('mcqs.delete', slug), {
                     replace: true,
                 });
             };
 
             const updatePublish = (is_verified: boolean) => {
                 router.patch(
-                    `/mcqs/${row.original?.slug}/field`,
+                    route('mcqs.update-field', row.original?.slug),
                     {
                         field: 'is_verified',
                         value: is_verified,
@@ -147,9 +147,7 @@ const columns: ColumnDef<Mcqs>[] = [
                         </ButtonTooltip>
                     ) : (
                         <Button variant="link" asChild onClick={() => updatePublish(true)}>
-                            <span>
-                                <Check />
-                            </span>
+                            <Check />
                         </Button>
                     )}
                 </div>

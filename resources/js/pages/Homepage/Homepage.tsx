@@ -7,15 +7,17 @@ import { SitePagination } from '@/components/site-pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { LinkPaginatedData, Mcqs } from '@/types';
 import { Bookmark, BookOpen, Bot, Brain, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
 interface Props {
     mcqMode: boolean;
+    mcqs: LinkPaginatedData<Mcqs>;
 }
 
-const MCQHomepage = ({ mcqMode }: Props) => {
+const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
     const [selectedTestService, setSelectedTestService] = useState('All Services');
@@ -175,11 +177,11 @@ const MCQHomepage = ({ mcqMode }: Props) => {
         return () => clearInterval(interval);
     }, [sampleMCQs.length]);
 
-    const filteredMCQs = sampleMCQs.filter((mcq) => {
+    const filteredMCQs = mcqs.data.filter((mcq) => {
         const matchesSubject = selectedSubject === 'All Subjects' || mcq.subject === selectedSubject;
         const matchesJob =
             selectedJobType === 'All Jobs' || mcq.tags.some((tag) => tag.toLowerCase().includes(selectedJobType.toLowerCase().split(' ')[0]));
-        const matchesService = selectedTestService === 'All Services' || mcq.testService === selectedTestService;
+        const matchesService = selectedTestService === 'All Services' || mcq.paper?.testing_service.short === selectedTestService;
         const matchesSearch =
             searchQuery === '' ||
             mcq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -190,6 +192,7 @@ const MCQHomepage = ({ mcqMode }: Props) => {
 
     return (
         <div className="min-h-screen">
+            <pre>{JSON.stringify(mcqs, null, 2)}</pre>
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
             {/* Search and Filter Section */}
@@ -274,9 +277,11 @@ const MCQHomepage = ({ mcqMode }: Props) => {
                                 <h3 className="text-xl font-semibold">MCQs ({filteredMCQs.length} found)</h3>
                                 <div className="flex items-center space-x-2">
                                     <Select>
-                                        <SelectTrigger className="bg-white dark:border-gray-400 dark:bg-gray-700">
-                                            <SelectValue placeholder="Sort By" />
-                                        </SelectTrigger>
+                                        <Button variant="outline" asChild>
+                                            <SelectTrigger className="border border-primary/20 dark:border-primary/40">
+                                                <SelectValue placeholder="Sort By" />
+                                            </SelectTrigger>
+                                        </Button>
                                         <SelectContent align="end">
                                             <SelectItem value="most_popular">Most Popular</SelectItem>
                                             <SelectItem value="newest">Newest</SelectItem>

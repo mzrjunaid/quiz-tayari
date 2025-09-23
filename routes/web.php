@@ -5,17 +5,12 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\McqController;
 use App\Http\Controllers\McqsRephraseController;
 use App\Http\Controllers\PaperController;
-use App\Http\Controllers\SampleQuiz;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
-
-Route::get('/hello', [SampleQuiz::class, 'index']);
 
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::group(['prefix' => 'rephrase'], function () {
         Route::get('/', [McqsRephraseController::class, 'index'])->name('rephrase.index');
@@ -45,13 +40,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{slug}', [McqController::class, 'destroy'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.delete');
     });
-    Route::group(['prefix' => 'deleted'], function () {
+    Route::group(['prefix' => 'trash'], function () {
         Route::get('/mcqs', [McqController::class, 'deleted'])->name('mcqs.trashbin');
         Route::get('/{id}/restore', [McqController::class, 'restore'])->name('mcqs.restore');
         Route::get('/{id}/delete-permanently', [McqController::class, 'forceDelete'])->name('mcqs.delete-permanently');
     });
 
-    // Route::resource('papers', \App\Http\Controllers\PaperController::class);
     Route::group(['prefix' => 'papers'], function () {
         Route::get('/', [PaperController::class, 'index'])->name('papers.index');
         Route::get('/create', [PaperController::class, 'create'])->name('papers.create');

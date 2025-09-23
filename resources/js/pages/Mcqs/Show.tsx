@@ -48,7 +48,7 @@ export default function Show() {
     };
 
     const handleEdit = () => {
-        router.get(`/mcqs/${mcq?.slug}/edit`);
+        router.get(route('mcqs.edit', mcq?.slug), {}, { preserveScroll: true });
     };
 
     // Initialize with boolean values to prevent uncontrolled/controlled switch
@@ -72,7 +72,7 @@ export default function Show() {
         }
 
         router.patch(
-            `/mcqs/${mcq?.slug}/field`,
+            route('mcqs.update-field', mcq?.slug),
             { field, value },
             {
                 onStart: () => {
@@ -115,9 +115,7 @@ export default function Show() {
                     <div className="mb-4 flex gap-3">
                         <div className="flex flex-col gap-2 md:w-full md:flex-row md:justify-between">
                             <div>
-                                {mcq && (
-                                    <span className={`rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>
-                                )}
+                                {mcq && <span className={`rounded-4xl ${statusColors[mcq.status]} px-4 py-1 text-xs text-white`}>{mcq.status}</span>}
                             </div>
                             <div className="flex gap-2">
                                 <div className="flex items-center space-x-1">

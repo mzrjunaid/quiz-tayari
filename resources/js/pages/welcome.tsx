@@ -1,9 +1,14 @@
 // import AppLayout from '@/layouts/app-layout';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
+import { LinkPaginatedData, Mcqs } from '@/types';
 import { useEffect, useState } from 'react';
 import MCQHomepage from './Homepage/Homepage';
 
-export default function Welcome() {
+interface Props {
+    mcqs: LinkPaginatedData<Mcqs>;
+}
+
+export default function Welcome({ mcqs }: Props) {
     // const { auth } = usePage<SharedData>().props;
 
     const [mcqMode, setMcqMode] = useState(() => {
@@ -20,7 +25,7 @@ export default function Welcome() {
 
     return (
         <PublicLayout title="Hompage" mcqMode={mcqMode} setMcqMode={setMcqMode}>
-            <MCQHomepage mcqMode={mcqMode} />
+            <MCQHomepage mcqMode={mcqMode} mcqs={mcqs} />
             {/* <div>Homepage</div> */}
         </PublicLayout>
     );

@@ -59,7 +59,7 @@ export const columns: ColumnDef<OldMcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={`/rephrase/${row.getValue('q_id')}`} className="hover:underline">
+                <Link href={route('rephrase.show', row.getValue('q_id'))} className="hover:underline">
                     {row.getValue('q_statement')}
                 </Link>
             </div>
@@ -133,7 +133,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Mcqs List',
-        href: 'rephrase',
+        href: route('rephrase.index'),
     },
 ];
 

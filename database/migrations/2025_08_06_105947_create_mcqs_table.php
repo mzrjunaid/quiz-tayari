@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('option_d')->nullable();
             $table->text('option_e')->nullable(); // For questions with 5 options
 
-            $table->char('correct_answer', 1); // 'A', 'B', 'C', 'D', 'E'
+            $table->char('correct_answer', 1)->nullable(); // 'A', 'B', 'C', 'D', 'E'
 
             // For multiple correct answers (stored as JSON: ["A", "C"])
             $table->json('correct_answers')->nullable();

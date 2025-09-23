@@ -287,11 +287,15 @@ class McqController extends Controller
 
     public function store(StoreMcqRequest $request)
     {
+
+        // dd($request->all());
         $validated = $request->getProcessedData();
 
         DB::beginTransaction();
         try {
             $slug = Str::slug($validated['question']);
+
+            $correctAnswer = $validated['correct_answer'] ?? null;
 
             $mcqData = [
                 'slug' => $slug,
@@ -302,8 +306,8 @@ class McqController extends Controller
                 'option_c' => $validated['option_c'] ?? null,
                 'option_d' => $validated['option_d'] ?? null,
                 'option_e' => $validated['option_e'] ?? null,
-                'correct_answer' => $validated['correct_answer'],
-                'correct_answers' =>  $validated['correct_answers'] ?? null,
+                'correct_answer' => $validated['correct_answer'] ?? $correctAnswer,
+                'correct_answers' =>  $validated['correct_answers'] ??  $correctAnswer,
                 'paper_id' => $validated['paper'],
                 'subject' => $validated['subject'],
                 'topic' => $validated['topic'],
