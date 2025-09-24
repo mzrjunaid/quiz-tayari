@@ -54,7 +54,8 @@ export default function OptionsComponent({
         }
     };
     const getOptionClasses = (optKey: string): string => {
-        const baseClasses = 'flex items-center space-x-3 rounded-md p-3 text-sm transition-all duration-200';
+        const baseClasses =
+            'flex items-center space-x-3 rounded-md p-3 text-sm transition-all duration-200 dark:hover:bg-accent/20 dark:text-gray-950 hover:dark:text-white';
         const cursorClass = mcqMode && !disabled ? 'cursor-pointer' : 'cursor-not-allowed';
 
         const isCorrect = correctAnswers.includes(optKey);
@@ -74,7 +75,7 @@ export default function OptionsComponent({
                     return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`;
                 }
                 if (disabled && isCorrect) {
-                    return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`;
+                    return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200 `;
                 } else if (isSelected && !isCorrect) {
                     return `${baseClasses} ${cursorClass} bg-red-50 border-2 border-red-200`;
                 } else {
@@ -85,23 +86,23 @@ export default function OptionsComponent({
             // --- single choice logic ---
             if (isSingle) {
                 if (!disabled) {
-                    return `${baseClasses} ${cursorClass} bg-background hover:bg-accent border border-transparent`;
+                    return `${baseClasses} ${cursorClass} bg-background hover:bg-accent border border-transparent `;
                 }
 
                 if (isCorrect) {
-                    return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`;
+                    return `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200 `;
                 } else if (isSelected && !isCorrect) {
-                    return `${baseClasses} ${cursorClass} bg-red-50 border-2 border-red-200`;
+                    return `${baseClasses} ${cursorClass} bg-red-50 border-2 border-red-200 `;
                 } else {
-                    return `${baseClasses} ${cursorClass} bg-gray-50 opacity-60 border border-transparent`;
+                    return `${baseClasses} ${cursorClass} bg-gray-50 opacity-60 border border-transparent `;
                 }
             }
         }
 
         // Study mode
         return isCorrect
-            ? `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200`
-            : `${baseClasses} ${cursorClass} bg-gray-50 opacity-50 border border-transparent`;
+            ? `${baseClasses} ${cursorClass} bg-green-50 border-2 border-green-200 `
+            : `${baseClasses} ${cursorClass} bg-gray-50 opacity-50 border border-transparent `;
     };
 
     // const hasWrong = selectedAnswers.some((o) => !correctAnswers.includes(o));

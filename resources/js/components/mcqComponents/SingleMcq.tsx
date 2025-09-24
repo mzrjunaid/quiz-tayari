@@ -238,17 +238,20 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
                                     <p className="text-sm leading-relaxed text-accent-foreground">{mcq.explanation}</p>
 
                                     {/* Quiz Mode Feedback */}
-                                    {mcqMode && selectedAnswers.length > 0 && (
+                                    {mcqMode && Array.isArray(selectedAnswers) && selectedAnswers.length > 0 && (
                                         <div className="mt-3 border-t border-blue-200 pt-3">
-                                            {selectedAnswers.every((ans) => correctAnswers.includes(ans)) &&
+                                            {Array.isArray(correctAnswers) &&
+                                            selectedAnswers.every((ans) => correctAnswers.includes(ans)) &&
                                             correctAnswers.length === selectedAnswers.length ? (
                                                 <Badge variant="secondary" className="bg-green-100 text-green-700">
                                                     🎉 Excellent! You got all correct!
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="secondary" className="bg-red-100 text-red-700">
-                                                    ❌ Correct answers: {correctAnswers.join(', ')}
-                                                </Badge>
+                                                Array.isArray(correctAnswers) && (
+                                                    <Badge variant="secondary" className="bg-red-100 text-red-700">
+                                                        ❌ Correct answers: {correctAnswers.join(', ')}
+                                                    </Badge>
+                                                )
                                             )}
                                         </div>
                                     )}
@@ -257,7 +260,9 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
                                     {!mcqMode && (
                                         <div className="mt-3 border-t border-blue-200 pt-3">
                                             <Badge variant="secondary" className="bg-green-100 text-green-700">
-                                                📚 Correct answers: {correctAnswers.join(', ')}
+                                                {Array.isArray(correctAnswers)
+                                                    ? `📚 Correct answer(s): ${correctAnswers.join(', ')}`
+                                                    : `📚 Correct answer(s): ${correctAnswers}`}
                                             </Badge>
                                         </div>
                                     )}

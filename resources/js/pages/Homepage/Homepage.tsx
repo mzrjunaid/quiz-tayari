@@ -196,7 +196,7 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
 
     return (
         <div className="min-h-screen">
-            <pre>{JSON.stringify(mcqs, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
             {/* Search and Filter Section */}
