@@ -42,6 +42,33 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface PaginationLinks {
+    first: string;
+    last: string;
+    prev: string;
+    next: string;
+}
+export interface PaginationMeta {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: {
+        url: string;
+        label: string;
+        active: boolean;
+    }[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+}
+
+export interface PaginationProps {
+    links: PaginationLinks;
+    meta: PaginationMeta;
+    scrollRef?: RefObject<HTMLDivElement | null>;
+}
+
 export interface DashboardProps<T = unknown> {
     latest_mcqs?: T[];
     stats: {
@@ -133,26 +160,8 @@ export type PaginatedData<T> = {
 
 export type LinkPaginatedData<T> = {
     data: T[];
-    links: {
-        first: string;
-        last: string;
-        prev: string;
-        next: string;
-    };
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        links: {
-            url: string;
-            label: string;
-            active: boolean;
-        }[];
-        path: string;
-        per_page: number;
-        to: number;
-        total: number;
-    };
+    links: PaginationLinks;
+    meta: PaginationMeta;
 };
 
 export interface Paper {

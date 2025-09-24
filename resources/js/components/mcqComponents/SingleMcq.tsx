@@ -115,7 +115,7 @@ interface MCQComponentProps {
     mcqMode: boolean;
 }
 
-const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMode }) => {
+const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
     const [disabled, setDisabled] = useState(false);
@@ -204,7 +204,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, index = 0, mcqMod
             <CardContent>
                 {/* Question */}
                 <h4 className="mb-2 text-lg font-semibold md:mb-4">
-                    Q{index + 1}. {mcq?.question}
+                    Q {mcq?.serial_number}. {mcq?.question}
                 </h4>
 
                 <OptionsComponent

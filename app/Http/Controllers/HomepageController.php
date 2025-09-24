@@ -21,9 +21,15 @@ class HomepageController extends Controller
 
         // dd($mcqs);
 
+        // Add serial numbers to the collection
+        $mcqs->through(function ($mcq, $key) use ($mcqs) {
+            // Calculate the serial number based on pagination
+            $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
+            return $mcq;
+        });
+
 
         return Inertia::render('welcome', [
-            'testing' => 'Hello from the controller',
             'mcqs' =>  McqResource::collection($mcqs),
         ]);
     }

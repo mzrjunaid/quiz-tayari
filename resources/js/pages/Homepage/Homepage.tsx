@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LinkPaginatedData, Mcqs } from '@/types';
 import { Bookmark, BookOpen, Bot, Brain, FileText, Filter, Search, Target, TrendingUp, Trophy, Users } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
 }
 
 const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
+    const { meta, links } = mcqs;
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
     const [selectedTestService, setSelectedTestService] = useState('All Services');
@@ -191,13 +192,15 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
         return matchesSubject && matchesJob && matchesService && matchesSearch;
     });
 
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+
     return (
         <div className="min-h-screen">
-            {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
+            <pre>{JSON.stringify(mcqs, null, 2)}</pre>
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
             {/* Search and Filter Section */}
-            <section className="border-y px-4 py-6 sm:px-6 md:py-12 lg:px-8">
+            <section className="border-y px-4 py-6 sm:px-6 md:py-16 lg:px-8" ref={scrollRef}>
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
                         <div>
@@ -304,7 +307,7 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
                                     <McqCard mcq={mcq} index={index} key={index} mcqMode={mcqMode} />
                                 ))}
 
-                                <SitePagination />
+                                <SitePagination meta={meta} links={links} scrollRef={scrollRef} />
                             </div>
                         </div>
 
