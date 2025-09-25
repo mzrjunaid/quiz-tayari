@@ -40,7 +40,7 @@ export default function AppMode({ mcqMode, setMcqMode, className }: Props) {
             <Button variant="default" size="sm" onClick={handleMcqToggle}>
                 {mcqMode ? 'Study Mode' : 'MCQ Mode'}
             </Button>
-            <Button onClick={toggleMode} variant="link" size="icon" className='ms-2' asChild>
+            <Button onClick={toggleMode} variant="link" size="icon" className="ms-2" asChild>
                 {modeButton(appearance)}
             </Button>
         </div>

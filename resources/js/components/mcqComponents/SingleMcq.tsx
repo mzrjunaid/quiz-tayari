@@ -9,13 +9,12 @@ import { Bot, ChevronDown, ChevronUp, Eye, Share2, Tag } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import OptionsComponent from './question-component';
 
-// TypeScript interfaces
-
-interface MCQComponentProps {
-    mcq?: Mcqs;
-    index?: number;
-    mcqMode: boolean;
-}
+const QuestionType: Record<string, string> = {
+    single: 'Single Choice',
+    multiple: 'Multiple Choice',
+    true_false: 'True/False',
+    single_a: 'Single Answer',
+};
 
 // Mock data for demonstration
 const mockMCQ: Mcqs = {
@@ -112,7 +111,7 @@ const mockMCQ: Mcqs = {
 interface MCQComponentProps {
     mcq?: Mcqs;
     index?: number;
-    mcqMode: boolean;
+    mcqMode?: boolean;
 }
 
 const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
@@ -177,11 +176,14 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
                             {mcqMode ? '📝 Quiz' : '📖 Study'}
                         </Badge>
                     </div>
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="#">
-                            <Share2 />
-                        </Link>
-                    </Button>
+                    <div className="flex items-center space-x-1">
+                        {mcq.question_type && <Badge variant="secondary">{QuestionType[mcq.question_type]}</Badge>}
+                        <Button variant="ghost" size="icon" asChild>
+                            <Link href="#">
+                                <Share2 />
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Tags Section */}
@@ -226,11 +228,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
                             <CollapsibleTrigger asChild>
                                 <Button variant="ghost" className="h-auto w-full justify-between">
                                     <span className="text-sm font-medium">Explanation</span>
-                                    {showExplanation ? (
-                                        <ChevronUp className="h-4 w-4 text-gray-500" />
-                                    ) : (
-                                        <ChevronDown className="h-4 w-4 text-gray-500" />
-                                    )}
+                                    {showExplanation ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                 </Button>
                             </CollapsibleTrigger>
                             <CollapsibleContent className="mt-1 md:mt-3">

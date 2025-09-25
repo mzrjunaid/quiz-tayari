@@ -18,7 +18,6 @@ class HomepageController extends Controller
 
         $mcqs = Mcq::latest()->paginate('6')->appends(request()->query());
 
-
         // dd($mcqs);
 
         // Add serial numbers to the collection
@@ -31,15 +30,16 @@ class HomepageController extends Controller
 
         return Inertia::render('welcome', [
             'mcqs' =>  McqResource::collection($mcqs),
+            'mcqMode' => session('mcqMode', false)
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display List of Papers
      */
-    public function create()
+    public function papers_list()
     {
-        //
+        return Inertia::render('Public/Papers');
     }
 
     /**
@@ -80,5 +80,18 @@ class HomepageController extends Controller
     public function destroy(Homepage $homepage)
     {
         //
+    }
+
+    /**
+     * Set MCQ Mode in session
+     */
+
+    public function setMcqMode(Request $request)
+    {
+        $request->validate([
+            'mcqMode' => 'required|boolean',
+        ]);
+        session(['mcqMode' => $request->mcqMode]);
+        return back();
     }
 }

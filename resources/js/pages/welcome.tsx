@@ -1,32 +1,19 @@
 // import AppLayout from '@/layouts/app-layout';
+import { useMcqMode } from '@/hooks/use-mcq-mode';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { LinkPaginatedData, Mcqs } from '@/types';
-import { useEffect, useState } from 'react';
-import MCQHomepage from './Homepage/Homepage';
+import MCQHomepage from './Public/Homepage';
 
 interface Props {
     mcqs: LinkPaginatedData<Mcqs>;
 }
 
 export default function Welcome({ mcqs }: Props) {
-    // const { auth } = usePage<SharedData>().props;
-
-    const [mcqMode, setMcqMode] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = sessionStorage.getItem('mcqMode');
-            return saved ? JSON.parse(saved) : false;
-        }
-        return false;
-    });
-
-    useEffect(() => {
-        sessionStorage.setItem('mcqMode', JSON.stringify(mcqMode));
-    }, [mcqMode]);
+    const { mcqMode } = useMcqMode();
 
     return (
-        <PublicLayout title="Hompage" mcqMode={mcqMode} setMcqMode={setMcqMode}>
+        <PublicLayout title="Hompage">
             <MCQHomepage mcqMode={mcqMode} mcqs={mcqs} />
-            {/* <div>Homepage</div> */}
         </PublicLayout>
     );
 }

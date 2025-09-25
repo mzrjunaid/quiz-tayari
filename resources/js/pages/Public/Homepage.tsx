@@ -1,8 +1,6 @@
-import CallToAction from '@/components/call-to-action';
 import { SelectBySearch } from '@/components/combobox';
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import PageSidebar from '@/components/page-sidebar';
-import PublicFooter from '@/components/public-footer';
 import { SitePagination } from '@/components/site-pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -195,7 +193,7 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
     const scrollRef = useRef<HTMLDivElement | null>(null);
 
     return (
-        <div className="min-h-screen">
+        <>
             {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
             {/* Hero Section with MCQ Preview */}
             <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
@@ -316,11 +314,7 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
                     </div>
                 </div>
             </section>
-            {/* Call to Action */}
-            <CallToAction />
-            {/* Footer */}
-            <PublicFooter />
-        </div>
+        </>
     );
 };
 

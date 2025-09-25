@@ -2,7 +2,7 @@ import { Badge } from '../ui/badge';
 
 interface OptionsComponentProps {
     optionEntries: [string, string][];
-    mcqMode: boolean;
+    mcqMode?: boolean;
     question_type: 'multiple' | 'single' | 'true_false' | 'single_a' | undefined;
     disabled: boolean;
     selectedAnswers: string[];

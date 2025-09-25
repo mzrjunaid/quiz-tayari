@@ -4,6 +4,7 @@ import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { Button } from './ui/button';
 
 interface Props {
+    children: React.ReactNode;
     features: {
         icon: ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>>;
         title: string;
@@ -21,9 +22,11 @@ interface Props {
     }[];
 }
 
-export default function PageSidebar({ features, mostRepeatingMCQs, stats }: Props) {
+export default function PageSidebar({ children, features, mostRepeatingMCQs, stats }: Props) {
     return (
         <div className="space-y-8">
+            {children}
+
             {/* Features Overview */}
             <div className="rounded-lg bg-card p-6 shadow-md dark:bg-card">
                 <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
