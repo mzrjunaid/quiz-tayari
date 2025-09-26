@@ -38,7 +38,7 @@ export function SitePagination({ meta, links, scrollRef }: PaginationProps) {
             preserveScroll: true, // 👈 inertia keeps position
             onSuccess: () => {
                 // 👇 after page load, scroll to your ref
-                scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (scrollRef) scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             },
         });
     };

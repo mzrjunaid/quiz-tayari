@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\McqResource;
+use App\Http\Resources\PaperResource;
 use App\Models\Homepage;
 use App\Models\Mcq;
+use App\Models\Paper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -39,7 +41,11 @@ class HomepageController extends Controller
      */
     public function papers_list()
     {
-        return Inertia::render('Public/Papers');
+        $papers = Paper::latest()->paginate(6)->appends(request()->query());
+
+        return Inertia::render('Public/Papers', [
+            'papers' => PaperResource::collection($papers),
+        ]);
     }
 
     /**

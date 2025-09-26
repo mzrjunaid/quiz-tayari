@@ -60,6 +60,7 @@ Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('s
 
 Route::prefix('papers')->group(function () {
     Route::get('/', [HomepageController::class, 'papers_list'])->name('public-papers.list');
+    Route::get('/{slug}/show', [HomepageController::class, 'papers_list'])->name('public-papers.show');
 });
 
 require __DIR__ . '/settings.php';
