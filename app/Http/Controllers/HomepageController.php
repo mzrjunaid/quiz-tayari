@@ -41,7 +41,7 @@ class HomepageController extends Controller
      */
     public function papers_list()
     {
-        $papers = Paper::latest()->paginate(6)->appends(request()->query());
+        $papers = Paper::latest()->paginate(20)->appends(request()->query());
 
         return Inertia::render('Public/Papers', [
             'papers' => PaperResource::collection($papers),

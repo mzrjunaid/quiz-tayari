@@ -1,12 +1,12 @@
+import PaperCard from '@/components/mcqComponents/paper-card';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
+import SearchInput from '@/components/search-input';
 import { SitePagination } from '@/components/site-pagination';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { BreadcrumbItem, PaginationLinks, PaginationMeta, Paper } from '@/types';
-import { Link } from '@inertiajs/react';
 import TopAdSection from './Components/TopAdSection';
 
 interface Props {
@@ -25,6 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const PapersList: React.FC<Props> = ({ papers }) => {
     const { data, meta, links } = papers;
+    const isMobile = useIsMobile();
     const adSlot = false;
 
     // const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -34,30 +35,16 @@ const PapersList: React.FC<Props> = ({ papers }) => {
             <MainSectionWithSidebarLayout>
                 <div className={`space-y-4 lg:col-span-2`}>
                     <PageTitle title="Past Papers" breadcrumbs={breadcrumbs} />
-                    <div className="flex flex-wrap gap-2">
+                    {isMobile && <SearchInput />}
+                    <div className="grid gap-4 sm:grid-cols-2">
                         {data.map((paper, index) => {
-                            return (
-                                <div className="max-w-96 space-y-2 rounded-sm bg-card px-2 py-3" key={index}>
-                                    <div className="flex flex-row justify-between">
-                                        <Badge>{paper.department}</Badge>
-                                        <Badge variant="secondary">{paper.testing_service.short}</Badge>
-                                    </div>
-                                    <Button variant="link" asChild className="p-0">
-                                        <Link href={route('public-papers.show', paper.slug)}>{paper.title}</Link>
-                                    </Button>
-                                    <div className="flex flex-row justify-between">
-                                        {paper.scheduled_at && paper.scheduled_at.date_only}
-                                        <Badge variant="outline">{paper.subject}</Badge>
-                                    </div>
-                                </div>
-                            );
+                            return <PaperCard paper={paper} key={index} />;
                         })}
                     </div>
                     <SitePagination meta={meta} links={links} />
-                    <pre>{JSON.stringify(papers, null, 2)}</pre>
                 </div>
 
-                <PageSidebar stat={false} />
+                <PageSidebar stat={false}>{!isMobile && <SearchInput query={'test'} />}</PageSidebar>
             </MainSectionWithSidebarLayout>
         </PublicLayout>
     );

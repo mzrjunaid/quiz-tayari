@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomepageController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
-    Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::group(['prefix' => 'rephrase'], function () {
         Route::get('/', [McqsRephraseController::class, 'index'])->name('rephrase.index');
         Route::get('/{id}', [McqsRephraseController::class, 'show'])->name('rephrase.show');
@@ -60,7 +60,7 @@ Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('s
 
 Route::prefix('papers')->group(function () {
     Route::get('/', [HomepageController::class, 'papers_list'])->name('public-papers.list');
-    Route::get('/{slug}/show', [HomepageController::class, 'papers_list'])->name('public-papers.show');
+    Route::get('/{slug}', [HomepageController::class, 'papers_list'])->name('public-papers.show');
 });
 
 require __DIR__ . '/settings.php';

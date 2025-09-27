@@ -18,7 +18,7 @@ export default function PageSidebar({ children, feature = true, mostRepeatingMCQ
 
             {/* Features Overview */}
             {feature && (
-                <div className="rounded-lg bg-card p-6 shadow-md dark:bg-card">
+                <div className="rounded-lg p-6 shadow-md dark:bg-card">
                     <h3 className="mb-4 text-lg font-semibold">Platform Features</h3>
                     <div className="space-y-4">
                         {features.map((feature, index) => (
@@ -38,7 +38,7 @@ export default function PageSidebar({ children, feature = true, mostRepeatingMCQ
 
             {/* Most Repeating MCQs */}
             {mostRepeatingMCQ && (
-                <div className="rounded-lg bg-card p-4 shadow-md md:p-6">
+                <div className="rounded-lg p-4 shadow-md md:p-6">
                     <h3 className="mb-2 flex items-center text-lg font-semibold md:mb-4">
                         <TrendingUp className="mr-2 h-5 w-5" />
                         Most Repeating MCQs

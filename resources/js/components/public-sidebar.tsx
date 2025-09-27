@@ -1,50 +1,11 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { SharedData, type NavItem } from '@/types';
+import { adminFooterNavItems, adminNavItems, publicNavItems, userFooterNavItems } from '@/constants/menus';
+import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, List, Paperclip, ScrollText, Trash, UserCircle2 } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavUser } from './nav-user';
-
-const adminNavItems: NavItem[] = [
-    {
-        title: 'Home',
-        href: route('home'),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'MCQs Rephrase',
-        href: route('rephrase.index'),
-        icon: ScrollText,
-    },
-    {
-        title: 'Papers',
-        href: route('papers.index'),
-        icon: Paperclip,
-    },
-    {
-        title: 'MCQs',
-        href: route('mcqs.index'),
-        icon: List,
-    },
-];
-
-const adminFooterNavItems: NavItem[] = [
-    {
-        title: 'MCQs - Trash Bin',
-        href: route('mcqs.trashbin'),
-        icon: Trash,
-    },
-];
-
-const userFooterNavItems: NavItem[] = [
-    {
-        title: 'Login',
-        href: route('login'),
-        icon: UserCircle2,
-    },
-];
 
 export function PublicSidebar() {
     const { auth } = usePage<SharedData>().props;
@@ -62,7 +23,10 @@ export function PublicSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>{auth.user && <NavMain items={adminNavItems} />}</SidebarContent>
+            <SidebarContent>
+                <NavMain navGroupTitle="Public" items={publicNavItems} />
+                {auth.user && <NavMain navGroupTitle="Admin" items={adminNavItems} />}
+            </SidebarContent>
 
             <SidebarFooter>
                 {!auth.user && <NavFooter items={userFooterNavItems} className="mt-auto" />}
