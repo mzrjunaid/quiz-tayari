@@ -12,12 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dro
 import { SidebarMenuButton, SidebarTrigger } from './ui/sidebar';
 import { UserMenuContent } from './user-menu-content';
 
-interface Props {
-    setMcqMode: (mode: boolean) => void;
-    mcqMode: boolean;
-}
-
-export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
+export default function PublicHeader() {
     const { auth } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     const getInitials = useInitials();
@@ -73,7 +68,7 @@ export default function PublicHeader({ mcqMode, setMcqMode }: Props) {
                                 <UserCircle2 />
                             </Button>
                         )}
-                        {!isMobile && <AppMode mcqMode={mcqMode} setMcqMode={setMcqMode} />}
+                        {!isMobile && <AppMode />}
                     </div>
                 </div>
             </div>

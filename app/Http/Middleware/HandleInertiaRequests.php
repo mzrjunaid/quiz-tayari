@@ -61,7 +61,6 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'mcqMode' => session('mcqMode', default: false),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => array_filter($flash, fn($value) => $value !== null)
         ];

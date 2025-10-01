@@ -24,18 +24,16 @@ export function PublicNavigationMenu() {
                     <NavigationMenuContent>
                         <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                             <li className="row-span-3">
-                                <NavigationMenuLink asChild>
-                                    <a
-                                        className="flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-hidden select-none focus:shadow-md"
-                                        href="/"
-                                    >
-                                        <div className="mt-4 mb-2 flex items-center text-lg font-medium">
-                                            <AppLogo />
-                                        </div>
-                                        <p className="text-sm leading-tight text-muted-foreground">
-                                            Beautifully designed components built with Tailwind CSS.
-                                        </p>
-                                    </a>
+                                <NavigationMenuLink
+                                    className="flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-hidden select-none focus:shadow-md"
+                                    href="/"
+                                >
+                                    <div className="mt-4 mb-2 flex items-center text-lg font-medium">
+                                        <AppLogo />
+                                    </div>
+                                    <p className="text-sm leading-tight text-muted-foreground">
+                                        Beautifully designed components built with Tailwind CSS.
+                                    </p>
                                 </NavigationMenuLink>
                             </li>
                             <ListItem href="/docs" title="Introduction">
@@ -56,11 +54,9 @@ export function PublicNavigationMenu() {
                         <ul className="grid w-[300px] gap-4">
                             <li>
                                 {paperNavItems.map((item, index) => (
-                                    <NavigationMenuLink asChild active key={index}>
-                                        <Link href={item.href}>
-                                            <div className="font-medium">{item.title}</div>
-                                            {item.description && <div className="text-muted-foreground">{item.description}</div>}
-                                        </Link>
+                                    <NavigationMenuLink key={index} href={route(item.href)}>
+                                        <div className="font-medium">{item.title}</div>
+                                        {item.description && <div className="text-muted-foreground">{item.description}</div>}
                                     </NavigationMenuLink>
                                 ))}
                             </li>
@@ -73,8 +69,8 @@ export function PublicNavigationMenu() {
                         <ul className="grid w-[200px] gap-4">
                             <li>
                                 {generalNavItems.map((item, index) => (
-                                    <NavigationMenuLink asChild key={index + 1}>
-                                        <Link href={item.href}>{item.title}</Link>
+                                    <NavigationMenuLink href={item.href} key={index + 1}>
+                                        {item.title}
                                     </NavigationMenuLink>
                                 ))}
                             </li>
@@ -82,10 +78,8 @@ export function PublicNavigationMenu() {
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink asChild className={navigationMenuTriggerStyle() + ` bg-transparent`}>
-                        <Link href="/docs" prefetch>
-                            Demo
-                        </Link>
+                    <NavigationMenuLink href="/docs" className={navigationMenuTriggerStyle() + ` bg-transparent`}>
+                        Demo
                     </NavigationMenuLink>
                 </NavigationMenuItem>
             </NavigationMenuList>

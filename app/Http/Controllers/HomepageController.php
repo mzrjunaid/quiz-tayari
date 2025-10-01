@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\McqResource;
 use App\Http\Resources\PaperResource;
-use App\Models\Homepage;
 use App\Models\Mcq;
 use App\Models\Paper;
 use Illuminate\Http\Request;
@@ -32,7 +31,6 @@ class HomepageController extends Controller
 
         return Inertia::render('welcome', [
             'mcqs' =>  McqResource::collection($mcqs),
-            'mcqMode' => session('mcqMode', false)
         ]);
     }
 
@@ -63,49 +61,19 @@ class HomepageController extends Controller
         return Inertia::render('Public/PaperMcqs', [
             'paper' => $paper,
             'mcqs' => McqResource::collection($mcqs),
-            'mcqMode' => session('mcqMode')
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display List of Papers
      */
-    public function store(Request $request)
+    public function contact_us()
     {
-        //
+        return Inertia::render('Public/ContactUs');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Homepage $homepage)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Homepage $homepage)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Homepage $homepage)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Homepage $homepage)
-    {
-        //
-    }
 
     /**
      * Set MCQ Mode in session
@@ -118,25 +86,5 @@ class HomepageController extends Controller
         ]);
         session(['mcqMode' => $request->mcqMode]);
         return back();
-    }
-
-
-
-    /**
-     * Find MCQ by slug with paper relationships loaded
-     *
-     * @param string $slug
-     * @return Mcq
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    private function findMcqBySlug(string $slug): Mcq
-    {
-        return Mcq::with([
-            'creator:id,name,email',
-            'updater:id,name,email',
-            'verifier:id,name,email'
-        ])
-            ->where('slug', $slug)
-            ->firstOrFail();
     }
 }

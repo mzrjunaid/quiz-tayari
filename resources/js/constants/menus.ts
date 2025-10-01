@@ -25,12 +25,12 @@ export const publicNavItems: NavItem[] = [
 export const paperNavItems: NavItem[] = [
     {
         title: 'Past Papers',
-        href: route('public-papers.list'),
+        href: 'public-papers.list',
         description: 'Browse all Previous Papers from PPSC',
     },
     {
         title: 'Upcoming Papers',
-        href: route('public-papers.list'),
+        href: 'public-papers.list',
         description: 'Practice Upcoming Papers with AI',
     },
 ];

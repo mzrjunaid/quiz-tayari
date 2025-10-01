@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
+Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('contact-us');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
@@ -62,6 +63,7 @@ Route::prefix('papers')->group(function () {
     Route::get('/', [HomepageController::class, 'papers_list'])->name('public-papers.list');
     Route::get('/{slug}', [HomepageController::class, 'papers_mcqs'])->name('public-papers.show');
 });
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

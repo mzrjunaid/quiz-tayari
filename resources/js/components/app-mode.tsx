@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { useAppearance } from '@/hooks/use-appearance';
+import { useMcqMode } from '@/hooks/use-mcq-mode';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
 interface Props {
-    setMcqMode: (mode: boolean) => void;
-    mcqMode: boolean;
     className?: string;
 }
 
@@ -21,8 +20,9 @@ const modeButton = (appearance: string) => {
     }
 };
 
-export default function AppMode({ mcqMode, setMcqMode, className }: Props) {
+export default function AppMode({ className }: Props) {
     const { appearance, updateAppearance } = useAppearance();
+    const { mcqMode, setMcqMode } = useMcqMode();
 
     // toggle function
     const toggleMode = () => {

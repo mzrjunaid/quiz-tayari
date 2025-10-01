@@ -17,10 +17,9 @@ interface Props {
         meta: PaginationMeta;
         links: PaginationLinks;
     };
-    mcqMode: boolean;
 }
 
-const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs, mcqMode }) => {
+const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
     const { data, meta, links } = mcqs;
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -44,7 +43,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs, mcqMode }) => {
                     {isMobile && <SearchInput />}
                     <div className="grid gap-4 sm:grid-cols-1">
                         {data.map((mcq, index) => {
-                            return <McqCard mcq={mcq} mcqMode={mcqMode} key={index} />;
+                            return <McqCard mcq={mcq} key={index} />;
                         })}
                     </div>
                     <SitePagination meta={meta} links={links} />

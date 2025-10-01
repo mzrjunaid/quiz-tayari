@@ -8,10 +8,8 @@ import PublicHeader from '@/components/site-header';
 
 // import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { useMcqMode } from '@/hooks/use-mcq-mode';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Toaster } from 'sonner';
 
 interface Props {
@@ -20,8 +18,6 @@ interface Props {
 }
 
 export function PublicLayout({ children, title }: Props) {
-    const { setMcqMode } = useMcqMode();
-    const { mcqMode } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     return (
         <>
@@ -29,7 +25,7 @@ export function PublicLayout({ children, title }: Props) {
             <SidebarProvider defaultOpen={false}>
                 <PublicSidebar />
                 <SidebarInset className="relative">
-                    <PublicHeader mcqMode={mcqMode} setMcqMode={setMcqMode} />
+                    <PublicHeader />
                     <FlashHandler />
                     <div className="min-h-screen">
                         {/* Main Contents */}
@@ -39,7 +35,7 @@ export function PublicLayout({ children, title }: Props) {
                         {/* Footer */}
                         <PublicFooter />
                     </div>
-                    {isMobile && <AppMode mcqMode={mcqMode} setMcqMode={setMcqMode} className="fixed right-2 bottom-5" />}
+                    {isMobile && <AppMode className="fixed right-2 bottom-5" />}
 
                     <Toaster position="bottom-center" duration={4000} expand={false} visibleToasts={5} />
                 </SidebarInset>

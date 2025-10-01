@@ -6,17 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { stats } from '@/constants/features';
-import { LinkPaginatedData, Mcqs } from '@/types';
+import { LinkPaginatedData, Mcqs, SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import { Filter, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
 interface Props {
-    mcqMode: boolean;
     mcqs: LinkPaginatedData<Mcqs>;
 }
 
-const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
+const MCQHomepage = ({ mcqs }: Props) => {
+    const { mcqMode } = usePage<SharedData>().props;
     const { meta, links } = mcqs;
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
@@ -249,7 +250,7 @@ const MCQHomepage = ({ mcqMode, mcqs }: Props) => {
                                     </p>
                                 )}
                                 {filteredMCQs.map((mcq, index) => (
-                                    <McqCard mcq={mcq} index={index} key={index} mcqMode={mcqMode} />
+                                    <McqCard mcq={mcq} index={index} key={index} />
                                 ))}
 
                                 <SitePagination meta={meta} links={links} scrollRef={scrollRef} />

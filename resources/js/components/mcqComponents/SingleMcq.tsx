@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Mcqs } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Mcqs, SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { Bot, ChevronDown, ChevronUp, Eye, Share2, Tag } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import OptionsComponent from './question-component';
@@ -111,10 +111,10 @@ const mockMCQ: Mcqs = {
 interface MCQComponentProps {
     mcq?: Mcqs;
     index?: number;
-    mcqMode?: boolean;
 }
 
-const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ, mcqMode }) => {
+const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
+    const { mcqMode } = usePage<SharedData>().props;
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
     const [disabled, setDisabled] = useState(false);
