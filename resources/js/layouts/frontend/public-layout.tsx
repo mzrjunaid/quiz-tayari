@@ -10,7 +10,8 @@ import PublicHeader from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useMcqMode } from '@/hooks/use-mcq-mode';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Head } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 import { Toaster } from 'sonner';
 
 interface Props {
@@ -19,7 +20,8 @@ interface Props {
 }
 
 export function PublicLayout({ children, title }: Props) {
-    const { mcqMode, setMcqMode } = useMcqMode();
+    const { setMcqMode } = useMcqMode();
+    const { mcqMode } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     return (
         <>

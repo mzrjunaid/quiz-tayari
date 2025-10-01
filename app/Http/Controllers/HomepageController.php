@@ -49,6 +49,25 @@ class HomepageController extends Controller
     }
 
     /**
+     * Display List of Papers
+     */
+    public function papers_mcqs($slug)
+    {
+
+
+        $paper = Paper::where('slug', $slug)->firstOrFail();
+        $mcqs = Mcq::where('paper_id', $paper->id)
+            ->paginate(10); // 10 per page
+
+
+        return Inertia::render('Public/PaperMcqs', [
+            'paper' => $paper,
+            'mcqs' => McqResource::collection($mcqs),
+            'mcqMode' => session('mcqMode')
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -99,5 +118,25 @@ class HomepageController extends Controller
         ]);
         session(['mcqMode' => $request->mcqMode]);
         return back();
+    }
+
+
+
+    /**
+     * Find MCQ by slug with paper relationships loaded
+     *
+     * @param string $slug
+     * @return Mcq
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function findMcqBySlug(string $slug): Mcq
+    {
+        return Mcq::with([
+            'creator:id,name,email',
+            'updater:id,name,email',
+            'verifier:id,name,email'
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
     }
 }

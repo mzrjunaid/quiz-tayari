@@ -1,7 +1,7 @@
 // import AppLayout from '@/layouts/app-layout';
-import { useMcqMode } from '@/hooks/use-mcq-mode';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
-import { LinkPaginatedData, Mcqs } from '@/types';
+import { LinkPaginatedData, Mcqs, SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import MCQHomepage from './Public/Homepage';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function Welcome({ mcqs }: Props) {
-    const { mcqMode } = useMcqMode();
+    const { mcqMode } = usePage<SharedData>().props;
 
     return (
         <PublicLayout title="Hompage">

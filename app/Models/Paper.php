@@ -45,7 +45,7 @@ class Paper extends Model
     /**
      * MCQs created by this user
      */
-    public function paperMcqs(): HasMany
+    public function mcqs(): HasMany
     {
         return $this->hasMany(Mcq::class, 'paper_id');
     }
