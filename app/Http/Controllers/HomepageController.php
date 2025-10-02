@@ -65,11 +65,28 @@ class HomepageController extends Controller
     }
 
     /**
-     * Display List of Papers
+     * Display contact us Page
      */
     public function contact_us()
     {
         return Inertia::render('Public/ContactUs');
+    }
+
+    /**
+     * Display Privacy Policy Page
+     */
+    public function privacy_policy()
+    {
+        return Inertia::render('Public/PrivacyPolicy');
+    }
+
+
+    /**
+     * Display Privacy Policy Page
+     */
+    public function terms_of_service()
+    {
+        return Inertia::render('Public/TermsOfServices');
     }
 
 

@@ -14,7 +14,7 @@ const PageTitle: React.FC<Props> = ({ title, subtitle, breadcrumbs }) => {
             <div className="space-y-6">
                 <div className="space-y-0">
                     <h1 className="text-2xl leading-tight font-bold lg:text-3xl xl:text-4xl">{title}</h1>
-                    {subtitle && <p className="max-w-4xl text-xl leading-relaxed font-light text-muted lg:text-2xl">{subtitle}</p>}
+                    {subtitle && <p className="mt-2 text-muted">{subtitle}</p>}
                 </div>
             </div>
         </div>

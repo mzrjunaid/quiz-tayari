@@ -111,11 +111,11 @@
     --secondary-foreground: oklch(0.15 0.08 25.66);
 
     /* Muted - Better contrast */
-    --muted: oklch(74.019% 0.00369 38.453 / 0.76);
+    --muted: oklch(0.4926 0 0);
     --muted-foreground: oklch(0.35 0.04 36.5); /* 4.5:1 contrast */
 
     /* Accent - Distinct from background */
-    --accent: oklch(0.88 0.04 45);
+    --accent: oklch(0.7749 0.05782 46.18);
     --accent-foreground: oklch(0.2 0.08 25.66); /* Proper contrast */
 
     /* Success states */
@@ -123,16 +123,16 @@
     --success-foreground: oklch(0.98 0.005 0);
 
     /* Warning states */
-    --warning: oklch(0.75 0.15 85);
-    --warning-foreground: oklch(0.15 0.08 25.66);
+    --warning: oklch(0.9785 0.031 92.94);
+    --warning-foreground: oklch(47.3% 0.137 46.201);
 
     /* Info states */
-    --info: oklch(0.6 0.15 240);
-    --info-foreground: oklch(0.98 0.005 0);
+    --info: oklch(97% 0.014 254.604);
+    --info-foreground: oklch(0.15 0.08 25.66);
 
     /* Destructive - Standard red with good contrast */
-    --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(0.98 0.005 0);
+    --destructive: oklch(93.6% 0.032 17.717);
+    --destructive-foreground: oklch(44.4% 0.177 26.899);
 
     /* Border and input - Subtle but visible */
     --border: oklch(0.3 0.02 25.66);
@@ -153,8 +153,8 @@
     --sidebar-foreground: var(--color-secondary-foreground);
     --sidebar-primary: var(--color-primary);
     --sidebar-primary-foreground: var(--color-primary-foreground);
-    --sidebar-accent: var(--color-muted);
-    --sidebar-accent-foreground: var(--color-muted-foreground);
+    --sidebar-accent: var(--color-primary);
+    --sidebar-accent-foreground: var(--color-primary-foreground);
     --sidebar-border: var(--color-border);
     --sidebar-ring: var(--color-primary);
 }

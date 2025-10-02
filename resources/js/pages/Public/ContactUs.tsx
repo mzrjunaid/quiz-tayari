@@ -175,7 +175,7 @@ export function ContactPage() {
 
                     {/* Contact Form */}
                     <div className="md:col-span-2">
-                        <div className="rounded-lg border bg-white p-8 shadow-sm">
+                        <div className="rounded-lg bg-white p-8 shadow-md">
                             <h2 className="mb-2 text-2xl font-semibold">Send us a message</h2>
                             <p className="mb-6 text-slate-600">Fill out the form below and we'll get back to you as soon as possible.</p>
 
@@ -224,7 +224,7 @@ export function ContactPage() {
                                             type="tel"
                                             value={formData.phone}
                                             onChange={(e) => handleChange('phone', e.target.value)}
-                                            placeholder="+1 (555) 123-4567"
+                                            placeholder="0300 123 4567"
                                             className={errors.phone ? 'border-red-500' : ''}
                                         />
                                         {errors.phone && <p className="text-sm text-red-600">{errors.phone}</p>}
@@ -259,7 +259,7 @@ export function ContactPage() {
 
                                 <div className="flex items-center justify-between pt-4">
                                     <p className="text-sm text-slate-600">* Required fields</p>
-                                    <Button type="button" onClick={handleSubmit} disabled={processing} className="bg-blue-600 hover:bg-blue-700">
+                                    <Button type="button" onClick={handleSubmit} disabled={processing} className="bg-primary">
                                         {processing ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
