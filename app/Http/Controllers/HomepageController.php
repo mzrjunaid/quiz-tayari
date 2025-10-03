@@ -89,6 +89,14 @@ class HomepageController extends Controller
         return Inertia::render('Public/TermsOfServices');
     }
 
+    /**
+     * Display Privacy Policy Page
+     */
+    public function help_center()
+    {
+        return Inertia::render('Public/HelpCenter');
+    }
+
 
 
 

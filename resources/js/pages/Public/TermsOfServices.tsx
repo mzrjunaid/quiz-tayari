@@ -1,20 +1,61 @@
 import PageTitle from '@/components/public-page-title';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Homepage', href: route('home') },
     { title: 'Terms of Service', href: route('terms-of-service') },
 ];
 
+const termsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Terms of Service - PAK QUIZ',
+    url: 'https://www.pakquiz.com/terms-of-service',
+    description:
+        "Read the Terms of Service for using PAK QUIZ, Pakistan's MCQs preparation platform. Understand the rules for using quizzes, practice papers, premium features, and job ads.",
+    mainEntity: {
+        '@type': 'Organization',
+        name: 'PAK QUIZ',
+        url: 'https://www.pakquiz.com',
+        logo: 'https://www.pakquiz.com/logo.png',
+        contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'Customer Support',
+            telephone: '0332-6071906',
+            email: 'support@pakquiz.com',
+            areaServed: 'PK',
+            availableLanguage: ['English', 'Urdu'],
+        },
+    },
+};
+
 const TermsOfService: React.FC = () => {
     return (
-        <PublicLayout title="Terms of Service">
-            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-                <PageTitle title="Terms of Service" breadcrumbs={breadcrumbs} subtitle="Last updated: October 2, 2025" />
-                <TermsOfServicePage />
-            </div>
-        </PublicLayout>
+        <>
+            <Head title="Terms of Service">
+                <meta
+                    name="description"
+                    content="The Terms of Service for PAK QUIZ define the rules and guidelines for using our MCQs preparation website, premium services, and job ads platform."
+                />
+                <meta
+                    name="keywords"
+                    content="PAK QUIZ terms of service, quiz rules, MCQs usage policy, Pakistan jobs portal terms, user agreement"
+                />
+                <meta name="robots" content="index, follow" />
+                <link rel="canonical" href="https://www.pakquiz.com/terms-of-service" />
+
+                {/* ✅ Structured Data */}
+                <script type="application/ld+json">{JSON.stringify(termsSchema)}</script>
+            </Head>
+            <PublicLayout title="Terms of Service">
+                <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+                    <PageTitle title="Terms of Service" breadcrumbs={breadcrumbs} subtitle="Last updated: October 2, 2025" />
+                    <TermsOfServicePage />
+                </div>
+            </PublicLayout>
+        </>
     );
 };
 
@@ -448,8 +489,8 @@ export function TermsOfServicePage() {
                                     <Mail className="mt-0.5 h-5 w-5 text-primary" />
                                     <div className="text-info-foreground">
                                         <span className="font-semibold">Email:</span>{' '}
-                                        <a href="mailto:mzrjunaid@gmail.com" className="hover:underline">
-                                            privacy@yourwebsite.com
+                                        <a href={`mailto:${termsSchema.mainEntity.contactPoint.email}`} className="hover:underline">
+                                            {termsSchema.mainEntity.contactPoint.email}
                                         </a>
                                     </div>
                                 </div>
@@ -458,8 +499,8 @@ export function TermsOfServicePage() {
                                     <div>
                                         <p>
                                             <span className="font-semibold">Whatsapp:</span>{' '}
-                                            <a href="tel:03326071906" className="hover:underline">
-                                                0332-6071906
+                                            <a href={`tel:${termsSchema.mainEntity.contactPoint.email}`} className="hover:underline">
+                                                {termsSchema.mainEntity.contactPoint.telephone}
                                             </a>
                                         </p>
                                     </div>

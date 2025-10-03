@@ -4,20 +4,61 @@ import { useState } from 'react';
 import PageTitle from '@/components/public-page-title';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Homepage', href: route('home') },
     { title: 'Privacy Policy', href: route('privacy-policy') },
 ];
 
+const privacySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Privacy Policy - PAK QUIZ',
+    url: 'https://www.pakquiz.com/privacy-policy',
+    description:
+        'Read the PAK QUIZ Privacy Policy to learn how we collect, use, and protect your personal information while using our MCQs preparation platform and job updates service.',
+    mainEntity: {
+        '@type': 'Organization',
+        name: 'PAK QUIZ',
+        url: 'https://www.pakquiz.com',
+        logo: 'https://www.pakquiz.com/logo.png',
+        contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'Customer Support',
+            telephone: '0332-6071906',
+            email: 'support@pakquiz.com',
+            areaServed: 'PK',
+            availableLanguage: ['English', 'Urdu'],
+        },
+    },
+};
+
 const PrivacyPolicy: React.FC = () => {
     return (
-        <PublicLayout title="Privacy Policy">
-            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-                <PageTitle title="Privacy Policy" breadcrumbs={breadcrumbs} subtitle="Last updated: October 2, 2025" />
-                <PrivacyPolicyPage />
-            </div>
-        </PublicLayout>
+        <>
+            <Head title="Privacy Policy">
+                <meta
+                    name="description"
+                    content="PAK QUIZ Privacy Policy explains how your personal data is collected, stored, and used when accessing MCQs, practice papers, premium membership, and job ads."
+                />
+                <meta
+                    name="keywords"
+                    content="PAK QUIZ privacy policy, data protection, user information, MCQs app policy, Pakistan jobs portal policy"
+                />
+                <meta name="robots" content="index, follow" />
+                <link rel="canonical" href="https://www.pakquiz.com/privacy-policy" />
+
+                {/* ✅ Structured Data */}
+                <script type="application/ld+json">{JSON.stringify(privacySchema)}</script>
+            </Head>
+            <PublicLayout title="Privacy Policy">
+                <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+                    <PageTitle title="Privacy Policy" breadcrumbs={breadcrumbs} subtitle="Last updated: October 2, 2025" />
+                    <PrivacyPolicyPage />
+                </div>
+            </PublicLayout>
+        </>
     );
 };
 
@@ -282,8 +323,8 @@ export function PrivacyPolicyPage() {
                                     <Mail className="mt-0.5 h-5 w-5 text-primary" />
                                     <div className="text-info-foreground">
                                         <span className="font-semibold">Email:</span>{' '}
-                                        <a href="mailto:mzrjunaid@gmail.com" className="hover:underline">
-                                            privacy@yourwebsite.com
+                                        <a href={`mailto:${privacySchema.mainEntity.contactPoint.email}`} className="hover:underline">
+                                            {privacySchema.mainEntity.contactPoint.email}
                                         </a>
                                     </div>
                                 </div>
@@ -292,8 +333,8 @@ export function PrivacyPolicyPage() {
                                     <div>
                                         <p>
                                             <span className="font-semibold">Whatsapp:</span>{' '}
-                                            <a href="tel:03326071906" className="hover:underline">
-                                                0332-6071906
+                                            <a href={`tel:${privacySchema.mainEntity.contactPoint.telephone}`} className="hover:underline">
+                                                {privacySchema.mainEntity.contactPoint.telephone}
                                             </a>
                                         </p>
                                     </div>

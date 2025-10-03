@@ -12,6 +12,7 @@ Route::get('/', [HomepageController::class, 'index'])->name('home');
 Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('contact-us');
 Route::get('/privacy-policy', [HomepageController::class, 'privacy_policy'])->name('privacy-policy');
 Route::get('/terms-of-service', [HomepageController::class, 'terms_of_service'])->name('terms-of-service');
+Route::get('/help-center', [HomepageController::class, 'help_center'])->name('help.center');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');

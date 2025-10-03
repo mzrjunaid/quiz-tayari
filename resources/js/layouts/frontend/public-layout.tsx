@@ -9,7 +9,6 @@ import PublicHeader from '@/components/site-header';
 // import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Head } from '@inertiajs/react';
 import { Toaster } from 'sonner';
 
 interface Props {
@@ -17,29 +16,26 @@ interface Props {
     title: string;
 }
 
-export function PublicLayout({ children, title }: Props) {
+export function PublicLayout({ children }: Props) {
     const isMobile = useIsMobile();
     return (
-        <>
-            <Head title={title} />
-            <SidebarProvider defaultOpen={false}>
-                <PublicSidebar />
-                <SidebarInset className="relative">
-                    <PublicHeader />
-                    <FlashHandler />
-                    <div className="min-h-screen">
-                        {/* Main Contents */}
-                        {children}
-                        {/* Call to Action */}
-                        <CallToAction />
-                        {/* Footer */}
-                        <PublicFooter />
-                    </div>
-                    {isMobile && <AppMode className="fixed right-2 bottom-5" />}
+        <SidebarProvider defaultOpen={false}>
+            <PublicSidebar />
+            <SidebarInset className="relative">
+                <PublicHeader />
+                <FlashHandler />
+                <div className="min-h-screen">
+                    {/* Main Contents */}
+                    {children}
+                    {/* Call to Action */}
+                    <CallToAction />
+                    {/* Footer */}
+                    <PublicFooter />
+                </div>
+                {isMobile && <AppMode className="fixed right-2 bottom-5" />}
 
-                    <Toaster position="bottom-center" duration={4000} expand={false} visibleToasts={5} />
-                </SidebarInset>
-            </SidebarProvider>
-        </>
+                <Toaster position="bottom-center" duration={4000} expand={false} visibleToasts={5} />
+            </SidebarInset>
+        </SidebarProvider>
     );
 }

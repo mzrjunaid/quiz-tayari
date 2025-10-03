@@ -8,7 +8,7 @@ interface Props {
 }
 
 const modeButton = (appearance: string) => {
-    const baseClass = 'h-5 w-5 cursor-pointer text-secondary-foreground hover:text-primary';
+    const baseClass = 'cursor-pointer text-secondary-foreground hover:text-primary';
 
     switch (appearance) {
         case 'light':
@@ -40,7 +40,7 @@ export default function AppMode({ className }: Props) {
             <Button variant="default" size="sm" onClick={handleMcqToggle}>
                 {mcqMode ? 'Study Mode' : 'MCQ Mode'}
             </Button>
-            <Button onClick={toggleMode} variant="link" size="icon" className="ms-2" asChild>
+            <Button onClick={toggleMode} variant="link" size="icon" className="mx-2 size-6" asChild>
                 {modeButton(appearance)}
             </Button>
         </div>

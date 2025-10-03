@@ -37,7 +37,7 @@ export default function PublicHeader() {
                                     <SidebarMenuButton size="lg" className="focus-visible:ring-0">
                                         <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                                             <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                            <AvatarFallback className="rounded-lg">{getInitials(auth.user.name)}</AvatarFallback>
+                                            <AvatarFallback className="rounded-lg bg-muted/35">{getInitials(auth.user.name)}</AvatarFallback>
                                         </Avatar>
                                         {!isMobile && (
                                             <>
@@ -61,7 +61,7 @@ export default function PublicHeader() {
                             <Button
                                 variant="link"
                                 size="icon"
-                                className="text-foreground md:block md:size-6"
+                                className="size-6 text-foreground md:block"
                                 onClick={() => router.get(route('login'))}
                                 asChild
                             >
