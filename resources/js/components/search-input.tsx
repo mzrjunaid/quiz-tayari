@@ -73,6 +73,7 @@ import { useEffect, useState } from 'react';
 
 interface SearchResult {
     id: number;
+    slug: string;
     title: string;
     link: string; // optional custom link
     type: string;

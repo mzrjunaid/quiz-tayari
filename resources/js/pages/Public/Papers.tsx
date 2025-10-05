@@ -1,7 +1,7 @@
 import PaperCard from '@/components/mcqComponents/paper-card';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
-import SearchInput from '@/components/search-input';
+import SearchInput, { SearchBar } from '@/components/search-input';
 import { SitePagination } from '@/components/site-pagination';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
@@ -79,7 +79,7 @@ const PapersList: React.FC<Props> = ({ papers }) => {
                 {/* JSON-LD Schema */}
                 <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
             </Head>
-            <PublicLayout title="Past Papers">
+            <PublicLayout>
                 {adSlot && <TopAdSection />}
                 <MainSectionWithSidebarLayout>
                     <div className={`space-y-4 lg:col-span-2`}>
@@ -93,7 +93,7 @@ const PapersList: React.FC<Props> = ({ papers }) => {
                         <SitePagination meta={meta} links={links} />
                     </div>
 
-                    <PageSidebar stat={false}>{!isMobile && <SearchInput query={'test'} />}</PageSidebar>
+                    <PageSidebar stat={false}>{!isMobile && <SearchBar />}</PageSidebar>
                 </MainSectionWithSidebarLayout>
             </PublicLayout>
         </>

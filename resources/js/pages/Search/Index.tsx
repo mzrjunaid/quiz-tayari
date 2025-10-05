@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 
 interface SearchItem {
     id: number;
+    slug: string;
     title: string;
     link: string;
 }
@@ -32,7 +33,7 @@ export default function SearchIndex({ query, papers, mcqs }: Props) {
                             <ul className="space-y-2">
                                 {papers.map((item) => (
                                     <li key={item.id}>
-                                        <Link href={item.link} className="text-gray-800 underline hover:text-blue-700">
+                                        <Link href={route(item.link, item.slug)} className="text-gray-800 underline hover:text-blue-700">
                                             {item.title}
                                         </Link>
                                     </li>
@@ -48,7 +49,7 @@ export default function SearchIndex({ query, papers, mcqs }: Props) {
                                 {mcqs.map((item) => (
                                     <li key={item.id}>
                                         <Link href={item.link} className="text-gray-800 underline hover:text-green-700">
-                                            {item.title}
+                                            {item.title} - {item.slug}
                                         </Link>
                                     </li>
                                 ))}

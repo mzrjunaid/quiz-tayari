@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\McqsRephrase;
 use App\Models\Paper;
 use App\Models\Mcq;
-use App\Models\Job;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,48 +19,56 @@ class SearchController extends Controller
                 'query' => '',
                 'papers' => [],
                 'mcqs' => [],
-                'jobs' => [],
+                'old_mcqs' => [],
             ]);
         }
 
-        // 🔹 Search in Papers
+        // ✅ Search in Papers
         $papers = Paper::select('id', 'title', 'slug')
             ->where('title', 'like', "%{$query}%")
             ->limit(10)
             ->get()
             ->map(fn($p) => [
                 'id' => $p->id,
+                'slug' => $p->slug,
                 'title' => $p->title,
-                'link' => route('public-papers.show', $p->slug),
+                // send route name to frontend
+                'link' => 'public-papers.show',
             ]);
 
-        // 🔹 Search in MCQs
-        $mcqs = Mcq::select('id', 'question')
+        // ✅ Search in MCQs
+        $mcqs = Mcq::select('id', 'question', 'slug')
             ->where('question', 'like', "%{$query}%")
             ->limit(10)
             ->get()
             ->map(fn($m) => [
                 'id' => $m->id,
+                'slug' => $m->slug,
                 'title' => $m->question,
-                'link' => route('mcqs.show', $m->id),
+                'link' => 'mcqs.show',
             ]);
 
-        // 🔹 Search in Jobs
-        // $jobs = Job::select('id', 'title', 'slug')
-        //     ->where('title', 'like', "%{$query}%")
-        //     ->limit(10)
-        //     ->get()
-        //     ->map(fn($j) => [
-        //         'id' => $j->id,
-        //         'title' => $j->title,
-        //         'link' => route('jobs.show', $j->slug),
-        //     ]);
+        // ⚠ FIXES BELOW: `McqsRephrase` probably doesn’t have `slug` or `q_question`
+        // so we use what actually exists in your table
+        $old_mcqs = McqsRephrase::select('q_id', 'q_statement')
+            // fixed like query (had `$` which breaks pattern)
+            ->where('q_statement', 'like', "%{$query}%")
+            ->limit(10)
+            ->get()
+            ->map(fn($m) => [
+                'id' => $m->q_id,
+                // no slug column in McqsRephrase table
+                'slug' => null,
+                // use correct column name `q_statement`
+                'title' => $m->q_statement,
+                'link' => 'mcqs.show',
+            ]);
 
         return Inertia::render('Search/Index', [
             'query' => $query,
             'papers' => $papers,
             'mcqs' => $mcqs,
-            // 'jobs' => $jobs,
+            'old_mcqs' => $old_mcqs,
         ]);
     }
 
@@ -69,44 +77,45 @@ class SearchController extends Controller
         $query = trim($request->input('q', ''));
         if (!$query) return response()->json([]);
 
-        $papers = Paper::select('id', 'title')
+        $papers = Paper::select('id', 'title', 'slug')
             ->where('title', 'like', "%{$query}%")
             ->limit(3)
             ->get()
-            ->map(fn($p) => [
-                'id' => $p->id,
-                // 'slug' => $p->slug,
-                'title' => $p->title,
-                'link' => route('public-papers.show', $p->slug),
+            ->map(fn($m) => [
+                'id' => $m->id,
+                'slug' => $m->slug,
+                'title' => $m->title,
+                'link' => route('public-papers.show', $m->slug),
                 'type' => 'Paper',
             ]);
 
-        $mcqs = Mcq::select('id', 'question')
+        $mcqs = Mcq::select('id', 'question', 'slug')
             ->where('question', 'like', "%{$query}%")
             ->limit(3)
             ->get()
             ->map(fn($m) => [
                 'id' => $m->id,
+                'slug' => $m->slug,
                 'title' => $m->question,
-                'link' => route('mcqs.show', $m->id),
+                'link' => route('mcqs.show', $m->slug),
                 'type' => 'MCQ',
             ]);
 
-        // $jobs = Job::select('id', 'title')
-        //     ->where('title', 'like', "%{$query}%")
-        //     ->limit(3)
-        //     ->get()
-        //     ->map(fn($j) => [
-        //         'id' => $j->id,
-        //         'title' => $j->title,
-        //         'link' => route('jobs.show', $j->id),
-        //         'type' => 'Job',
-        //     ]);
+        $old_mcqs = McqsRephrase::select('q_id', 'q_statement')
+            ->where('q_statement', 'like', "%{$query}%")
+            ->limit(3)
+            ->get()
+            ->map(fn($m) => [
+                'id' => $m->q_id,
+                'title' => $m->q_statement,
+                'link' => route('mcqs.show', $m->q_id),
+                'type' => 'Old MCQ',
+            ]);
 
         return response()->json(
             collect($papers)
                 ->merge($mcqs)
-                // ->merge($jobs)
+                ->merge($old_mcqs)
                 ->take(9)
                 ->values()
         );

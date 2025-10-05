@@ -1,14 +1,14 @@
 import { SelectBySearch } from '@/components/combobox';
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import PageSidebar from '@/components/page-sidebar';
+import { SearchBar } from '@/components/search-input';
 import { SitePagination } from '@/components/site-pagination';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { stats } from '@/constants/features';
 import { LinkPaginatedData, Mcqs, SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Filter, Search } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import HeroSection from './Components/HeroSection';
 
@@ -22,7 +22,6 @@ const MCQHomepage = ({ mcqs }: Props) => {
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
     const [selectedTestService, setSelectedTestService] = useState('All Services');
-    const [searchQuery, setSearchQuery] = useState('');
     const [showFilters, setShowFilters] = useState(false);
     const [currentMCQ, setCurrentMCQ] = useState(0);
 
@@ -129,13 +128,8 @@ const MCQHomepage = ({ mcqs }: Props) => {
         const matchesJob =
             selectedJobType === 'All Jobs' || mcq.tags.some((tag) => tag.toLowerCase().includes(selectedJobType.toLowerCase().split(' ')[0]));
         const matchesService = selectedTestService === 'All Services' || mcq.paper?.testing_service.short === selectedTestService;
-        const matchesSearch =
-            searchQuery === '' ||
-            mcq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            mcq.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            mcq.paper?.department.toLowerCase().includes(searchQuery.toLowerCase());
 
-        return matchesSubject && matchesJob && matchesService && matchesSearch;
+        return matchesSubject && matchesJob && matchesService;
     });
 
     const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -153,17 +147,8 @@ const MCQHomepage = ({ mcqs }: Props) => {
                             <p className="text-sm text-muted-foreground md:text-xl">Find the perfect questions for your preparation</p>
                         </div>
 
-                        <div className="flex w-full flex-row items-center space-x-4 md:max-w-sm">
-                            <div className="relative w-full flex-1">
-                                <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />
-                                <Input
-                                    type="text"
-                                    placeholder="Search MCQs, topics, or keywords..."
-                                    className="w-full rounded-lg bg-input py-5 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:outline-none"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                            </div>
+                        <div className="flex w-full flex-row items-center space-x-4 gap-x-4 md:max-w-sm">
+                            <SearchBar placeholder="Search Papers and MCQs..." />
                             <Button variant="outline" onClick={() => setShowFilters(!showFilters)} size="icon">
                                 <Filter className="h-5 w-5" />
                             </Button>
