@@ -13,7 +13,6 @@ import { Toaster } from 'sonner';
 
 interface Props {
     children: React.ReactNode;
-    title: string;
 }
 
 export function PublicLayout({ children }: Props) {

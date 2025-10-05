@@ -5,6 +5,7 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\McqController;
 use App\Http\Controllers\McqsRephraseController;
 use App\Http\Controllers\PaperController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,6 +14,10 @@ Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('cont
 Route::get('/privacy-policy', [HomepageController::class, 'privacy_policy'])->name('privacy-policy');
 Route::get('/terms-of-service', [HomepageController::class, 'terms_of_service'])->name('terms-of-service');
 Route::get('/help-center', [HomepageController::class, 'help_center'])->name('help.center');
+
+// Search Route and Search API Route
+Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/api/search-suggestions', [SearchController::class, 'suggestions']);
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
@@ -36,6 +41,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         // Route::get('/{id}', [McqController::class, 'show'])->name('mcqs.show');
         Route::get('/{slug}', [McqController::class, 'show'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.show');
+        Route::get('/{id}', [McqController::class, 'show'])->name('mcqs.show');
         Route::get('/{slug}/edit', [McqController::class, 'edit'])->where('slug', '[a-zA-Z0-9\-_]+')
             ->name('mcqs.edit');
         Route::patch('/{slug}/update', [McqController::class, 'update'])->where('slug', '[a-zA-Z0-9\-_]+')

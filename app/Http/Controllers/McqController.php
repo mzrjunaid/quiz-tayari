@@ -534,17 +534,12 @@ class McqController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($slug)
+    public function show($request)
     {
-        // dd($slug);
-        $mcq = $this->findMcqBySlug($slug);
-        // dd($mcq);
+        $mcq = $this->findMcqBySlugOrID($request);
         if (!$mcq) {
             abort(404);
         }
-
-        // dd($mcq);
-
         return Inertia::render('Mcqs/Show', [
             'mcq' => new McqResource($mcq),
         ]);
@@ -555,9 +550,7 @@ class McqController extends Controller
      */
     public function edit($slug)
     {
-        // dd($slug);
-        $mcq = $this->findMcqBySlug($slug);
-        // dd($mcq);
+        $mcq = $this->findMcqBySlugOrID($slug);
         if (!$mcq) {
             abort(404);
         }
@@ -658,7 +651,7 @@ class McqController extends Controller
     public function update(StoreMcqRequest $request, $slug)
     {
 
-        $mcq = $this->findMcqBySlug($slug);
+        $mcq = $this->findMcqBySlugOrID($slug);
         // validate the request
         $validated = $request->validated();
 
@@ -733,7 +726,7 @@ class McqController extends Controller
      */
     public function toggleField(Request $validated, $slug)
     {
-        $mcq = $this->findMcqBySlug($slug);
+        $mcq = $this->findMcqBySlugOrID($slug);
         if (!$mcq) {
             return redirect()->back()->with([
                 'message' => 'MCQ not found'
@@ -800,7 +793,7 @@ class McqController extends Controller
      */
     public function destroy($slug)
     {
-        $mcq = $this->findMcqBySlug($slug);
+        $mcq = $this->findMcqBySlugOrID($slug);
         if (!$mcq) {
             return redirect()->back()->with([
                 'error' => 'MCQ not found'
@@ -882,14 +875,14 @@ class McqController extends Controller
      * @return Mcq
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    private function findMcqBySlug(string $slug): Mcq
+    private function findMcqBySlugOrID(string $slug): Mcq
     {
         return Mcq::with([
             'creator:id,name,email',
             'updater:id,name,email',
             'verifier:id,name,email'
         ])
-            ->where('slug', $slug)
+            ->whereAny(['slug', 'id'], $slug)
             ->firstOrFail();
     }
 }

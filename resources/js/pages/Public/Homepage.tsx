@@ -139,7 +139,6 @@ const MCQHomepage = ({ mcqs }: Props) => {
     });
 
     const scrollRef = useRef<HTMLDivElement | null>(null);
-
     return (
         <>
             {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
