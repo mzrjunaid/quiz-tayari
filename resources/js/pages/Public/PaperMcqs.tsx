@@ -25,12 +25,12 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Homepage', href: route('home') },
-        { title: 'Papers List', href: route('public-papers.list') },
+        { title: 'Papers List', href: route('public.papers.list') },
         {
             title: truncate(paper.title, {
                 length: 30,
             }),
-            href: route('public-papers.show', paper.slug),
+            href: route('public.papers.show', paper.slug),
         },
     ];
     const adSlot = false;
@@ -82,8 +82,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
     };
     return (
         <>
-            <Head>
-                <title>{pageTitle}</title>
+            <Head title={pageTitle}>
                 <meta name="description" content={pageDescription} />
                 <meta name="keywords" content={`${paper.title} MCQs, ${paper.department} MCQs, ${paper.title} quiz, exam preparation, PAK QUIZ`} />
                 <meta name="robots" content="index, follow" />
@@ -96,7 +95,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
                 {/* ✅ JSON-LD */}
                 <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
             </Head>
-            <PublicLayout title={paper.title}>
+            <PublicLayout>
                 {adSlot && <TopAdSection />}
                 <MainSectionWithSidebarLayout>
                     <div className={`space-y-4 lg:col-span-2`}>

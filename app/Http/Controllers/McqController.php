@@ -333,7 +333,7 @@ class McqController extends Controller
             $rephraseController->markAsRephrased($request->oldMcq_id);
 
             return redirect()
-                ->route('mcqs.index')
+                ->route('admin.mcqs.index')
                 ->with([
                     'success' => 'MCQ created successfully'
                 ]);
@@ -485,7 +485,7 @@ class McqController extends Controller
 
             // Validate that paperIds exists and is an array
             if (!$paperIds || !is_array($paperIds)) {
-                return redirect()->route('mcqs.assign-paper')
+                return redirect()->route('admin.mcqs.assign-paper')
                     ->with('error', 'No paper IDs provided or invalid format.');
             }
 
@@ -516,17 +516,17 @@ class McqController extends Controller
 
             // Return success message with count
             if ($updatedCount > 0) {
-                return redirect()->route('mcqs.assign-paper')
+                return redirect()->route('admin.mcqs.assign-paper')
                     ->with('message', "Paper IDs assigned successfully! Updated {$updatedCount} MCQ(s).");
             } else {
-                return redirect()->route('mcqs.assign-paper')
+                return redirect()->route('admin.mcqs.assign-paper')
                     ->with('error', 'No MCQs were updated. Please check the provided IDs.');
             }
         } catch (Exception $e) {
             // Handle any exceptions
             Log::error('Error updating paper IDs: ' . $e->getMessage());
 
-            return redirect()->route('mcqs.assign-paper')
+            return redirect()->route('admin.mcqs.assign-paper')
                 ->with('error', 'An error occurred while assigning paper IDs. Please try again.');
         }
     }
@@ -853,7 +853,7 @@ class McqController extends Controller
         $mcq = Mcq::onlyTrashed()->findOrFail($id);
         $mcq->forceDelete();
 
-        return redirect()->route('deleted.mcqs')
+        return redirect()->route('admin.deleted.mcqs')
             ->with('message', 'Mcq restored successfully');
     }
 
@@ -863,7 +863,7 @@ class McqController extends Controller
         $mcq = Mcq::onlyTrashed()->findOrFail($id);
         $mcq->restore();
 
-        return redirect()->route('mcqs.index')
+        return redirect()->route('admin.mcqs.index')
             ->with('message', 'Mcq restored successfully');
     }
 

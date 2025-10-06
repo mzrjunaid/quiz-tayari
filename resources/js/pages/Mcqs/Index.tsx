@@ -52,7 +52,7 @@ const columns: ColumnDef<Mcqs>[] = [
         },
         cell: ({ row }) => (
             <div className="max-w-sm break-words whitespace-normal">
-                <Link href={route('mcqs.show', row.original.slug)} className="hover:underline">
+                <Link href={route('admin.mcqs.show', row.original.slug)} className="hover:underline">
                     {row.getValue('question')}
                 </Link>
             </div>
@@ -89,14 +89,14 @@ const columns: ColumnDef<Mcqs>[] = [
         cell: ({ row }) => {
             const handleDelete = () => {
                 const slug = row.original.slug;
-                router.delete(route('mcqs.delete', slug), {
+                router.delete(route('admin.mcqs.delete', slug), {
                     replace: true,
                 });
             };
 
             const updatePublish = (is_verified: boolean) => {
                 router.patch(
-                    route('mcqs.update-field', row.original?.slug),
+                    route('admin.mcqs.update-field', row.original?.slug),
                     {
                         field: 'is_verified',
                         value: is_verified,
@@ -113,7 +113,7 @@ const columns: ColumnDef<Mcqs>[] = [
             return (
                 <div className="flex flex-row gap-3">
                     <ButtonTooltip text="Edit">
-                        <Link href={route('mcqs.edit', row.original.slug)}>
+                        <Link href={route('admin.mcqs.edit', row.original.slug)}>
                             <Edit className="size-4" />
                         </Link>
                     </ButtonTooltip>
@@ -159,11 +159,11 @@ const columns: ColumnDef<Mcqs>[] = [
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
     },
     {
         title: 'MCQs',
-        href: route('mcqs.index'),
+        href: route('admin.mcqs.index'),
     },
 ];
 
@@ -172,13 +172,13 @@ export default function McqsIndex({ mcqs, filters, stats }: DataTableProps) {
         <DashboardLayout title="MCQs" breadcrumbs={breadcrumbs}>
             <div className="mb-2 flex flex-row justify-end gap-4">
                 <Button variant="secondary" asChild>
-                    <Link href={route('mcqs.assign-paper')}>Assign Paper</Link>
+                    <Link href={route('admin.mcqs.assign-paper')}>Assign Paper</Link>
                 </Button>
                 <Button variant="default" asChild>
-                    <Link href={route('mcqs.create')}>Add New</Link>
+                    <Link href={route('admin.mcqs.create')}>Add New</Link>
                 </Button>
             </div>
-            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.index')} stats={stats} />
+            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('admin.mcqs.index')} stats={stats} />
         </DashboardLayout>
     );
 }

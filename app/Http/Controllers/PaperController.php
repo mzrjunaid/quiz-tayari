@@ -236,7 +236,7 @@ class PaperController extends Controller
         Paper::create($request->validated());
 
         return redirect()
-            ->route('papers.index')
+            ->route('admin.papers.index')
             ->with('success', 'Paper created successfully!');
     }
 
@@ -307,7 +307,7 @@ class PaperController extends Controller
         $paper->update($request->validated());
 
         return redirect()
-            ->route('papers.index')
+            ->route('admin.papers.index')
             ->with('success', 'Paper updated successfully!');
     }
 
@@ -319,7 +319,7 @@ class PaperController extends Controller
         $paper->delete();
 
         return redirect()
-            ->route('papers.index')
+            ->route('admin.papers.index')
             ->with('success', 'Paper deleted successfully!');
     }
 

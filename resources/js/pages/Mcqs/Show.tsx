@@ -22,15 +22,15 @@ export default function Show() {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
-            href: route('dashboard'),
+            href: route('admin.dashboard'),
         },
         {
             title: 'MCQs List',
-            href: route('mcqs.index'),
+            href: route('admin.mcqs.index'),
         },
         {
             title: truncate(mcq?.question) || 'MCQ',
-            href: route('mcqs.show', mcq?.id),
+            href: route('admin.mcqs.show', mcq?.id),
         },
     ];
 
@@ -48,7 +48,7 @@ export default function Show() {
     };
 
     const handleEdit = () => {
-        router.get(route('mcqs.edit', mcq?.slug), {}, { preserveScroll: true });
+        router.get(route('admin.mcqs.edit', mcq?.slug), {}, { preserveScroll: true });
     };
 
     // Initialize with boolean values to prevent uncontrolled/controlled switch
@@ -72,7 +72,7 @@ export default function Show() {
         }
 
         router.patch(
-            route('mcqs.update-field', mcq?.slug),
+            route('admin.mcqs.update-field', mcq?.slug),
             { field, value },
             {
                 onStart: () => {
@@ -217,7 +217,7 @@ export default function Show() {
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="font-bold text-blue-600">Created by: </span>
-                                    <span>{mcq ? mcq.created_by.name : ''}</span>
+                                    <span>{mcq ? mcq.created_by?.name : ''}</span>
                                 </div>
                             </div>
                         </div>

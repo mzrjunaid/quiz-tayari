@@ -69,9 +69,9 @@ export default function Edit({
     general_knowledge,
 }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'MCQs List', href: '/rephrase' },
-        { title: 'Show', href: `/rephrase/${mcq?.q_id}` },
-        { title: 'Create', href: `/rephrase/create` },
+        { title: 'MCQs List', href: route('admin.rephrase') },
+        { title: 'Show', href: route('admin.rephrase', mcq?.q_id) },
+        { title: 'Create', href: route('admin.rephrase.create') },
     ];
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -283,7 +283,7 @@ export default function Edit({
                 }),
             };
 
-            await router.post(route('mcqs.store'), formattedValues);
+            await router.post(route('admin.mcqs.store'), formattedValues);
             // Clear draft after successful submission
             localStorage.removeItem('mcq_draft');
         } catch (error) {
@@ -543,7 +543,7 @@ export default function Edit({
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => router.get(route('mcqs.index'))}
+                                    onClick={() => router.get(route('admin.mcqs.index'))}
                                     disabled={isSubmitting}
                                     className="w-full md:w-auto"
                                 >

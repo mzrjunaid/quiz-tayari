@@ -1,5 +1,4 @@
 // import AppLayout from '@/layouts/app-layout';
-import { SearchBar } from '@/components/search-input';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { LinkPaginatedData, Mcqs } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -101,7 +100,6 @@ export default function Welcome({ mcqs }: Props) {
                 <script type="application/ld+json">{JSON.stringify(homepageSchema)}</script>
             </Head>
             <PublicLayout>
-                <SearchBar />
                 <MCQHomepage mcqs={mcqs} />
             </PublicLayout>
         </>

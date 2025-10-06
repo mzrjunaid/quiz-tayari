@@ -18,15 +18,15 @@ type FormValues = z.infer<typeof paperSchema>;
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
     },
     {
         title: 'Papers',
-        href: route('papers.index'),
+        href: route('admin.papers.index'),
     },
     {
         title: 'Add Paper',
-        href: route('papers.create'),
+        href: route('admin.papers.create'),
     },
 ];
 
@@ -125,7 +125,7 @@ export default function CreatePaper() {
                 scheduled_at: new Date(parsed.scheduled_at).toISOString(),
             };
 
-            await router.post(route('papers.store'), formattedValues, {
+            await router.post(route('admin.papers.store'), formattedValues, {
                 onSuccess: () => {
                     localStorage.removeItem('papers_draft');
                 },
@@ -399,7 +399,7 @@ export default function CreatePaper() {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => router.get(route('papers.index'))}
+                                onClick={() => router.get(route('admin.papers.index'))}
                                 disabled={isSubmitting}
                                 className="w-full md:w-auto"
                             >

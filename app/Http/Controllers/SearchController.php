@@ -97,7 +97,7 @@ class SearchController extends Controller
                 'id' => $m->id,
                 'slug' => $m->slug,
                 'title' => $m->question,
-                'link' => route('mcqs.show', $m->slug),
+                'link' => route('admin.mcqs.show', $m->slug),
                 'type' => 'MCQ',
             ]);
 
@@ -108,7 +108,7 @@ class SearchController extends Controller
             ->map(fn($m) => [
                 'id' => $m->q_id,
                 'title' => $m->q_statement,
-                'link' => route('mcqs.show', $m->q_id),
+                'link' => route('admin.mcqs.show', $m->q_id),
                 'type' => 'Old MCQ',
             ]);
 

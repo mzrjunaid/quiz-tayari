@@ -400,7 +400,7 @@ class McqsRephraseController extends Controller
             }
 
             return redirect()
-                ->route('rephrase.show', $id)
+                ->route('admin.rephrase.show', $id)
                 ->with([
                     'success' => 'Rephrased successfully.',
                     'rephrased' => $rephrased,
@@ -420,7 +420,7 @@ class McqsRephraseController extends Controller
 
     private function redirectWithError($id, $message)
     {
-        return redirect()->route('rephrase.show', $id)->with('error', $message);
+        return redirect()->route('admin.rephrase.show', $id)->with('error', $message);
     }
 
     private function extractContent(string $text, string $marker, string $type = 'string')

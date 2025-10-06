@@ -30,15 +30,15 @@ export default function EditPaper() {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
-            href: route('dashboard'),
+            href: route('admin.dashboard'),
         },
         {
             title: 'Papers',
-            href: route('papers.index'),
+            href: route('admin.papers.index'),
         },
         {
             title: 'Edit Paper',
-            href: route('papers.edit', paper.slug),
+            href: route('admin.papers.edit', paper.slug),
         },
     ];
 
@@ -398,7 +398,7 @@ export default function EditPaper() {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => router.get(route('papers.index'))}
+                                onClick={() => router.get(route('admin.papers.index'))}
                                 disabled={isSubmitting}
                                 className="w-full md:w-auto"
                             >

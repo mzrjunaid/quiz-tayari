@@ -9,17 +9,9 @@ use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [HomepageController::class, 'index'])->name('home');
-Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('contact-us');
-Route::get('/privacy-policy', [HomepageController::class, 'privacy_policy'])->name('privacy-policy');
-Route::get('/terms-of-service', [HomepageController::class, 'terms_of_service'])->name('terms-of-service');
-Route::get('/help-center', [HomepageController::class, 'help_center'])->name('help.center');
 
-// Search Route and Search API Route
-Route::get('/search', [SearchController::class, 'index'])->name('search');
-Route::get('/api/search-suggestions', [SearchController::class, 'suggestions']);
-
-Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+// Admin Routes
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::group(['prefix' => 'rephrase'], function () {
         Route::get('/', [McqsRephraseController::class, 'index'])->name('rephrase.index');
@@ -66,12 +58,33 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     });
 });
 
+
+// Public Routes
+
+// Homepage
+Route::get('/', [HomepageController::class, 'index'])->name('home');
+Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('contact-us');
+Route::get('/privacy-policy', [HomepageController::class, 'privacy_policy'])->name('privacy-policy');
+Route::get('/terms-of-service', [HomepageController::class, 'terms_of_service'])->name('terms-of-service');
+Route::get('/help-center', [HomepageController::class, 'help_center'])->name('help.center');
 Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('set-mcq-mode');
 
-Route::prefix('papers')->group(function () {
-    Route::get('/', [HomepageController::class, 'papers_list'])->name('public-papers.list');
-    Route::get('/{slug}', [HomepageController::class, 'papers_mcqs'])->name('public-papers.show');
+
+Route::name('public.')->group(function () {
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::prefix('papers')->group(function () {
+        Route::get('/', [HomepageController::class, 'papers_list'])->name('papers.list');
+        Route::get('/{slug}', [HomepageController::class, 'papers_mcqs'])->name('papers.show');
+    });
 });
+// Search Route and Search API Route
+
+
+
+
+
+// APIs Route
+Route::get('/api/search-suggestions', [SearchController::class, 'suggestions']);
 
 
 require __DIR__ . '/settings.php';

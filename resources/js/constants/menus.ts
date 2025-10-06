@@ -17,7 +17,7 @@ export const publicNavItems: NavItem[] = [
     },
     {
         title: 'Papers',
-        href: route('public-papers.list'),
+        href: route('public.papers.list'),
         icon: List,
     },
 ];
@@ -25,12 +25,12 @@ export const publicNavItems: NavItem[] = [
 export const paperNavItems: NavItem[] = [
     {
         title: 'Past Papers',
-        href: 'public-papers.list',
+        href: 'public.papers.list',
         description: 'Browse all Previous Papers from PPSC',
     },
     {
         title: 'Upcoming Papers',
-        href: 'public-papers.list',
+        href: 'public.papers.list',
         description: 'Practice Upcoming Papers with AI',
     },
 ];
@@ -38,17 +38,17 @@ export const paperNavItems: NavItem[] = [
 export const adminNavItems: NavItem[] = [
     {
         title: 'MCQs Rephrase',
-        href: route('rephrase.index'),
+        href: route('admin.rephrase.index'),
         icon: ScrollText,
     },
     {
         title: 'Papers',
-        href: route('papers.index'),
+        href: route('admin.papers.index'),
         icon: Paperclip,
     },
     {
         title: 'MCQs',
-        href: route('mcqs.index'),
+        href: route('admin.mcqs.index'),
         icon: List,
     },
 ];
@@ -56,7 +56,7 @@ export const adminNavItems: NavItem[] = [
 export const adminFooterNavItems: NavItem[] = [
     {
         title: 'MCQs - Trash Bin',
-        href: route('mcqs.trashbin'),
+        href: route('admin.mcqs.trashbin'),
         icon: Trash,
     },
 ];

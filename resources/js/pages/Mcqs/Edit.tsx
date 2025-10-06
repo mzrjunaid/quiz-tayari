@@ -48,9 +48,9 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Edit({ mcq, papers, subjects, subject, topics, topic, tags, exam_types, questionTypes, rephrased }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'MCQs List', href: route('mcqs.index') },
-        { title: 'Show', href: route('mcqs.show', mcq.id) },
-        { title: 'Create', href: route('mcqs.create') },
+        { title: 'MCQs List', href: route('admin.mcqs.index') },
+        { title: 'Show', href: route('admin.mcqs.show', mcq.id) },
+        { title: 'Create', href: route('admin.mcqs.create') },
     ];
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -258,7 +258,7 @@ export default function Edit({ mcq, papers, subjects, subject, topics, topic, ta
                 }),
             };
 
-            await router.patch(route('mcqs.update', mcq.slug), formattedValues);
+            await router.patch(route('admin.mcqs.update', mcq.slug), formattedValues);
             // Clear draft after successful submission
             localStorage.removeItem('mcq_draft');
         } catch (error) {
@@ -518,7 +518,7 @@ export default function Edit({ mcq, papers, subjects, subject, topics, topic, ta
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => router.get(route('mcqs.index'))}
+                                    onClick={() => router.get(route('admin.mcqs.index'))}
                                     disabled={isSubmitting}
                                     className="w-full md:w-auto"
                                 >

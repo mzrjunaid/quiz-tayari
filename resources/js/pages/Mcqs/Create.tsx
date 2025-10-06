@@ -40,9 +40,9 @@ interface Props {
 type FormValues = z.infer<typeof formSchema>;
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: route('dashboard') },
-    { title: 'MCQs List', href: route('mcqs.index') },
-    { title: 'Create', href: route('mcqs.create') },
+    { title: 'Dashboard', href: route('admin.dashboard') },
+    { title: 'MCQs List', href: route('admin.mcqs.index') },
+    { title: 'Create', href: route('admin.mcqs.create') },
 ];
 export default function Edit({ papers, subjects, topics, tags, exam_types, questionTypes }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -215,7 +215,7 @@ export default function Edit({ papers, subjects, topics, tags, exam_types, quest
                 }),
             };
 
-            await router.post(route('mcqs.store'), formattedValues);
+            await router.post(route('admin.mcqs.store'), formattedValues);
             // Clear draft after successful submission
             localStorage.removeItem('mcq_draft');
         } catch (error) {
@@ -445,7 +445,7 @@ export default function Edit({ papers, subjects, topics, tags, exam_types, quest
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => router.get(route('mcqs.index'))}
+                                    onClick={() => router.get(route('admin.mcqs.index'))}
                                     disabled={isSubmitting}
                                     className="w-full md:w-auto"
                                 >

@@ -7,7 +7,7 @@ import { Edit, RotateCcw } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
     },
     { title: 'MCQs List', href: '/rephrase' },
     { title: 'Mcqs Rephrase', href: '/show' },
@@ -32,7 +32,7 @@ export default function Show() {
 
     const handleRephrase = () => {
         router.get(
-            route('rephrase.rephrase', mcq?.q_id),
+            route('admin.rephrase.rephrase', mcq?.q_id),
             {
                 q_id: mcq?.q_id,
                 q_statement: mcq?.q_statement,
@@ -45,7 +45,7 @@ export default function Show() {
 
     const handleEdit = () => {
         router.post(
-            route('rephrase.edit', mcq?.q_id),
+            route('admin.rephrase.edit', mcq?.q_id),
             {
                 core_concept: core_concept,
                 tags_new: tags,

@@ -10,22 +10,22 @@ import { NavUser } from './nav-user';
 const adminNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
         icon: LayoutGrid,
     },
     {
         title: 'MCQs Rephrase',
-        href: route('rephrase.index'),
+        href: route('admin.rephrase.index'),
         icon: ScrollText,
     },
     {
         title: 'Papers',
-        href: route('papers.index'),
+        href: route('admin.papers.index'),
         icon: Paperclip,
     },
     {
         title: 'MCQs',
-        href: route('mcqs.index'),
+        href: route('admin.mcqs.index'),
         icon: List,
     },
 ];
@@ -33,7 +33,7 @@ const adminNavItems: NavItem[] = [
 const adminFooterNavItems: NavItem[] = [
     {
         title: 'MCQs - Trash Bin',
-        href: route('mcqs.trashbin'),
+        href: route('admin.mcqs.trashbin'),
         icon: Trash,
     },
 ];
@@ -62,7 +62,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>{auth.user && <NavMain items={adminNavItems} />}</SidebarContent>
+            <SidebarContent>{auth.user && <NavMain navGroupTitle='home' items={adminNavItems} />}</SidebarContent>
 
             <SidebarFooter>
                 {!auth.user && <NavFooter items={userFooterNavItems} className="mt-auto" />}

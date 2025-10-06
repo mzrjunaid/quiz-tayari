@@ -19,11 +19,11 @@ import { ArrowUpDown } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
     },
     {
         title: 'Deleted MCQs',
-        href: route('mcqs.trashbin'),
+        href: route('admin.mcqs.trashbin'),
     },
 ];
 
@@ -87,11 +87,11 @@ export const columns: ColumnDef<Mcqs>[] = [
         cell: ({ row }) => {
             const id = row.original.id;
             const handleRestore = () => {
-                router.get(route('mcqs.restore', id));
+                router.get(route('admin.mcqs.restore', id));
             };
 
             const handleDelete = () => {
-                router.get(route('mcqs.delete-permanently', id));
+                router.get(route('admin.mcqs.delete-permanently', id));
             };
             return (
                 <div className="flex flex-row gap-2">
@@ -135,7 +135,7 @@ export const columns: ColumnDef<Mcqs>[] = [
 export default function Deleted({ mcqs, filters }: Props) {
     return (
         <DashboardLayout title="Deleted MCQs" breadcrumbs={breadcrumbs}>
-            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('mcqs.trashbin')} />
+            <DataTable mcqs={mcqs} columns={columns} filters={filters} url={route('admin.mcqs.trashbin')} />
         </DashboardLayout>
     );
 }
