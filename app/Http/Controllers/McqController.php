@@ -651,9 +651,14 @@ class McqController extends Controller
     public function update(StoreMcqRequest $request, $slug)
     {
 
+
+
         $mcq = $this->findMcqBySlugOrID($slug);
         // validate the request
         $validated = $request->validated();
+
+        // dd($mcq);
+        // dd($validated);
 
 
         DB::beginTransaction();
@@ -667,8 +672,8 @@ class McqController extends Controller
                 'option_c' => $validated['option_c'],
                 'option_d' => $validated['option_d'],
                 'option_e' => $validated['option_e'],
-                'correct_answer' => $validated['correct_answer'],
-                'correct_answers' => !empty($validated['correct_answers']) ? json_encode($validated['correct_answers']) : null,
+                'correct_answer' => $validated['correct_answer'] ?? null,
+                'correct_answers' => $validated['correct_answers'] ?? null,
                 'paper_id' => $validated['paper'],
                 'subject' => $validated['subject'],
                 'topic' => $validated['topic'],
@@ -681,6 +686,8 @@ class McqController extends Controller
                 'exam_types' => !empty($validated['exam_types']) ? $validated['exam_types'] : null,
                 'updated_by' => Auth::id(),
             ];
+
+            // dd($mcqData);
 
             // Update the MCQ record
             $mcq->update($mcqData);
@@ -697,12 +704,13 @@ class McqController extends Controller
                 'question_type' => $mcq->question_type
             ]);
 
-            return redirect()->route('mcqs.index')
+            return redirect()->route('admin.mcqs.index')
                 ->with([
                     'success' => 'MCQ updated successfully.',
                 ]);
         } catch (ValidationException $e) {
             DB::rollBack();
+            // dd($e);
             throw $e; // Let Inertia handle validation errors
         } catch (Exception $e) {
             DB::rollBack();
@@ -713,10 +721,12 @@ class McqController extends Controller
                 'mcq_id' => $mcq->id,
                 'request_data' => $request->except(['_token'])
             ]);
+            $error = $e->getMessage();
+            // dd($error);
             return back()
                 ->withInput()
                 ->with([
-                    'error' => 'Failed to update MCQ. Please try again.'
+                    'error' => $error
                 ]);
         }
     }

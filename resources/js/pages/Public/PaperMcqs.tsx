@@ -60,7 +60,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
             answerCount: mcq.correct_answers?.length,
             acceptedAnswer: {
                 '@type': 'Answer',
-                text: mcq.correct_answers?.join(', '),
+                text: mcq.correct_answers && mcq.correct_answers?.length > 1 ? mcq.correct_answers?.join(', ') : mcq.correct_answer,
                 upvoteCount: 0,
                 url: `${baseUrl}/${mcq.slug}`,
             },

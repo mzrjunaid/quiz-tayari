@@ -72,10 +72,20 @@ Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('s
 
 Route::name('public.')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+    // Route::prefix('papers')->name('papers.')->group(function () {
+    //     Route::get('/', [HomepageController::class, 'papers_list'])->name('index');
+    //     Route::get('/{paper:slug}', [HomepageController::class, 'papers_mcqs'])->name('show');
+    //     Route::get('/{paper:slug}/mcqs/{mcq:slug}', [HomepageController::class, 'show_mcq'])->name('mcqs.show');
+    // });
+    // Papers Resource Routes
     Route::prefix('papers')->name('papers.')->group(function () {
         Route::get('/', [HomepageController::class, 'papers_list'])->name('index');
         Route::get('/{paper:slug}', [HomepageController::class, 'papers_mcqs'])->name('show');
-        Route::get('/{paper:slug}/mcqs/{mcq:slug}', [HomepageController::class, 'show_mcq'])->name('mcqs.show');
+
+        // Nested MCQs Routes
+        Route::prefix('/{paper:slug}/mcqs')->name('mcqs.')->group(function () {
+            Route::get('/{mcq:slug}', [HomepageController::class, 'shshow_mcqow'])->name('show');
+        });
     });
 });
 // Search Route and Search API Route

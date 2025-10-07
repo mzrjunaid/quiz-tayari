@@ -122,10 +122,23 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
 
     const optionEntries = Object.entries(mcq?.options || {});
 
-    const correctAnswers = React.useMemo(
-        () => mcq?.correct_answers || (mcq?.correct_answer ? [mcq.correct_answer] : []),
-        [mcq?.correct_answers, mcq?.correct_answer],
-    );
+    const correctAnswers = React.useMemo(() => {
+        let answers = mcq?.correct_answers;
+
+        if (typeof answers === 'string') {
+            try {
+                answers = JSON.parse(answers);
+            } catch {
+                answers = [];
+            }
+        }
+
+        if (Array.isArray(answers) && answers.length > 0) {
+            return answers;
+        }
+
+        return mcq?.correct_answer ? [mcq.correct_answer] : [];
+    }, [mcq?.correct_answers, mcq?.correct_answer]);
 
     // Reset on mode change
     useEffect(() => {
@@ -206,10 +219,11 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
             <CardContent>
                 {/* Question */}
                 <Link
-                    href={route('public.papers.mcqs.show', {
-                        paper: mcq.paper?.slug,
-                        mcq: mcq.slug,
-                    })}
+                    // href={route('public.papers.mcqs.show', {
+                    //     paper: mcq.paper?.slug,
+                    //     mcq: mcq.slug,
+                    // })}
+                    href="#"
                 >
                     <h4 className="mb-2 text-lg font-semibold md:mb-4">
                         Q {mcq?.serial_number}. {mcq?.question}

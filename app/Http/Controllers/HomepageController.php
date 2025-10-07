@@ -39,7 +39,11 @@ class HomepageController extends Controller
      */
     public function papers_list()
     {
-        $papers = Paper::latest()->paginate(20)->appends(request()->query());
+        $papers = Paper::whereHas('mcqs') // only papers that have mcqs
+            // ->withCount('mcqs') // optional: adds mcqs_count column
+            ->latest()
+            ->paginate(20)
+            ->appends(request()->query());
 
         return Inertia::render('Public/Papers', [
             'papers' => PaperResource::collection($papers),
@@ -56,7 +60,6 @@ class HomepageController extends Controller
         $paper = Paper::where('slug', $slug)->firstOrFail();
         $mcqs = Mcq::where('paper_id', $paper->id)
             ->paginate(10); // 10 per page
-
 
         return Inertia::render('Public/PaperMcqs', [
             'paper' => $paper,

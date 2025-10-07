@@ -18,7 +18,7 @@ interface Props {
 
 const MCQHomepage = ({ mcqs }: Props) => {
     const { mcqMode } = usePage<SharedData>().props;
-    const { meta, links } = mcqs;
+    const { data, meta, links } = mcqs;
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
     const [selectedJobType, setSelectedJobType] = useState('All Jobs');
     const [selectedTestService, setSelectedTestService] = useState('All Services');
@@ -118,12 +118,12 @@ const MCQHomepage = ({ mcqs }: Props) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentMCQ((prev) => (prev + 1) % mcqs.data.length);
+            setCurrentMCQ((prev) => (prev + 1) % data.length);
         }, 5000);
         return () => clearInterval(interval);
-    }, [mcqs.data.length]);
+    }, [data.length]);
 
-    const filteredMCQs = mcqs.data.filter((mcq) => {
+    const filteredMCQs = data.filter((mcq) => {
         const matchesSubject = selectedSubject === 'All Subjects' || mcq.subject === selectedSubject;
         const matchesJob =
             selectedJobType === 'All Jobs' || mcq.tags.some((tag) => tag.toLowerCase().includes(selectedJobType.toLowerCase().split(' ')[0]));
@@ -137,7 +137,7 @@ const MCQHomepage = ({ mcqs }: Props) => {
         <>
             {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
             {/* Hero Section with MCQ Preview */}
-            <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={mcqs.data} />
+            <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={data} />
             {/* Search and Filter Section */}
             <section className="border-y px-4 py-6 sm:px-6 md:py-16 lg:px-8" ref={scrollRef}>
                 <div className="mx-auto max-w-7xl">

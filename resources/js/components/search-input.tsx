@@ -309,11 +309,11 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                 <div
                     className={`relative flex items-center transition-all duration-200 ${
                         focused ? 'shadow-lg ring-2 ring-primary' : 'shadow-md hover:shadow-lg'
-                    } rounded-xl bg-white`}
+                    } rounded-lg bg-white`}
                 >
                     <Search className={`absolute left-4 h-5 w-5 transition-colors ${focused ? 'text-primary' : 'text-gray-400'}`} />
 
-                    <input
+                    <Input
                         ref={inputRef}
                         type="text"
                         value={searchTerm}
@@ -324,7 +324,7 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                             setFocused(true);
                         }}
                         placeholder={placeholder}
-                        className="w-full rounded-2xl border-0 py-4 pr-24 pl-12 text-base placeholder-gray-400 focus:outline-none"
+                        className="w-full rounded-lg border-0 py-4 pr-24 pl-12 text-base placeholder-gray-400 focus:outline-none"
                         autoComplete="off"
                     />
 
@@ -333,8 +333,8 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                         {loading && <Loader2 className="h-5 w-5 animate-spin text-primary" />}
 
                         {searchTerm && !loading && (
-                            <Button variant="ghost" size="icon" onClick={handleClear} className="rounded-full transition">
-                                <X className="h-3 w-3" />
+                            <Button variant="ghost" size="icon" onClick={handleClear} className="size-6 rounded-full transition">
+                                <X />
                             </Button>
                         )}
 
@@ -343,9 +343,9 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                                 variant="default"
                                 size="icon"
                                 onClick={handleSearch}
-                                className="flex items-center gap-1.5 rounded px-4 py-2 text-sm font-medium transition"
+                                className="flex size-6 items-center gap-1.5 rounded-full text-sm font-medium transition"
                             >
-                                <ArrowRight className="h-4 w-4" />
+                                <ArrowRight />
                             </Button>
                         )}
                     </div>
