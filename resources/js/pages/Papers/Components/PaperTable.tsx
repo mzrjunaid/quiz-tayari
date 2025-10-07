@@ -39,7 +39,7 @@ export const columns: ColumnDef<Paper>[] = [
         cell: ({ row }) => (
             <div className="capitalize">
                 <Button variant="link" asChild>
-                    <Link href={route('papers.show', row.original.slug)}>{row.getValue('title')}</Link>
+                    <Link href={route('admin.papers.show', row.original.slug)}>{row.getValue('title')}</Link>
                 </Button>
             </div>
         ),
@@ -174,13 +174,13 @@ export const columns: ColumnDef<Paper>[] = [
                     </Button> */}
 
                     <ButtonTooltip text="Edit">
-                        <Link href={route('papers.show', row.original.slug)}>
+                        <Link href={route('admin.papers.show', row.original.slug)}>
                             <Edit className="size-4" />
                         </Link>
                     </ButtonTooltip>
 
                     <ButtonTooltip text="Delete">
-                        <Link href={route('papers.delete', row.original.slug)}>
+                        <Link href={route('admin.papers.delete', row.original.slug)}>
                             <Trash className="size-4" />
                         </Link>
                     </ButtonTooltip>
@@ -305,7 +305,7 @@ export default function PaperTable({ papers, filters }: DataTableProps) {
                 </div>
                 <div className="relative max-w-sm">
                     <Button variant="default" asChild>
-                        <Link href={route('papers.create')} type="button">
+                        <Link href={route('admin.papers.create')} type="button">
                             Add New
                         </Link>
                     </Button>
