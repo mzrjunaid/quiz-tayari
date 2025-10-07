@@ -29,99 +29,99 @@ const MCQHomepage = ({ mcqs }: Props) => {
     const jobTypes = ['All Jobs', 'Software Engineer', 'Data Scientist', 'Civil Service', 'Banking', 'Teaching', 'Medical', 'Engineering'];
     const testServices = ['All Services', 'UPSC', 'SSC', 'GATE', 'NET', 'JEE', 'NEET', 'CAT', 'GRE'];
 
-    const sampleMCQs = [
-        {
-            id: 1,
-            question: 'What is the time complexity of binary search algorithm?',
-            options: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'],
-            correctAnswer: 1,
-            subject: 'Computer Science',
-            difficulty: 'Medium',
-            views: 1250,
-            successRate: 78,
-            aiEnhanced: true,
-            tags: ['Algorithm', 'Binary Search', 'Complexity'],
-            testService: 'GATE',
-            explanation:
-                'Paris is the capital and most populous city of France. It has been the capital since the 6th century and is located in the north-central part of the country along the Seine River.',
-        },
-        {
-            id: 2,
-            question: 'Which of the following is the powerhouse of the cell?',
-            options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Endoplasmic Reticulum'],
-            correctAnswer: 1,
-            subject: 'Biology',
-            difficulty: 'Easy',
-            views: 2150,
+    // const sampleMCQs = [
+    //     {
+    //         id: 1,
+    //         question: 'What is the time complexity of binary search algorithm?',
+    //         options: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'],
+    //         correctAnswer: 1,
+    //         subject: 'Computer Science',
+    //         difficulty: 'Medium',
+    //         views: 1250,
+    //         successRate: 78,
+    //         aiEnhanced: true,
+    //         tags: ['Algorithm', 'Binary Search', 'Complexity'],
+    //         testService: 'GATE',
+    //         explanation:
+    //             'Paris is the capital and most populous city of France. It has been the capital since the 6th century and is located in the north-central part of the country along the Seine River.',
+    //     },
+    //     {
+    //         id: 2,
+    //         question: 'Which of the following is the powerhouse of the cell?',
+    //         options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Endoplasmic Reticulum'],
+    //         correctAnswer: 1,
+    //         subject: 'Biology',
+    //         difficulty: 'Easy',
+    //         views: 2150,
 
-            successRate: 92,
-            aiEnhanced: true,
-            tags: ['Cell Biology', 'Organelles'],
-            testService: 'NEET',
-        },
-        {
-            id: 3,
-            question: 'What is the derivative of sin(x) with respect to x?',
-            options: ['cos(x)', '-cos(x)', 'sin(x)', '-sin(x)'],
-            correctAnswer: 0,
-            subject: 'Mathematics',
-            difficulty: 'Easy',
-            views: 1890,
+    //         successRate: 92,
+    //         aiEnhanced: true,
+    //         tags: ['Cell Biology', 'Organelles'],
+    //         testService: 'NEET',
+    //     },
+    //     {
+    //         id: 3,
+    //         question: 'What is the derivative of sin(x) with respect to x?',
+    //         options: ['cos(x)', '-cos(x)', 'sin(x)', '-sin(x)'],
+    //         correctAnswer: 0,
+    //         subject: 'Mathematics',
+    //         difficulty: 'Easy',
+    //         views: 1890,
 
-            successRate: 85,
-            aiEnhanced: false,
-            tags: ['Calculus', 'Derivatives', 'Trigonometry'],
-            testService: 'JEE',
-        },
-        {
-            id: 4,
-            question: "Which gas is most abundant in Earth's atmosphere?",
-            options: ['Oxygen', 'Carbon Dioxide', 'Nitrogen', 'Argon'],
-            correctAnswer: 2,
-            subject: 'Chemistry',
-            difficulty: 'Easy',
-            views: 1670,
+    //         successRate: 85,
+    //         aiEnhanced: false,
+    //         tags: ['Calculus', 'Derivatives', 'Trigonometry'],
+    //         testService: 'JEE',
+    //     },
+    //     {
+    //         id: 4,
+    //         question: "Which gas is most abundant in Earth's atmosphere?",
+    //         options: ['Oxygen', 'Carbon Dioxide', 'Nitrogen', 'Argon'],
+    //         correctAnswer: 2,
+    //         subject: 'Chemistry',
+    //         difficulty: 'Easy',
+    //         views: 1670,
 
-            successRate: 88,
-            aiEnhanced: true,
-            tags: ['Atmosphere', 'Gases'],
-            testService: 'UPSC',
-        },
-        {
-            id: 5,
-            question: 'What is the capital of Australia?',
-            options: ['Sydney', 'Melbourne', 'Canberra', 'Perth'],
-            correctAnswer: 2,
-            subject: 'Geography',
-            difficulty: 'Medium',
-            views: 980,
+    //         successRate: 88,
+    //         aiEnhanced: true,
+    //         tags: ['Atmosphere', 'Gases'],
+    //         testService: 'UPSC',
+    //     },
+    //     {
+    //         id: 5,
+    //         question: 'What is the capital of Australia?',
+    //         options: ['Sydney', 'Melbourne', 'Canberra', 'Perth'],
+    //         correctAnswer: 2,
+    //         subject: 'Geography',
+    //         difficulty: 'Medium',
+    //         views: 980,
 
-            successRate: 65,
-            aiEnhanced: false,
-            tags: ['World Geography', 'Capitals'],
-            testService: 'SSC',
-        },
-        {
-            id: 6,
-            question: 'In Object-Oriented Programming, what does inheritance mean?',
-            options: ['Creating new objects', 'Acquiring properties from parent class', 'Hiding data', 'Polymorphism'],
-            correctAnswer: 1,
-            subject: 'Computer Science',
-            difficulty: 'Medium',
-            views: 1456,
-            successRate: 74,
-            aiEnhanced: true,
-            tags: ['OOP', 'Inheritance', 'Programming'],
-            testService: 'GATE',
-        },
-    ];
+    //         successRate: 65,
+    //         aiEnhanced: false,
+    //         tags: ['World Geography', 'Capitals'],
+    //         testService: 'SSC',
+    //     },
+    //     {
+    //         id: 6,
+    //         question: 'In Object-Oriented Programming, what does inheritance mean?',
+    //         options: ['Creating new objects', 'Acquiring properties from parent class', 'Hiding data', 'Polymorphism'],
+    //         correctAnswer: 1,
+    //         subject: 'Computer Science',
+    //         difficulty: 'Medium',
+    //         views: 1456,
+    //         successRate: 74,
+    //         aiEnhanced: true,
+    //         tags: ['OOP', 'Inheritance', 'Programming'],
+    //         testService: 'GATE',
+    //     },
+    // ];
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentMCQ((prev) => (prev + 1) % sampleMCQs.length);
+            setCurrentMCQ((prev) => (prev + 1) % mcqs.data.length);
         }, 5000);
         return () => clearInterval(interval);
-    }, [sampleMCQs.length]);
+    }, [mcqs.data.length]);
 
     const filteredMCQs = mcqs.data.filter((mcq) => {
         const matchesSubject = selectedSubject === 'All Subjects' || mcq.subject === selectedSubject;
@@ -137,7 +137,7 @@ const MCQHomepage = ({ mcqs }: Props) => {
         <>
             {/* <pre>{JSON.stringify(mcqs, null, 2)}</pre> */}
             {/* Hero Section with MCQ Preview */}
-            <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
+            <HeroSection stats={stats} currentMCQ={currentMCQ} sampleMCQs={mcqs.data} />
             {/* Search and Filter Section */}
             <section className="border-y px-4 py-6 sm:px-6 md:py-16 lg:px-8" ref={scrollRef}>
                 <div className="mx-auto max-w-7xl">
@@ -147,7 +147,7 @@ const MCQHomepage = ({ mcqs }: Props) => {
                             <p className="text-sm text-muted-foreground md:text-xl">Find the perfect questions for your preparation</p>
                         </div>
 
-                        <div className="flex w-full flex-row items-center space-x-4 gap-x-4 md:max-w-sm">
+                        <div className="flex w-full flex-row items-center gap-x-4 space-x-4 md:max-w-sm">
                             <SearchBar placeholder="Search Papers and MCQs..." />
                             <Button variant="outline" onClick={() => setShowFilters(!showFilters)} size="icon">
                                 <Filter className="h-5 w-5" />

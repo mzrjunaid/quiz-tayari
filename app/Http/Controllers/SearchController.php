@@ -33,7 +33,7 @@ class SearchController extends Controller
                 'slug' => $p->slug,
                 'title' => $p->title,
                 // send route name to frontend
-                'link' => 'public-papers.show',
+                'link' => 'public.papers.show',
             ]);
 
         // ✅ Search in MCQs
@@ -85,7 +85,7 @@ class SearchController extends Controller
                 'id' => $m->id,
                 'slug' => $m->slug,
                 'title' => $m->title,
-                'link' => route('public-papers.show', $m->slug),
+                'link' => route('public.papers.show', $m->slug),
                 'type' => 'Paper',
             ]);
 

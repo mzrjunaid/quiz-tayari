@@ -21,7 +21,7 @@ interface Props {
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Homepage', href: route('home') },
-    { title: 'Papers List', href: route('public.papers.list') },
+    { title: 'Papers List', href: route('public.papers.index') },
 ];
 
 const PapersList: React.FC<Props> = ({ papers }) => {

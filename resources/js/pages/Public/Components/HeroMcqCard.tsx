@@ -1,27 +1,27 @@
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Mcqs } from '@/types';
 
-interface MCQ {
-    id: string | number;
-    question: string;
-    options: string[];
-    correctAnswer: number;
-    subject: string;
-    difficulty: string;
-    views: number;
-    aiEnhanced: boolean;
-    tags: string[];
-    explanation?: string;
-    testService: string;
-}
+// interface MCQ {
+//     id: string | number;
+//     question: string;
+//     options: string[];
+//     correctAnswer: number;
+//     subject: string;
+//     difficulty: string;
+//     views: number;
+//     aiEnhanced: boolean;
+//     tags: string[];
+//     explanation?: string;
+//     testService: string;
+// }
 
 interface Props {
-    sampleMCQs: MCQ[];
+    sampleMCQs: Mcqs[];
     currentMCQ: number;
-    mcqMode: boolean;
 }
 
-export default function HeroMcqPreview({ sampleMCQs, currentMCQ, mcqMode }: Props) {
+export default function HeroMcqPreview({ sampleMCQs, currentMCQ }: Props) {
     const isMobile = useIsMobile();
     {
         /* Live MCQ Preview */
@@ -29,7 +29,7 @@ export default function HeroMcqPreview({ sampleMCQs, currentMCQ, mcqMode }: Prop
     return (
         !isMobile && (
             <div className="relative">
-                <McqCard mcq={sampleMCQs[currentMCQ]} mcqMode={mcqMode} index={currentMCQ} key={currentMCQ} />
+                <McqCard mcq={sampleMCQs[currentMCQ]} index={currentMCQ} key={currentMCQ} />
             </div>
         )
     );

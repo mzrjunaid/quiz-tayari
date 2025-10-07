@@ -1,24 +1,25 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Mcqs } from '@/types';
 import { Bot, Eye, LucideIcon, Play } from 'lucide-react';
 import HeroMcqPreview from './HeroMcqCard';
 
-interface MCQ {
-    id: string | number;
-    question: string;
-    options: string[];
-    correctAnswer: number;
-    subject: string;
-    difficulty: string;
-    views: number;
-    aiEnhanced: boolean;
-    tags: string[];
-    explanation?: string;
-    testService: string;
-}
+// interface MCQ {
+//     id: string | number;
+//     question: string;
+//     options: string[];
+//     correctAnswer: number;
+//     subject: string;
+//     difficulty: string;
+//     views: number;
+//     aiEnhanced: boolean;
+//     tags: string[];
+//     explanation?: string;
+//     testService: string;
+// }
 interface Props {
     stats: { number: string; label: string; icon: LucideIcon }[];
-    sampleMCQs: MCQ[];
+    sampleMCQs: Mcqs[];
     currentMCQ: number;
 }
 
@@ -61,7 +62,7 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
                                     // className="flex items-center rounded-lg border border-accent bg-card p-4 text-center text-card-foreground shadow-xl dark:border-white/20 dark:bg-white/20"
                                     className="flex items-center rounded-lg bg-card p-4 text-center"
                                 >
-                                    <div className="flex items-center justify-center rounded-full border-2  p-2.5">
+                                    <div className="flex items-center justify-center rounded-full border-2 p-2.5">
                                         <stat.icon className="h-6 w-6" />
                                     </div>
                                     <div className="w-full">
@@ -73,7 +74,7 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
                         </div>
                     </div>
 
-                    <HeroMcqPreview currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} mcqMode={true} />
+                    <HeroMcqPreview currentMCQ={currentMCQ} sampleMCQs={sampleMCQs} />
                 </div>
             </div>
         </section>

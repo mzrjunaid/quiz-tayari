@@ -72,9 +72,10 @@ Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('s
 
 Route::name('public.')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search');
-    Route::prefix('papers')->group(function () {
-        Route::get('/', [HomepageController::class, 'papers_list'])->name('papers.list');
-        Route::get('/{slug}', [HomepageController::class, 'papers_mcqs'])->name('papers.show');
+    Route::prefix('papers')->name('papers.')->group(function () {
+        Route::get('/', [HomepageController::class, 'papers_list'])->name('index');
+        Route::get('/{paper:slug}', [HomepageController::class, 'papers_mcqs'])->name('show');
+        Route::get('/{paper:slug}/mcqs/{mcq:slug}', [HomepageController::class, 'show_mcq'])->name('mcqs.show');
     });
 });
 // Search Route and Search API Route

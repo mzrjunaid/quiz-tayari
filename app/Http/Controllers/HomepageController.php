@@ -63,6 +63,18 @@ class HomepageController extends Controller
             'mcqs' => McqResource::collection($mcqs),
         ]);
     }
+    /**
+     * Display Paper MCQ
+     */
+    public function show_mcq(Paper $paper, Mcq $mcq)
+    {
+        // Optional: validate that MCQ actually belongs to this paper
+        abort_unless($mcq->paper_id === $paper->id, 404);
+
+        return Inertia::render('Public/Mcqs/Show', [
+            'mcq' => McqResource::make($mcq),
+        ]);
+    }
 
     /**
      * Display contact us Page

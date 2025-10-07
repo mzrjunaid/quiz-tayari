@@ -25,7 +25,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Homepage', href: route('home') },
-        { title: 'Papers List', href: route('public.papers.list') },
+        { title: 'Papers List', href: route('public.papers.index') },
         {
             title: truncate(paper.title, {
                 length: 30,

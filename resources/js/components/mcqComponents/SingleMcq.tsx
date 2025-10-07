@@ -205,9 +205,16 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
             </CardHeader>
             <CardContent>
                 {/* Question */}
-                <h4 className="mb-2 text-lg font-semibold md:mb-4">
-                    Q {mcq?.serial_number}. {mcq?.question}
-                </h4>
+                <Link
+                    href={route('public.papers.mcqs.show', {
+                        paper: mcq.paper?.slug,
+                        mcq: mcq.slug,
+                    })}
+                >
+                    <h4 className="mb-2 text-lg font-semibold md:mb-4">
+                        Q {mcq?.serial_number}. {mcq?.question}
+                    </h4>
+                </Link>
 
                 <OptionsComponent
                     optionEntries={optionEntries}
