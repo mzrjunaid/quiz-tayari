@@ -5,7 +5,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Mcqs, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Bot, ChevronDown, ChevronUp, Eye, Share2, Tag } from 'lucide-react';
+import { Bot, ChevronDown, ChevronUp, Share2, Tag } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import OptionsComponent from './question-component';
 
@@ -122,6 +122,13 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
 
     const optionEntries = Object.entries(mcq?.options || {});
 
+    const mcqUrl = mcq.paper
+        ? route('public.papers.mcqs.show', {
+              paper: mcq.paper?.slug,
+              mcq: mcq.slug,
+          })
+        : route('public.mcqs.show', mcq.slug);
+
     const correctAnswers = React.useMemo(() => {
         let answers = mcq?.correct_answers;
 
@@ -185,9 +192,14 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
                             <Bot className="mr-1 h-3 w-3" />
                             AI
                         </Badge>
-                        <Badge variant="outline" className={mcqMode ? 'border-destructive text-destructive' : 'border-success text-success'}>
+                        <Badge variant="outline" className={mcqMode ? 'border-red-400 text-red-500' : 'border-success text-success'}>
                             {mcqMode ? '📝 Quiz' : '📖 Study'}
                         </Badge>
+                        {mcq?.difficulty_level && (
+                            <Badge variant="secondary" className={getDifficultyBadgeVariant(mcq.difficulty_level)}>
+                                {mcq.difficulty_level}
+                            </Badge>
+                        )}
                     </div>
                     <div className="flex items-center space-x-1">
                         {mcq.question_type && <Badge variant="secondary">{QuestionType[mcq.question_type]}</Badge>}
@@ -198,32 +210,12 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
                         </Button>
                     </div>
                 </div>
-
-                {/* Tags Section */}
-                {!isMobile && mcq?.tags && (
-                    <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
-                        <div className="flex items-center space-x-2">
-                            <Tag className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm font-medium text-gray-700">Tags:</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {mcq.tags.map((tag: string, tagIndex: number) => (
-                                <Badge key={tagIndex} variant="outline">
-                                    <span className="max-w-20 truncate">{tag}</span>
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </CardHeader>
             <CardContent>
                 {/* Question */}
                 <Link
-                    // href={route('public.papers.mcqs.show', {
-                    //     paper: mcq.paper?.slug,
-                    //     mcq: mcq.slug,
-                    // })}
-                    href="#"
+                    href={mcqUrl}
+                    // href="#"
                 >
                     <h4 className="mb-2 text-lg font-semibold md:mb-4">
                         Q {mcq?.serial_number}. {mcq?.question}
@@ -291,18 +283,30 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
                     </div>
                 )}
             </CardContent>
-            <CardFooter className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm">
+
+            <CardFooter className="items-center justify-between">
+                {/* Tags Section */}
+                {!isMobile && mcq?.tags && (
+                    <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+                        <div className="flex items-center space-x-2">
+                            <Tag className="h-4 w-4 text-gray-500" />
+                            <span className="text-sm font-medium text-gray-700">Tags:</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {mcq.tags.map((tag: string, tagIndex: number) => (
+                                <Badge key={tagIndex} variant="outline">
+                                    <span className="max-w-20 truncate">{tag}</span>
+                                </Badge>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                {/* <div className="flex items-center space-x-4 text-sm">
                     <span className="flex items-center">
                         <Eye className="mr-1 inline h-4 w-4" />
                         150 Views
                     </span>
-                    {mcq?.difficulty_level && (
-                        <Badge variant="secondary" className={getDifficultyBadgeVariant(mcq.difficulty_level)}>
-                            {mcq.difficulty_level}
-                        </Badge>
-                    )}
-                </div>
+                </div> */}
 
                 {mcq?.paper && (
                     <div className="flex items-center space-x-2">

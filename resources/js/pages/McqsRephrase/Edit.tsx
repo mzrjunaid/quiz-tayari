@@ -69,9 +69,9 @@ export default function Edit({
     general_knowledge,
 }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'MCQs List', href: route('admin.rephrase') },
-        { title: 'Show', href: route('admin.rephrase', mcq?.q_id) },
-        { title: 'Create', href: route('admin.rephrase.create') },
+        { title: 'MCQs List', href: route('admin.rephrase.index') },
+        { title: 'Show', href: route('admin.rephrase.show', mcq.q_id) },
+        { title: 'Edit', href: route('admin.rephrase.edit', mcq.q_id) },
     ];
 
     const [isSubmitting, setIsSubmitting] = useState(false);

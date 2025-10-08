@@ -80,6 +80,16 @@ class HomepageController extends Controller
     }
 
     /**
+     * Display Paper MCQ
+     */
+    public function single_show_mcq(Mcq $mcq)
+    {
+        return Inertia::render('Public/Mcqs/Show', [
+            'mcq' => McqResource::make($mcq),
+        ]);
+    }
+
+    /**
      * Display contact us Page
      */
     public function contact_us()

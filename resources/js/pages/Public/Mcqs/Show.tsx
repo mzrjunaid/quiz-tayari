@@ -14,22 +14,32 @@ interface Props {
 }
 
 const Show: React.FC<Props> = ({ mcq }) => {
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Homepage', href: route('home') },
-        { title: 'Papers List', href: route('public.papers.index') },
-        {
-            title: truncate(mcq.paper?.title, {
-                length: 30,
-            }),
-            href: route('public.papers.show', mcq.paper?.slug),
-        },
-        {
-            title: truncate(mcq.question, {
-                length: 30,
-            }),
-            href: route('public.papers.mcqs.show', { paper: mcq.paper?.slug, mcq: mcq.slug }),
-        },
-    ];
+    const breadcrumbs: BreadcrumbItem[] = mcq.paper
+        ? [
+              { title: 'Homepage', href: route('home') },
+              { title: 'Papers List', href: route('public.papers.index') },
+              {
+                  title: truncate(mcq.paper?.title, {
+                      length: 30,
+                  }),
+                  href: route('public.papers.show', mcq.paper?.slug),
+              },
+              {
+                  title: truncate(mcq.question, {
+                      length: 30,
+                  }),
+                  href: route('public.papers.mcqs.show', { paper: mcq.paper?.slug, mcq: mcq.slug }),
+              },
+          ]
+        : [
+              { title: 'Homepage', href: route('home') },
+              {
+                  title: truncate(mcq.question, {
+                      length: 30,
+                  }),
+                  href: route('public.mcqs.show', mcq.slug),
+              },
+          ];
 
     const isMobile = useIsMobile();
     return (

@@ -78,7 +78,7 @@ export function PublicNavigationMenu() {
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink href="/docs" className={navigationMenuTriggerStyle() + ` bg-transparent`}>
+                    <NavigationMenuLink href="/demo" className={navigationMenuTriggerStyle() + ` bg-transparent`}>
                         Demo
                     </NavigationMenuLink>
                 </NavigationMenuItem>

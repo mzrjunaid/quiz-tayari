@@ -7,22 +7,23 @@ use App\Http\Controllers\McqsRephraseController;
 use App\Http\Controllers\PaperController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    Route::group(['prefix' => 'rephrase'], function () {
-        Route::get('/', [McqsRephraseController::class, 'index'])->name('rephrase.index');
-        Route::get('/{id}', [McqsRephraseController::class, 'show'])->name('rephrase.show');
-        Route::post('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('rephrase.edit');
-        Route::get('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('rephrase.edit');
-        Route::get('/{mcqsRephrase}/delete', [McqsRephraseController::class, 'destroy'])->name('rephrase.delete');
-        Route::get('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'rephrase'])->name('rephrase.rephrase');
-        Route::get('/{mcqsRephrase}/rephrase/confirm', [McqsRephraseController::class, 'confirmRephrase'])->name('rephrase.confirm-rephrase');
-        Route::post('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'storeRephrase'])->name('rephrase.store-rephrase');
-        Route::post('/{mcqsRephrase}/update', [McqsRephraseController::class, 'update'])->name('rephrase.update');
+    Route::prefix('rephrase')->name('rephrase.')->group(function () {
+        Route::get('/', [McqsRephraseController::class, 'index'])->name('index');
+        Route::get('/{id}', [McqsRephraseController::class, 'show'])->name('show');
+        Route::post('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('edit');
+        Route::get('/{mcqsRephrase}/edit', [McqsRephraseController::class, 'edit'])->name('edit');
+        Route::get('/{mcqsRephrase}/delete', [McqsRephraseController::class, 'destroy'])->name('delete');
+        Route::get('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'rephrase'])->name('rephrase');
+        Route::get('/{mcqsRephrase}/rephrase/confirm', [McqsRephraseController::class, 'confirmRephrase'])->name('confirm-rephrase');
+        Route::post('/{mcqsRephrase}/rephrase', [McqsRephraseController::class, 'storeRephrase'])->name('store-rephrase');
+        Route::post('/{mcqsRephrase}/update', [McqsRephraseController::class, 'update'])->name('update');
     });
     Route::group(['prefix' => 'mcqs'], function () {
         Route::get('/', [McqController::class, 'index'])->name('mcqs.index');
@@ -61,8 +62,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
 
 // Public Routes
 
-// Homepage
+// Homepage & General Public Routes
 Route::get('/', [HomepageController::class, 'index'])->name('home');
+Route::get('/demo', function () {
+    return Inertia::render('Public/Demo', []);
+})->name('demo');
 Route::get('/contact-us', [HomepageController::class, 'contact_us'])->name('contact-us');
 Route::get('/privacy-policy', [HomepageController::class, 'privacy_policy'])->name('privacy-policy');
 Route::get('/terms-of-service', [HomepageController::class, 'terms_of_service'])->name('terms-of-service');
@@ -72,29 +76,34 @@ Route::post('/set-mcq-mode', [HomepageController::class, 'setMcqMode'])->name('s
 
 Route::name('public.')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search');
-    // Route::prefix('papers')->name('papers.')->group(function () {
-    //     Route::get('/', [HomepageController::class, 'papers_list'])->name('index');
-    //     Route::get('/{paper:slug}', [HomepageController::class, 'papers_mcqs'])->name('show');
-    //     Route::get('/{paper:slug}/mcqs/{mcq:slug}', [HomepageController::class, 'show_mcq'])->name('mcqs.show');
-    // });
-    // Papers Resource Routes
+
+
+    // Papers
     Route::prefix('papers')->name('papers.')->group(function () {
+        //Papers List
         Route::get('/', [HomepageController::class, 'papers_list'])->name('index');
-        Route::get('/{paper:slug}', [HomepageController::class, 'papers_mcqs'])->name('show');
+
+        //paper mcqs List
+        Route::get('/{paper:slug}/mcqs', [HomepageController::class, 'papers_mcqs'])->name('show');
+        Route::get('/{paper:slug}', function ($slug) {
+            return redirect()->route('public.papers.show', $slug);
+        });
 
         // Nested MCQs Routes
         Route::prefix('/{paper:slug}/mcqs')->name('mcqs.')->group(function () {
-            Route::get('/{mcq:slug}', [HomepageController::class, 'shshow_mcqow'])->name('show');
+            Route::get('/{mcq:slug}', [HomepageController::class, 'show_mcq'])->name('show');
         });
     });
+
+    // MCQs without Papers
+    Route::prefix('mcqs')->name('mcqs.')->group(function () {
+        Route::get('/{mcq:slug}', [HomepageController::class, 'single_show_mcq'])->name('show');
+    });
 });
+
+
+
 // Search Route and Search API Route
-
-
-
-
-
-// APIs Route
 Route::get('/api/search-suggestions', [SearchController::class, 'suggestions']);
 
 
