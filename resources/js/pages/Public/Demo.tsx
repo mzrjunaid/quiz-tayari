@@ -4,7 +4,7 @@ import { MainSectionWithoutSidebarLayout } from '@/layouts/frontend/main-section
 import { PublicLayout } from '@/layouts/frontend/public-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { AlertCircle, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, RotateCcw, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 // Types
@@ -111,12 +111,13 @@ const sampleMCQs: MCQ[] = [
 
 const PPSCPaperDemo: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+    const [attemptedQuestion, setAttemptedQuestion] = useState<number>(0);
+    // const [wrongAnswered, setWrongAnswered] = useState<number>(0);
     const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
     const [showResults, setShowResults] = useState<boolean>(false);
     const [timeRemaining, setTimeRemaining] = useState<number>(1800); // 30 minutes
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [showExplanation, setShowExplanation] = useState<ShowExplanation>({});
-    const [disabled, setDisabled] = useState(false);
 
     // Timer logic
     useEffect(() => {
@@ -142,6 +143,7 @@ const PPSCPaperDemo: React.FC = () => {
                 ...prev,
                 [questionId]: optionIndex,
             }));
+            setAttemptedQuestion((p) => p + 1);
         }
     };
 
@@ -167,18 +169,28 @@ const PPSCPaperDemo: React.FC = () => {
         }));
     };
 
-    const score: number = calculateScore();
+    const score = calculateScore();
     const totalQuestions: number = sampleMCQs.length;
     const percentage: string = ((score / totalQuestions) * 100).toFixed(1);
 
+    const retakeExam = () => {
+        setSelectedAnswers({});
+        setShowResults(false);
+        setCurrentQuestion(0);
+        setIsPaused(false);
+        setTimeRemaining(1800);
+        setShowExplanation({});
+        setAttemptedQuestion(0);
+    };
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Homepage', href: route('home') },
-        { title: 'PPSC Demo', href: route('demo') },
+        { title: 'Demo', href: route('demo') },
     ];
 
     return (
         <>
-            <Head title="PPSCDemo"></Head>
+            <Head title="PPSC Practice Paper"></Head>
             <PublicLayout>
                 {/* Header */}
                 <MainSectionWithoutSidebarLayout>
@@ -216,6 +228,9 @@ const PPSCPaperDemo: React.FC = () => {
                                     <div className="mb-6">
                                         <p className="mb-2 text-sm font-medium text-muted">
                                             Question {currentQuestion + 1} of {totalQuestions}
+                                            {selectedAnswers[sampleMCQs[currentQuestion].id] !== undefined && (
+                                                <span className="ms-2 animate-pulse text-destructive-foreground italic">(Question Locked)</span>
+                                            )}
                                         </p>
                                         <h3 className="text-lg leading-relaxed font-semibold">{sampleMCQs[currentQuestion].question}</h3>
                                     </div>
@@ -230,8 +245,12 @@ const PPSCPaperDemo: React.FC = () => {
                                                     selectedAnswers[sampleMCQs[currentQuestion].id] === idx
                                                         ? 'border-primary bg-gray-50 shadow-md'
                                                         : 'border-gray-200 hover:border-primary hover:bg-gray-50'
-                                                } `}
-                                                disabled={disabled}
+                                                } ${
+                                                    selectedAnswers[sampleMCQs[currentQuestion].id] !== undefined
+                                                        ? 'cursor-not-allowed opacity-60'
+                                                        : ''
+                                                }`}
+                                                disabled={selectedAnswers[sampleMCQs[currentQuestion].id] !== undefined}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-2 border-gray-300 bg-white font-semibold text-gray-700">
@@ -320,21 +339,21 @@ const PPSCPaperDemo: React.FC = () => {
                                             <p className="mb-1 text-sm text-gray-600">Total Questions</p>
                                             <p className="text-2xl font-bold text-blue-700">{totalQuestions}</p>
                                         </div>
+                                        <div className="rounded-xl bg-purple-50 p-4 text-center">
+                                            <p className="mb-1 text-sm text-gray-600">Attempted</p>
+                                            <p className="text-2xl font-bold text-purple-700">{attemptedQuestion}</p>
+                                        </div>
                                         <div className="rounded-xl bg-green-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Correct</p>
-                                            <p className="text-2xl font-bold text-green-700">{score}</p>
+                                            <p className="mb-1 text-sm text-gray-600">Score</p>
+                                            <p className="text-2xl font-bold text-green-700">{score - (attemptedQuestion - score) * 0.25}</p>
                                         </div>
                                         <div className="rounded-xl bg-red-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Incorrect</p>
-                                            <p className="text-2xl font-bold text-red-700">{totalQuestions - score}</p>
-                                        </div>
-                                        <div className="rounded-xl bg-purple-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Percentage</p>
-                                            <p className="text-2xl font-bold text-purple-700">{percentage}%</p>
+                                            <p className="mb-1 text-sm text-gray-600">Not Attempted</p>
+                                            <p className="text-2xl font-bold text-red-700">{totalQuestions - attemptedQuestion}</p>
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
+                                    <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
                                         <p className="text-center text-lg font-semibold text-gray-900">
                                             {Number(percentage) >= 70
                                                 ? '🎉 Excellent Performance!'
@@ -342,6 +361,12 @@ const PPSCPaperDemo: React.FC = () => {
                                                   ? '👍 Good Attempt!'
                                                   : '💪 Keep Practicing!'}
                                         </p>
+                                        <div>
+                                            <Button variant="link" onClick={retakeExam}>
+                                                <RotateCcw />
+                                                Repeat
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -411,12 +436,13 @@ const PPSCPaperDemo: React.FC = () => {
 
                                                             {!wasAnswered && <p className="mb-3 text-sm text-gray-600 italic">Not attempted</p>}
 
-                                                            <button
+                                                            <Button
+                                                                variant={'link'}
                                                                 onClick={() => toggleExplanation(mcq.id)}
-                                                                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                                                                className="text-sm font-medium text-blue-600 hover:text-blue-800 !p-0"
                                                             >
                                                                 {showExplanation[mcq.id] ? '− Hide' : '+ Show'} Explanation
-                                                            </button>
+                                                            </Button>
 
                                                             {showExplanation[mcq.id] && (
                                                                 <div className="mt-3 rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
