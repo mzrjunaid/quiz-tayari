@@ -147,21 +147,6 @@ const PPSCPaperDemo: React.FC = () => {
         }
     };
 
-    const handleSubmit = (): void => {
-        setShowResults(true);
-        setIsPaused(true);
-    };
-
-    const calculateScore = (): number => {
-        let correct = 0;
-        sampleMCQs.forEach((mcq) => {
-            if (selectedAnswers[mcq.id] === mcq.correctAnswer) {
-                correct++;
-            }
-        });
-        return correct;
-    };
-
     const toggleExplanation = (questionId: number): void => {
         setShowExplanation((prev) => ({
             ...prev,
@@ -169,9 +154,12 @@ const PPSCPaperDemo: React.FC = () => {
         }));
     };
 
-    const score = calculateScore();
+    const handleSubmit = (): void => {
+        setShowResults(true);
+        setIsPaused(true);
+    };
+
     const totalQuestions: number = sampleMCQs.length;
-    const percentage: string = ((score / totalQuestions) * 100).toFixed(1);
 
     const retakeExam = () => {
         setSelectedAnswers({});
@@ -302,162 +290,14 @@ const PPSCPaperDemo: React.FC = () => {
                             </div>
                         ) : (
                             /* Results View */
-                            <div className="space-y-6">
-                                {/* Score Card */}
-                                <div className="rounded-2xl bg-white p-8 shadow-2xl">
-                                    <div className="mb-8 flex items-center justify-between">
-                                        <div>
-                                            <h2 className="text-2xl font-bold text-gray-900">Test Results</h2>
-                                            <p className="mt-1 text-sm text-gray-600">PPSC Practice Paper - Demo</p>
-                                        </div>
-                                        <div className="relative h-32 w-32">
-                                            <svg className="h-32 w-32 -rotate-90 transform">
-                                                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" strokeWidth="12" fill="none" />
-                                                <circle
-                                                    cx="64"
-                                                    cy="64"
-                                                    r="56"
-                                                    stroke="#1f2937"
-                                                    strokeWidth="12"
-                                                    fill="none"
-                                                    strokeDasharray={`${(Number(percentage) / 100) * 351.86} 351.86`}
-                                                    className="transition-all duration-1000"
-                                                />
-                                            </svg>
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="text-center">
-                                                    <p className="text-3xl font-bold text-gray-900">
-                                                        {score}/{totalQuestions}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                                        <div className="rounded-xl bg-blue-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Total Questions</p>
-                                            <p className="text-2xl font-bold text-blue-700">{totalQuestions}</p>
-                                        </div>
-                                        <div className="rounded-xl bg-purple-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Attempted</p>
-                                            <p className="text-2xl font-bold text-purple-700">{attemptedQuestion}</p>
-                                        </div>
-                                        <div className="rounded-xl bg-green-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Score</p>
-                                            <p className="text-2xl font-bold text-green-700">{score - (attemptedQuestion - score) * 0.25}</p>
-                                        </div>
-                                        <div className="rounded-xl bg-red-50 p-4 text-center">
-                                            <p className="mb-1 text-sm text-gray-600">Not Attempted</p>
-                                            <p className="text-2xl font-bold text-red-700">{totalQuestions - attemptedQuestion}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
-                                        <p className="text-center text-lg font-semibold text-gray-900">
-                                            {Number(percentage) >= 70
-                                                ? '🎉 Excellent Performance!'
-                                                : Number(percentage) >= 50
-                                                  ? '👍 Good Attempt!'
-                                                  : '💪 Keep Practicing!'}
-                                        </p>
-                                        <div>
-                                            <Button variant="link" onClick={retakeExam}>
-                                                <RotateCcw />
-                                                Repeat
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Detailed Answers */}
-                                <div className="rounded-2xl bg-white p-8 shadow-2xl">
-                                    <h3 className="mb-6 text-xl font-bold text-gray-900">Detailed Review</h3>
-                                    <div className="space-y-4">
-                                        {sampleMCQs.map((mcq, idx) => {
-                                            const isCorrect: boolean = selectedAnswers[mcq.id] === mcq.correctAnswer;
-                                            const wasAnswered: boolean = selectedAnswers[mcq.id] !== undefined;
-
-                                            return (
-                                                <div
-                                                    key={mcq.id}
-                                                    className={`rounded-xl border-2 p-5 ${
-                                                        isCorrect
-                                                            ? 'border-green-200 bg-green-50'
-                                                            : wasAnswered
-                                                              ? 'border-red-200 bg-red-50'
-                                                              : 'border-gray-200 bg-gray-50'
-                                                    }`}
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        {isCorrect ? (
-                                                            <CheckCircle2 className="mt-1 h-6 w-6 flex-shrink-0 text-green-600" />
-                                                        ) : wasAnswered ? (
-                                                            <XCircle className="mt-1 h-6 w-6 flex-shrink-0 text-red-600" />
-                                                        ) : (
-                                                            <AlertCircle className="mt-1 h-6 w-6 flex-shrink-0 text-gray-400" />
-                                                        )}
-                                                        <div className="flex-1">
-                                                            <p className="mb-3 font-semibold text-gray-900">
-                                                                Question {idx + 1}: {mcq.question}
-                                                            </p>
-
-                                                            <div className="mb-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-                                                                {mcq.options.map((opt, optIdx) => (
-                                                                    <div
-                                                                        key={optIdx}
-                                                                        className={`rounded-lg border-2 p-3 ${
-                                                                            optIdx === mcq.correctAnswer
-                                                                                ? 'border-green-500 bg-green-50'
-                                                                                : wasAnswered && optIdx === selectedAnswers[mcq.id] && !isCorrect
-                                                                                  ? 'border-red-500 bg-red-50'
-                                                                                  : 'border-gray-200 bg-white'
-                                                                        }`}
-                                                                    >
-                                                                        <div className="flex items-center gap-2">
-                                                                            <span className="font-semibold text-gray-700">
-                                                                                {String.fromCharCode(65 + optIdx)}.
-                                                                            </span>
-                                                                            <span className="text-gray-800">{opt}</span>
-                                                                            {optIdx === mcq.correctAnswer && (
-                                                                                <span className="ml-auto text-xs font-semibold text-green-600">
-                                                                                    ✓ Correct
-                                                                                </span>
-                                                                            )}
-                                                                            {wasAnswered && optIdx === selectedAnswers[mcq.id] && !isCorrect && (
-                                                                                <span className="ml-auto text-xs font-semibold text-red-600">
-                                                                                    ✗ Your answer
-                                                                                </span>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-
-                                                            {!wasAnswered && <p className="mb-3 text-sm text-gray-600 italic">Not attempted</p>}
-
-                                                            <Button
-                                                                variant={'link'}
-                                                                onClick={() => toggleExplanation(mcq.id)}
-                                                                className="text-sm font-medium text-blue-600 hover:text-blue-800 !p-0"
-                                                            >
-                                                                {showExplanation[mcq.id] ? '− Hide' : '+ Show'} Explanation
-                                                            </Button>
-
-                                                            {showExplanation[mcq.id] && (
-                                                                <div className="mt-3 rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
-                                                                    <p className="mb-1 text-sm font-semibold text-blue-900">Explanation:</p>
-                                                                    <p className="text-sm text-gray-700">{mcq.explanation}</p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
+                            <DemoResult
+                                retakeExam={retakeExam}
+                                toggleExplanation={toggleExplanation}
+                                showExplanation={showExplanation}
+                                attemptedQuestion={attemptedQuestion}
+                                selectedAnswers={selectedAnswers}
+                                totalQuestions={totalQuestions}
+                            />
                         )}
                     </div>
                 </MainSectionWithoutSidebarLayout>
@@ -467,3 +307,188 @@ const PPSCPaperDemo: React.FC = () => {
 };
 
 export default PPSCPaperDemo;
+
+interface DemoResultProps {
+    attemptedQuestion: number;
+    showExplanation: ShowExplanation;
+    toggleExplanation: (questionId: number) => void;
+    retakeExam: () => void;
+    selectedAnswers: SelectedAnswers;
+    totalQuestions: number;
+}
+
+const DemoResult: React.FC<DemoResultProps> = ({
+    attemptedQuestion,
+    retakeExam,
+    showExplanation,
+    toggleExplanation,
+    selectedAnswers,
+    totalQuestions,
+}) => {
+    const calculateScore = (): number => {
+        let correct = 0;
+        sampleMCQs.forEach((mcq) => {
+            if (selectedAnswers[mcq.id] === mcq.correctAnswer) {
+                correct++;
+            }
+        });
+        return correct;
+    };
+
+    const score = calculateScore();
+    const percentage: string = ((score / totalQuestions) * 100).toFixed(1);
+    return (
+        <div className="space-y-6">
+            {/* Score Card */}
+            <div className="rounded-2xl bg-white p-8 shadow-2xl">
+                <div className="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Test Results</h2>
+                        <p className="mt-1 text-sm text-gray-600">PPSC Practice Paper - Demo</p>
+                    </div>
+                    <div className="relative h-32 w-32">
+                        <svg className="h-32 w-32 -rotate-90 transform">
+                            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" strokeWidth="12" fill="none" />
+                            <circle
+                                cx="64"
+                                cy="64"
+                                r="56"
+                                stroke="#1f2937"
+                                strokeWidth="12"
+                                fill="none"
+                                strokeDasharray={`${(Number(percentage) / 100) * 351.86} 351.86`}
+                                className="transition-all duration-1000"
+                            />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                                <p className="text-3xl font-bold text-gray-900">
+                                    {score}/{totalQuestions}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    <div className="rounded-xl bg-blue-50 p-4 text-center">
+                        <p className="mb-1 text-sm text-gray-600">Total Questions</p>
+                        <p className="text-2xl font-bold text-blue-700">{totalQuestions}</p>
+                    </div>
+                    <div className="rounded-xl bg-purple-50 p-4 text-center">
+                        <p className="mb-1 text-sm text-gray-600">Attempted</p>
+                        <p className="text-2xl font-bold text-purple-700">{attemptedQuestion}</p>
+                    </div>
+                    <div className="rounded-xl bg-green-50 p-4 text-center">
+                        <p className="mb-1 text-sm text-gray-600">Score</p>
+                        <p className="text-2xl font-bold text-green-700">{score - (attemptedQuestion - score) * 0.25}</p>
+                    </div>
+                    <div className="rounded-xl bg-red-50 p-4 text-center">
+                        <p className="mb-1 text-sm text-gray-600">Not Attempted</p>
+                        <p className="text-2xl font-bold text-red-700">{totalQuestions - attemptedQuestion}</p>
+                    </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
+                    <p className="text-center text-lg font-semibold text-gray-900">
+                        {Number(percentage) >= 70
+                            ? '🎉 Excellent Performance!'
+                            : Number(percentage) >= 50
+                              ? '👍 Good Attempt!'
+                              : '💪 Keep Practicing!'}
+                    </p>
+                    <div>
+                        <Button variant="link" onClick={retakeExam}>
+                            <RotateCcw />
+                            Repeat
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Detailed Answers */}
+            <div className="rounded-2xl bg-white p-8 shadow-2xl">
+                <h3 className="mb-6 text-xl font-bold text-gray-900">Detailed Review</h3>
+                <div className="space-y-4">
+                    {sampleMCQs.map((mcq, idx) => {
+                        const isCorrect: boolean = selectedAnswers[mcq.id] === mcq.correctAnswer;
+                        const wasAnswered: boolean = selectedAnswers[mcq.id] !== undefined;
+
+                        return (
+                            <div
+                                key={mcq.id}
+                                className={`rounded-xl border-2 p-5 ${
+                                    isCorrect
+                                        ? 'border-green-200 bg-green-50'
+                                        : wasAnswered
+                                          ? 'border-red-200 bg-red-50'
+                                          : 'border-gray-200 bg-gray-50'
+                                }`}
+                            >
+                                <div className="flex items-start gap-3">
+                                    {isCorrect ? (
+                                        <CheckCircle2 className="mt-1 h-6 w-6 flex-shrink-0 text-green-600" />
+                                    ) : wasAnswered ? (
+                                        <XCircle className="mt-1 h-6 w-6 flex-shrink-0 text-red-600" />
+                                    ) : (
+                                        <AlertCircle className="mt-1 h-6 w-6 flex-shrink-0 text-gray-400" />
+                                    )}
+                                    <div className="flex-1">
+                                        <p className="mb-3 font-semibold text-gray-900">
+                                            Question {idx + 1}: {mcq.question}
+                                        </p>
+
+                                        <div className="mb-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                                            {mcq.options.map((opt, optIdx) => (
+                                                <div
+                                                    key={optIdx}
+                                                    className={`rounded-lg border-2 p-3 ${
+                                                        optIdx === mcq.correctAnswer
+                                                            ? 'border-green-500 bg-green-50'
+                                                            : wasAnswered && optIdx === selectedAnswers[mcq.id] && !isCorrect
+                                                              ? 'border-red-500 bg-red-50'
+                                                              : 'border-gray-200 bg-white'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-gray-700">{String.fromCharCode(65 + optIdx)}.</span>
+                                                        <span className="text-gray-800">{opt}</span>
+                                                        {optIdx === mcq.correctAnswer && (
+                                                            <span className="ml-auto text-xs font-semibold text-green-600">✓ Correct</span>
+                                                        )}
+                                                        {wasAnswered && optIdx === selectedAnswers[mcq.id] && !isCorrect && (
+                                                            <span className="ml-auto text-xs font-semibold text-red-600">✗ Your answer</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {!wasAnswered && <p className="mb-3 text-sm text-gray-600 italic">Not attempted</p>}
+
+                                        <Button
+                                            variant={'link'}
+                                            onClick={() => toggleExplanation(mcq.id)}
+                                            className="!p-0 text-sm font-medium text-blue-600 hover:text-blue-800"
+                                        >
+                                            {showExplanation[mcq.id] ? '− Hide' : '+ Show'} Explanation
+                                        </Button>
+
+                                        {showExplanation[mcq.id] && (
+                                            <div className="mt-3 rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+                                                <p className="mb-1 text-sm font-semibold text-blue-900">Explanation:</p>
+                                                <p className="text-sm text-gray-700">{mcq.explanation}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export { DemoResult };
