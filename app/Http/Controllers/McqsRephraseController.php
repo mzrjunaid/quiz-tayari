@@ -465,7 +465,7 @@ class McqsRephraseController extends Controller
         $testing_servzices = OldTestingService::select('testing_service_id', 'testing_service')->paginate(2)->withQueryString();
 
 
-        $search = McqsRephrase::query()->select('q_id')->where('paper_id', '=', '7')->get();
+        $search = McqsRephrase::query()->select('q_id')->where('publish', '=', '1')->get();
 
 
         return Inertia::render('McqsRephrase/OldMcqs', [
