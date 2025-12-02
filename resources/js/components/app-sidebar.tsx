@@ -1,34 +1,12 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { adminNavItems } from '@/constants/menus';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, List, Paperclip, ScrollText, Trash, UserCircle2 } from 'lucide-react';
+import { Trash, UserCircle2 } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavUser } from './nav-user';
-
-const adminNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: route('admin.dashboard'),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'MCQs Rephrase',
-        href: route('admin.rephrase.index'),
-        icon: ScrollText,
-    },
-    {
-        title: 'Papers',
-        href: route('admin.papers.index'),
-        icon: Paperclip,
-    },
-    {
-        title: 'MCQs',
-        href: route('admin.mcqs.index'),
-        icon: List,
-    },
-];
 
 const adminFooterNavItems: NavItem[] = [
     {
@@ -62,7 +40,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>{auth.user && <NavMain navGroupTitle='home' items={adminNavItems} />}</SidebarContent>
+            <SidebarContent>{auth.user && <NavMain navGroupTitle="home" items={adminNavItems} />}</SidebarContent>
 
             <SidebarFooter>
                 {!auth.user && <NavFooter items={userFooterNavItems} className="mt-auto" />}

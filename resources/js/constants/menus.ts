@@ -51,6 +51,11 @@ export const adminNavItems: NavItem[] = [
         href: route('admin.mcqs.index'),
         icon: List,
     },
+    {
+        title: 'Old MCQs',
+        href: route('admin.old-mcqs'),
+        icon: List,
+    },
 ];
 
 export const adminFooterNavItems: NavItem[] = [

@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Mcq;
 use App\Models\McqsRephrase;
+use App\Models\OldPaper;
+use App\Models\OldSubject;
+use App\Models\OldSyllabus;
+use App\Models\OldTestingService;
 use App\Models\Paper;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
@@ -448,5 +452,28 @@ class McqsRephraseController extends Controller
         }
 
         return null;
+    }
+
+
+
+
+    public function old_mcqs()
+    {
+        $data = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_d', 'right_choice', 'testing_service_id', 'paper_id', 'syllabus_id', 'publish', 'created_at')->paginate(50)->withQueryString(); // Ensure 'all' method is used to retrieve all records
+        $papers = OldPaper::select('paper_id', 'paper')->paginate(2)->withQueryString();
+        $subjects = OldSyllabus::select('syllabus_id', 'syllabus')->paginate(2)->withQueryString();
+        $testing_servzices = OldTestingService::select('testing_service_id', 'testing_service')->paginate(2)->withQueryString();
+
+
+        $search = McqsRephrase::query()->select('q_id')->where('paper_id', '=', '7')->get();
+
+
+        return Inertia::render('McqsRephrase/OldMcqs', [
+            'mcq_data' => $data,
+            'papers' => $papers,
+            'subjects' => $subjects,
+            'testing_services' => $testing_servzices,
+            'search' => $search,
+        ]);
     }
 }
