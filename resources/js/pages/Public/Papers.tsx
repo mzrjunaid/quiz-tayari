@@ -17,6 +17,7 @@ interface Props {
         meta: PaginationMeta;
         links: PaginationLinks;
     };
+    oldpapers: any;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Papers List', href: route('public.papers.index') },
 ];
 
-const PapersList: React.FC<Props> = ({ papers }) => {
+const PapersList: React.FC<Props> = ({ oldpapers, papers }) => {
     const { data, meta, links } = papers;
     const isMobile = useIsMobile();
     const adSlot = false;
@@ -83,6 +84,7 @@ const PapersList: React.FC<Props> = ({ papers }) => {
                 {adSlot && <TopAdSection />}
                 <MainSectionWithSidebarLayout>
                     <div className={`space-y-4 lg:col-span-2`}>
+                        <pre>{JSON.stringify(oldpapers, null, 2)}</pre>
                         <PageTitle title="Past Papers" breadcrumbs={breadcrumbs} />
                         {isMobile && <SearchInput />}
                         <div className="grid gap-4 sm:grid-cols-2">

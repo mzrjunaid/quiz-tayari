@@ -459,13 +459,13 @@ class McqsRephraseController extends Controller
 
     public function old_mcqs()
     {
-        $data = McqsRephrase::select('q_id', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_d', 'right_choice', 'testing_service_id', 'paper_id', 'syllabus_id', 'publish', 'created_at')->paginate(50)->withQueryString(); // Ensure 'all' method is used to retrieve all records
+        $data = McqsRephrase::select('q_id', 'slug', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_d', 'right_choice', 'testing_service_id', 'paper_id', 'syllabus_id', 'publish', 'created_at')->paginate(50)->withQueryString(); // Ensure 'all' method is used to retrieve all records
         $papers = OldPaper::select('paper_id', 'paper')->paginate(2)->withQueryString();
         $subjects = OldSyllabus::select('syllabus_id', 'syllabus')->paginate(2)->withQueryString();
         $testing_servzices = OldTestingService::select('testing_service_id', 'testing_service')->paginate(2)->withQueryString();
 
 
-        $search = McqsRephrase::query()->select('q_id')->where('publish', '=', '1')->get();
+        $search = McqsRephrase::query()->select('q_id')->where('slug', '=', '')->count();
 
 
         return Inertia::render('McqsRephrase/OldMcqs', [

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\McqResource;
 use App\Http\Resources\PaperResource;
 use App\Models\Mcq;
+use App\Models\Old\OldPaper;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -45,8 +46,11 @@ class HomepageController extends Controller
             ->paginate(20)
             ->appends(request()->query());
 
+        $oldpapers = OldPaper::select('paper_id', 'paper_year', 'slug', 'paper')->paginate(50)->withQueryString();
+
         return Inertia::render('Public/Papers', [
             'papers' => PaperResource::collection($papers),
+            'oldpapers' => $oldpapers,
         ]);
     }
 
