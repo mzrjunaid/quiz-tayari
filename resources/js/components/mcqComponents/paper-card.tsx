@@ -28,3 +28,36 @@ const PaperCard: React.FC<Props> = ({ paper }) => {
 };
 
 export default PaperCard;
+
+interface OldPaperProps {
+    paper: {
+        paper_id: number;
+        paper_year: string;
+        slug: string;
+        paper: string;
+    };
+}
+const OldPaperCard: React.FC<OldPaperProps> = ({ paper }) => {
+    return (
+        <Link
+            href={route('public.papers.show', paper.slug)}
+            className="space-y-2 rounded-sm bg-card/45 px-5 py-4 hover:bg-accent/35 hover:shadow-xl hover:animate-out"
+        >
+            <div className="flex flex-row justify-between">
+                {/* <Badge variant="outline" title={paper.department}>
+                    <span className="max-w-36 truncate">{paper.department}</span>
+                </Badge> */}
+                {/* {paper.scheduled_at && <span className="text-sm font-semibold">{paper.scheduled_at.date_only}</span>} */}
+            </div>
+            <div className="py-2 text-sm font-semibold text-gray-950 capitalize">
+                {paper.paper} - {paper.paper_year}
+            </div>
+            {/* <div className="flex flex-row justify-between">
+                <Badge variant="default">{paper.subject}</Badge>
+                <Badge variant="secondary">{paper.testing_service.short}</Badge>
+            </div> */}
+        </Link>
+    );
+};
+
+export { OldPaperCard };

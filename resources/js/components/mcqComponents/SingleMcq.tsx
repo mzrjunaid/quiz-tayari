@@ -246,7 +246,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
                             </CollapsibleTrigger>
                             <CollapsibleContent className="mt-1 md:mt-3">
                                 <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                                    <p className="text-sm leading-relaxed text-accent-foreground">{mcq.explanation}</p>
+                                    <p className="text-sm leading-relaxed text-accent-foreground dark:text-accent">{mcq.explanation}</p>
 
                                     {/* Quiz Mode Feedback */}
                                     {mcqMode && Array.isArray(selectedAnswers) && selectedAnswers.length > 0 && (

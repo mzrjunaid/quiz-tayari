@@ -182,15 +182,17 @@ const PPSCPaperDemo: React.FC = () => {
             <PublicLayout>
                 {/* Header */}
                 <MainSectionWithoutSidebarLayout>
+                    <div className="mb-3">
+                        <Breadcrumbs breadcrumbs={breadcrumbs} />
+                    </div>
                     {/* Header */}
                     <div className="mx-auto max-w-7xl">
                         {!showResults ? (
                             <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
                                 {/* Header Section */}
-                                <div className="border-b bg-primary/50 px-6 py-4">
+                                <div className="border-b bg-primary/50 px-6 py-4 dark:bg-primary/70">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <Breadcrumbs breadcrumbs={breadcrumbs} />
                                             <h2 className="text-xl font-bold md:text-3xl">PPSC Practice Paper</h2>
                                             <p className="mt-0.5 text-sm font-medium">General Knowledge & Aptitude Test</p>
                                         </div>
@@ -199,13 +201,6 @@ const PPSCPaperDemo: React.FC = () => {
                                                 <Clock className="h-5 w-5" />
                                                 <span className="font-mono text-lg font-semibold">{formatTime(timeRemaining)}</span>
                                             </div>
-                                            <Button
-                                                variant="secondary"
-                                                onClick={handleSubmit}
-                                                // className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
-                                            >
-                                                Submit
-                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -220,7 +215,7 @@ const PPSCPaperDemo: React.FC = () => {
                                                 <span className="ms-2 animate-pulse text-destructive-foreground italic">(Question Locked)</span>
                                             )}
                                         </p>
-                                        <h3 className="text-lg leading-relaxed font-semibold">{sampleMCQs[currentQuestion].question}</h3>
+                                        <h3 className="text-lg leading-relaxed font-semibold text-primary/90">{sampleMCQs[currentQuestion].question}</h3>
                                     </div>
 
                                     {/* Options Grid - 2x2 Layout */}
@@ -284,6 +279,17 @@ const PPSCPaperDemo: React.FC = () => {
                                             // className="rounded-lg bg-primary px-5 py-2 font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
                                         >
                                             Next
+                                        </Button>
+                                    </div>
+                                    {/* Submit Button */}
+                                    <div className="mt-4 text-center">
+                                        <Button
+                                            variant="secondary"
+                                            size={'lg'}
+                                            onClick={handleSubmit}
+                                            // className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+                                        >
+                                            Submit
                                         </Button>
                                     </div>
                                 </div>

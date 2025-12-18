@@ -96,6 +96,24 @@ Route::name('public.')->group(function () {
         });
     });
 
+    // Old Papers
+
+    Route::prefix('old-papers')->name('old-papers.')->group(function () {
+        //Old Papers List
+        Route::get('/', [HomepageController::class, 'old_papers_list'])->name('index');
+
+        //old paper mcqs List
+        Route::get('/{old_paper:slug}/mcqs', [HomepageController::class, 'old_papers_mcqs'])->name('show');
+        Route::get('/{old_paper:slug}', function ($slug) {
+            return redirect()->route('public.old-papers.show', $slug);
+        });
+
+        // Nested MCQs Routes
+        Route::prefix('/{old_paper:slug}/mcqs')->name('mcqs.')->group(function () {
+            Route::get('/{mcq:slug}', [HomepageController::class, 'show_old_mcq'])->name('show');
+        });
+    });
+
     // MCQs without Papers
     Route::prefix('mcqs')->name('mcqs.')->group(function () {
         Route::get('/{mcq:slug}', [HomepageController::class, 'single_show_mcq'])->name('show');

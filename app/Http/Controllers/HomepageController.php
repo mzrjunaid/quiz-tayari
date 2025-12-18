@@ -57,6 +57,18 @@ class HomepageController extends Controller
     /**
      * Display List of Papers
      */
+    public function old_papers_list()
+    {
+        $oldpapers = OldPaper::select('paper_id', 'paper_year', 'slug', 'paper')->paginate(50)->withQueryString();
+
+        return Inertia::render('Public/OldPapers/OldPapersList', [
+            'oldpapers' => $oldpapers,
+        ]);
+    }
+
+    /**
+     * Display List of Papers
+     */
     public function papers_mcqs($slug)
     {
 

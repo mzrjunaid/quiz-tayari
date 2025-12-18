@@ -197,7 +197,7 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
 
     // Load recent searches from memory
     useEffect(() => {
-        const stored = ['Medical Anatomy', 'Biology Chapter 5', 'Physics MCQs'];
+        const stored = ['PPSC', 'FPSC', 'General Knowledge'];
         setRecentSearches(stored);
     }, []);
 
@@ -324,7 +324,7 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                             setFocused(true);
                         }}
                         placeholder={placeholder}
-                        className="w-full rounded-lg border-0 py-4 pr-24 pl-12 text-base placeholder-gray-400 focus:outline-none"
+                        className="w-full rounded-lg border-0 py-4 pr-24 pl-12 text-base placeholder-gray-400 focus:outline-none dark:text-gray-800"
                         autoComplete="off"
                     />
 
@@ -357,7 +357,7 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                 <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl bg-white shadow-xl">
                     {/* Recent Searches (when no search term) */}
                     {!searchTerm && recentSearches.length > 0 && (
-                        <div className="border-b border-gray-100 p-3">
+                        <div className="border-b border-gray-100 p-3 dark:text-gray-600">
                             <div className="mb-2 flex items-center gap-2 px-2 text-xs font-semibold tracking-wide uppercase">
                                 <Clock className="h-3.5 w-3.5" />
                                 Recent Searches
@@ -394,7 +394,7 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                                         <a
                                             key={item.id}
                                             href={item.link}
-                                            className="group flex items-start gap-3 rounded-xl p-3 transition hover:bg-primary/85"
+                                            className="group flex items-start gap-3 rounded-xl p-3 transition hover:bg-primary/85 dark:text-secondary"
                                         >
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-2">
@@ -424,12 +424,12 @@ export function SearchBar({ placeholder = 'Search MCQs, Papers, or Topics...', r
                     {/* Trending Topics */}
                     {!searchTerm && (
                         <div className="border-t border-gray-100 bg-gray-50 p-3">
-                            <div className="mb-2 flex items-center gap-2 px-2 text-xs font-semibold tracking-wide uppercase">
+                            <div className="mb-2 flex items-center gap-2 px-2 text-xs font-semibold tracking-wide uppercase dark:text-gray-400">
                                 <TrendingUp className="h-3.5 w-3.5" />
-                                Trending Topics
+                                Trending
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                {['Medical MCQs', 'MDCAT 2024', 'Biology Notes'].map((tag) => (
+                                {['General Knowledge', 'PPSC', 'FPSC'].map((tag) => (
                                     <Button
                                         key={tag}
                                         onClick={() => handleRecentClick(tag)}

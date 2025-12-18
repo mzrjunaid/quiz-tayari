@@ -1,20 +1,29 @@
-import PaperCard from '@/components/mcqComponents/paper-card';
+import { OldPaperCard } from '@/components/mcqComponents/paper-card';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
 import SearchInput, { SearchBar } from '@/components/search-input';
-import { SitePagination } from '@/components/site-pagination';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
-import { BreadcrumbItem, PaginationLinks, PaginationMeta, Paper } from '@/types';
+import { BreadcrumbItem, PaginationLinks } from '@/types';
 import { Head } from '@inertiajs/react';
-import TopAdSection from './Components/TopAdSection';
+import TopAdSection from '../Components/TopAdSection';
 
 interface Props {
     // Define any props if needed
-    papers: {
-        data: Array<Paper>;
-        meta: PaginationMeta;
+    oldpapers: {
+        data: Array<{
+            paper_id: number;
+            paper_year: string;
+            slug: string;
+            paper: string;
+        }>;
+        current_page: number;
+        last_page: number;
+        total: number;
+        per_page: number;
+        from: number;
+        to: number;
         links: PaginationLinks;
     };
 }
@@ -24,8 +33,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Papers List', href: route('public.papers.index') },
 ];
 
-const PapersList: React.FC<Props> = ({ papers }) => {
-    const { data, meta, links } = papers;
+const PapersList: React.FC<Props> = ({ oldpapers }) => {
+    const { data, links, current_page } = oldpapers;
     const isMobile = useIsMobile();
     const adSlot = false;
 
@@ -33,15 +42,15 @@ const PapersList: React.FC<Props> = ({ papers }) => {
     const baseUrl = 'https://www.pakquiz.com/papers';
 
     // Dynamic SEO Title & Description
-    const pageTitle = meta.current_page > 1 ? `Practice Papers - Page ${meta.current_page}` : 'Practice Papers';
+    const pageTitle = current_page > 1 ? `Practice Papers - Page ${current_page}` : 'Practice Papers';
 
     const pageDescription =
-        meta.current_page > 1
-            ? `Browse practice MCQs papers (Page ${meta.current_page}) on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.`
+        current_page > 1
+            ? `Browse practice MCQs papers (Page ${current_page}) on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.`
             : 'Browse practice MCQs papers on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.';
 
     // ✅ Dynamic canonical URL
-    const canonicalUrl = meta.current_page > 1 ? `${baseUrl}?page=${meta.current_page}` : baseUrl;
+    const canonicalUrl = current_page > 1 ? `${baseUrl}?page=${current_page}` : baseUrl;
 
     // ✅ JSON-LD ItemList Schema
     const itemListSchema = {
@@ -56,8 +65,8 @@ const PapersList: React.FC<Props> = ({ papers }) => {
             '@type': 'ListItem',
             position: index + 1,
             url: `${baseUrl}/${paper.slug}`,
-            name: paper.title,
-            description: paper.description,
+            name: paper,
+            description: paper,
         })),
     };
 
@@ -87,10 +96,10 @@ const PapersList: React.FC<Props> = ({ papers }) => {
                         {isMobile && <SearchInput />}
                         <div className="grid gap-4 sm:grid-cols-2">
                             {data.map((paper, index) => {
-                                return <PaperCard paper={paper} key={index} />;
+                                return <OldPaperCard paper={paper} key={index} />;
                             })}
                         </div>
-                        <SitePagination meta={meta} links={links} />
+                        {/* <SitePagination meta={meta} links={links} /> */}
                     </div>
 
                     <PageSidebar stat={false}>{!isMobile && <SearchBar />}</PageSidebar>
