@@ -35,7 +35,7 @@ interface OldPaperProps {
 const OldPaperCard: React.FC<OldPaperProps> = ({ paper }) => {
     return (
         <Link
-            href={route('public.papers.show', paper.slug)}
+            href={route('public.old-papers.show', paper.slug)}
             className="space-y-2 rounded-sm bg-card/45 px-5 py-4 hover:bg-accent/35 hover:shadow-xl hover:animate-out"
         >
             <div className="flex flex-row justify-between">

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\McqResource;
+use App\Http\Resources\OldMcqResource;
 use App\Http\Resources\OldPaperResource;
 use App\Http\Resources\PaperResource;
 use App\Models\Mcq;
+use App\Models\McqsRephrase;
 use App\Models\Old\OldDepartment;
 use App\Models\Old\OldPaper;
 use App\Models\Old\OldTestingService;
@@ -58,7 +60,7 @@ class HomepageController extends Controller
     }
 
     /**
-     * Display List of Papers
+     * Display List of Old Papers
      */
     public function old_papers_list()
     {
@@ -77,7 +79,33 @@ class HomepageController extends Controller
     }
 
     /**
-     * Display List of Papers
+     * Display List of old Papers Mcqs
+     */
+    public function old_papers_mcqs($slug)
+    {
+
+
+        $paper = OldPaper::where('slug', $slug)->firstOrFail();
+        $oldpaper = OldPaper::query()
+            ->select('paper_id', 'paper_year', 'testing_service_id', 'dept_id', 'slug', 'paper')
+            ->with([
+                'testingService:testing_service_id,testing_service',
+                'department:dept_id,department',
+            ])->where('slug', $slug)->firstOrFail();
+        $mcqs = McqsRephrase::where('paper_id', $paper->paper_id)
+            ->paginate(10); // 10 per page
+
+        return Inertia::render('Public/OldPapers/OldPaperMcqs', [
+            'paper' => OldPaperResource::make($oldpaper),
+            'mcqs' => OldMcqResource::collection($mcqs),
+        ]);
+    }
+
+
+
+
+    /**
+     * Display List of Papers Mcqs
      */
     public function papers_mcqs($slug)
     {

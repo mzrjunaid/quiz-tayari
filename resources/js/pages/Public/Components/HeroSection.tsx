@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Mcqs } from '@/types';
+import { router } from '@inertiajs/react';
 import { Bot, Eye, LucideIcon, Play } from 'lucide-react';
 import HeroMcqPreview from './HeroMcqCard';
 
@@ -45,11 +46,21 @@ export default function HeroSection({ stats, currentMCQ, sampleMCQs }: Props) {
                         </p>
 
                         <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                            <Button className="py-4 text-lg font-semibold transition-all md:!px-8" variant="default" size="lg">
+                            <Button
+                                className="py-4 text-lg font-semibold transition-all md:!px-8"
+                                variant="default"
+                                size="lg"
+                                onClick={() => router.visit('/old-papers')}
+                            >
                                 <Play className="h-5 w-5" />
                                 Start Practicing
                             </Button>
-                            <Button className="py-4 text-lg font-semibold transition-all md:!px-8" variant="outline" size="lg">
+                            <Button
+                                className="py-4 text-lg font-semibold transition-all md:!px-8"
+                                variant="outline"
+                                size="lg"
+                                onClick={() => router.visit('/demo')}
+                            >
                                 <Eye className="h-5 w-5" />
                                 View Demo
                             </Button>
