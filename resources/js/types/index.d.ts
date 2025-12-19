@@ -207,6 +207,21 @@ export interface Paper {
     };
 }
 
+export interface OldPaper {
+    paper_id: number;
+    paper_year: number;
+    slug: string;
+    paper: string;
+    testing_service: {
+        testing_service_id: number;
+        testing_service: string;
+    };
+    department: {
+        dept_id: number;
+        department: string;
+    };
+}
+
 export type SerializableFilterValue = string | number;
 
 export interface Filters {

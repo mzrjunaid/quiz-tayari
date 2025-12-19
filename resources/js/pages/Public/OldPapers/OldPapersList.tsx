@@ -2,28 +2,19 @@ import { OldPaperCard } from '@/components/mcqComponents/paper-card';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
 import SearchInput, { SearchBar } from '@/components/search-input';
+import { SitePagination } from '@/components/site-pagination';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
-import { BreadcrumbItem, PaginationLinks } from '@/types';
+import { BreadcrumbItem, OldPaper, PaginationLinks, PaginationMeta } from '@/types';
 import { Head } from '@inertiajs/react';
 import TopAdSection from '../Components/TopAdSection';
 
 interface Props {
     // Define any props if needed
     oldpapers: {
-        data: Array<{
-            paper_id: number;
-            paper_year: string;
-            slug: string;
-            paper: string;
-        }>;
-        current_page: number;
-        last_page: number;
-        total: number;
-        per_page: number;
-        from: number;
-        to: number;
+        data: Array<OldPaper>;
+        meta: PaginationMeta;
         links: PaginationLinks;
     };
 }
@@ -34,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const PapersList: React.FC<Props> = ({ oldpapers }) => {
-    const { data, links, current_page } = oldpapers;
+    const { data, meta, links } = oldpapers;
     const isMobile = useIsMobile();
     const adSlot = false;
 
@@ -42,15 +33,15 @@ const PapersList: React.FC<Props> = ({ oldpapers }) => {
     const baseUrl = 'https://www.pakquiz.com/papers';
 
     // Dynamic SEO Title & Description
-    const pageTitle = current_page > 1 ? `Practice Papers - Page ${current_page}` : 'Practice Papers';
+    const pageTitle = meta.current_page > 1 ? `Practice Papers - Page ${meta.current_page}` : 'Practice Papers';
 
     const pageDescription =
-        current_page > 1
-            ? `Browse practice MCQs papers (Page ${current_page}) on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.`
+        meta.current_page > 1
+            ? `Browse practice MCQs papers (Page ${meta.current_page}) on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.`
             : 'Browse practice MCQs papers on PAK QUIZ. Prepare for competitive exams with solved and unsolved quizzes.';
 
     // ✅ Dynamic canonical URL
-    const canonicalUrl = current_page > 1 ? `${baseUrl}?page=${current_page}` : baseUrl;
+    const canonicalUrl = meta.current_page > 1 ? `${baseUrl}?page=${meta.current_page}` : baseUrl;
 
     // ✅ JSON-LD ItemList Schema
     const itemListSchema = {
@@ -65,8 +56,8 @@ const PapersList: React.FC<Props> = ({ oldpapers }) => {
             '@type': 'ListItem',
             position: index + 1,
             url: `${baseUrl}/${paper.slug}`,
-            name: paper,
-            description: paper,
+            name: paper.paper,
+            description: paper.paper + ' - ' + paper.paper_year + ' Past Paper of department ' + paper.department.department,
         })),
     };
 
@@ -90,6 +81,7 @@ const PapersList: React.FC<Props> = ({ oldpapers }) => {
             </Head>
             <PublicLayout>
                 {adSlot && <TopAdSection />}
+                {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
                 <MainSectionWithSidebarLayout>
                     <div className={`space-y-4 lg:col-span-2`}>
                         <PageTitle title="Past Papers" breadcrumbs={breadcrumbs} />
@@ -99,7 +91,7 @@ const PapersList: React.FC<Props> = ({ oldpapers }) => {
                                 return <OldPaperCard paper={paper} key={index} />;
                             })}
                         </div>
-                        {/* <SitePagination meta={meta} links={links} /> */}
+                        <SitePagination meta={meta} links={links} />
                     </div>
 
                     <PageSidebar stat={false}>{!isMobile && <SearchBar />}</PageSidebar>

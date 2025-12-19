@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\McqResource;
+use App\Http\Resources\OldPaperResource;
 use App\Http\Resources\PaperResource;
 use App\Models\Mcq;
+use App\Models\Old\OldDepartment;
 use App\Models\Old\OldPaper;
+use App\Models\Old\OldTestingService;
 use App\Models\Paper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -59,10 +62,17 @@ class HomepageController extends Controller
      */
     public function old_papers_list()
     {
-        $oldpapers = OldPaper::select('paper_id', 'paper_year', 'slug', 'paper')->paginate(50)->withQueryString();
+        $oldpapers = OldPaper::query()
+            ->select('paper_id', 'paper_year', 'testing_service_id', 'dept_id', 'slug', 'paper')
+            ->with([
+                'testingService:testing_service_id,testing_service',
+                'department:dept_id,department',
+            ])
+            ->paginate(50)
+            ->withQueryString();
 
         return Inertia::render('Public/OldPapers/OldPapersList', [
-            'oldpapers' => $oldpapers,
+            'oldpapers' =>  OldPaperResource::collection($oldpapers),
         ]);
     }
 

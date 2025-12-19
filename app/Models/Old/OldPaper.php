@@ -12,4 +12,15 @@ class OldPaper extends Model
     protected $table = 'add_paper_name';
     protected $primaryKey = 'paper_id';
     public $timestamps = false;
+
+    public function department()
+    {
+        return $this->belongsTo(OldDepartment::class, 'dept_id');
+    }
+
+    public function testingService()
+    {
+        return $this->belongsTo(OldTestingService::class, 'testing_service_id');
+    }
+
 }
