@@ -25,7 +25,7 @@ export default function PublicHeader() {
                     {/* Site Logo */}
                     <Button variant="link" className="flex items-center space-x-3" asChild>
                         <Link href="/" prefetch>
-                            <AppLogo />
+                            <AppLogo  size='size-30'/>
                         </Link>
                     </Button>
                     {/* Navigation Menu */}

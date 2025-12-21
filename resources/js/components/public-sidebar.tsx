@@ -15,8 +15,8 @@ export function PublicSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/" prefetch>
-                                <AppLogo />
+                            <Link href="/" prefetch className='hover:bg-transparent'>
+                                <AppLogo size='size-28' />
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

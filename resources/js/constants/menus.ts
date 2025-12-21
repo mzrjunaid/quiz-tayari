@@ -8,6 +8,23 @@ export const generalNavItems: NavItem[] = [
     { title: 'Terms of Service', href: '/terms-of-service' },
     { title: 'Join Us', href: '/join-us' },
 ];
+export const paperNavItems: NavItem[] = [
+    {
+        title: 'Latest Papers',
+        href: route('public.papers.index'),
+        description: 'Browse all Previous Papers from PPSC',
+    },
+    {
+        title: 'Past Papers',
+        href: route('public.old-papers.index'),
+        description: 'Browse all Previous Papers from PPSC',
+    },
+    {
+        title: 'Upcoming Papers',
+        href: route('public.papers.index'),
+        description: 'Practice Upcoming Papers with AI',
+    },
+];
 
 export const publicNavItems: NavItem[] = [
     {
@@ -19,24 +36,7 @@ export const publicNavItems: NavItem[] = [
         title: 'Papers',
         href: route('public.papers.index'),
         icon: List,
-    },
-];
-
-export const paperNavItems: NavItem[] = [
-    {
-        title: 'Latest Papers',
-        href: 'public.papers.index',
-        description: 'Browse all Previous Papers from PPSC',
-    },
-    {
-        title: 'Past Papers',
-        href: 'public.old-papers.index',
-        description: 'Browse all Previous Papers from PPSC',
-    },
-    {
-        title: 'Upcoming Papers',
-        href: 'public.papers.index',
-        description: 'Practice Upcoming Papers with AI',
+        subitems: paperNavItems,
     },
 ];
 

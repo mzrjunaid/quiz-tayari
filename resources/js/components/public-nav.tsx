@@ -54,7 +54,7 @@ export function PublicNavigationMenu() {
                         <ul className="grid w-[300px] gap-4">
                             <li>
                                 {paperNavItems.map((item, index) => (
-                                    <NavigationMenuLink key={index} href={route(item.href)}>
+                                    <NavigationMenuLink key={index} href={item.href}>
                                         <div className="font-medium">{item.title}</div>
                                         {item.description && <div className="text-muted-foreground">{item.description}</div>}
                                     </NavigationMenuLink>
