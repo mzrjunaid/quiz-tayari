@@ -1,3 +1,5 @@
+import { generalNavItems } from '@/constants/menus';
+import { Link } from '@inertiajs/react';
 import AppLogo from './app-logo';
 
 export default function PublicFooter() {
@@ -35,16 +37,19 @@ export default function PublicFooter() {
                     <div>
                         <h3 className="mb-3 font-semibold">Support</h3>
                         <ul className="space-y-2 text-sm">
-                            <li>Help Center</li>
-                            <li>Contact Us</li>
-                            <li>Privacy Policy</li>
-                            <li>Terms of Service</li>
+                            {generalNavItems.map((item, index) => (
+                                <li key={index + 1}>
+                                    <Link href={item.href} className="hover:underline">
+                                        {item.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
 
                 <div className="mt-8 border-t pt-8 text-center text-sm">
-                    <p>&copy; 2024 MCQ Master. All rights reserved.</p>
+                    <p>&copy; 2026 MCQ Master. All rights reserved.</p>
                 </div>
             </div>
         </footer>

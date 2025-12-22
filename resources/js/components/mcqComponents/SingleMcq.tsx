@@ -218,7 +218,7 @@ const McqCard: React.FC<MCQComponentProps> = ({ mcq = mockMCQ }) => {
                     // href="#"
                 >
                     <h4 className="mb-2 text-lg font-semibold md:mb-4">
-                        Q {mcq?.serial_number}. {mcq?.question}
+                        Q{mcq?.serial_number}. {mcq?.question}
                     </h4>
                 </Link>
 

@@ -110,7 +110,7 @@ Route::name('public.')->group(function () {
 
         // Nested MCQs Routes
         Route::prefix('/{old_paper:slug}/mcqs')->name('mcqs.')->group(function () {
-            Route::get('/{mcq:slug}', [HomepageController::class, 'show_old_mcq'])->name('show');
+            Route::get('/{mcq:slug}', [HomepageController::class, 'old_show_mcq'])->name('show');
         });
     });
 

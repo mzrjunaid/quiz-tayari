@@ -94,15 +94,33 @@ export interface DashboardProps<T = unknown> {
 }
 
 export interface OldMcqs {
-    q_id: string;
-    q_statement: string;
-    option_A: string;
-    option_B: string;
-    option_C: string;
-    option_D: string;
-    right_choice: string;
-    created_at: string;
+    id: number;
+    question: string;
+    slug: string;
+    options: {
+        A: string;
+        B?: string;
+        C?: string;
+        D?: string;
+        E?: string;
+    };
+    correct_answer: string;
     is_rephrased: string;
+    paper?: {
+        id: string;
+        title: string;
+        department: string;
+        year: number;
+    };
+    subject?: {
+        id: string;
+        title: string;
+    };
+    testing_service?: {
+        id: number;
+        title: string;
+    };
+    created_at: string;
 }
 
 export interface Mcqs {

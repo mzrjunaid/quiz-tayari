@@ -1,1 +1,0 @@
-import{j as o}from"./app-Hv2-_2l5.js";import{a as i,b as s,c as n}from"./tooltip-Cshag4-9.js";function a({text:t,children:r}){return o.jsxs(i,{children:[o.jsx(s,{children:r}),o.jsx(n,{children:t})]})}export{a as B};

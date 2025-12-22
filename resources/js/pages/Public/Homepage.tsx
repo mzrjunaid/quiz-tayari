@@ -158,6 +158,7 @@ const MCQHomepage = ({ mcqs }: Props) => {
                         {/* Sidebar */}
                         <PageSidebar />
                     </div>
+
                 </div>
             </section>
         </>

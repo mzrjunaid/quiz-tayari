@@ -1,4 +1,3 @@
-import McqCard from '@/components/mcqComponents/SingleMcq';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
 import SearchInput from '@/components/search-input';
@@ -6,17 +5,18 @@ import { SitePagination } from '@/components/site-pagination';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
 import { PublicLayout } from '@/layouts/frontend/public-layout';
-import { BreadcrumbItem, Mcqs, OldPaper, PaginationLinks, PaginationMeta } from '@/types';
+import { BreadcrumbItem, OldMcqs, OldPaper, PaginationLinks, PaginationMeta } from '@/types';
 import { Head } from '@inertiajs/react';
 import { truncate } from 'lodash';
 import TopAdSection from '../Components/TopAdSection';
+import OldMcqCard from './OldSingleMcq';
 
 interface Props {
     paper: {
         data: OldPaper;
     };
     mcqs: {
-        data: Array<Mcqs>;
+        data: Array<OldMcqs>;
         meta: PaginationMeta;
         links: PaginationLinks;
     };
@@ -108,7 +108,7 @@ const PaperMcqsPage: React.FC<Props> = ({ paper, mcqs }) => {
                         {isMobile && <SearchInput />}
                         <div className="grid gap-4 sm:grid-cols-1">
                             {data.map((mcq, index) => {
-                                return <McqCard mcq={mcq} key={index} />;
+                                return <OldMcqCard mcq={mcq} index={index + 1} key={index} />;
                             })}
                         </div>
                         <SitePagination meta={meta} links={links} />

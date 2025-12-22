@@ -9,6 +9,7 @@ use App\Http\Resources\PaperResource;
 use App\Models\Mcq;
 use App\Models\McqsRephrase;
 use App\Models\Old\OldDepartment;
+use App\Models\Old\OldMcq;
 use App\Models\Old\OldPaper;
 use App\Models\Old\OldTestingService;
 use App\Models\Paper;
@@ -33,7 +34,6 @@ class HomepageController extends Controller
             $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
             return $mcq;
         });
-
 
         return Inertia::render('welcome', [
             'mcqs' =>  McqResource::collection($mcqs),
@@ -92,17 +92,22 @@ class HomepageController extends Controller
                 'testingService:testing_service_id,testing_service',
                 'department:dept_id,department',
             ])->where('slug', $slug)->firstOrFail();
-        $mcqs = McqsRephrase::where('paper_id', $paper->paper_id)
-            ->paginate(10); // 10 per page
+
+        $mcqs = OldMcq::query()
+            ->select('q_id', 'slug', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'paper_id', 'syllabus_id', 'testing_service_id', 'publish', 'created_at')
+            ->with([
+                'paper:paper_id,paper',
+                'subject:syllabus_id,syllabus',
+                'testingService:testing_service_id,testing_service',
+            ])->where('paper_id', $paper->paper_id)->paginate(10);
+        // $mcqs = McqsRephrase::where('paper_id', $paper->paper_id)
+        //     ->paginate(10); // 10 per page
 
         return Inertia::render('Public/OldPapers/OldPaperMcqs', [
             'paper' => OldPaperResource::make($oldpaper),
             'mcqs' => OldMcqResource::collection($mcqs),
         ]);
     }
-
-
-
 
     /**
      * Display List of Papers Mcqs
@@ -113,7 +118,12 @@ class HomepageController extends Controller
 
         $paper = Paper::where('slug', $slug)->firstOrFail();
         $mcqs = Mcq::where('paper_id', $paper->id)
-            ->paginate(10); // 10 per page
+            ->paginate(10);
+        $mcqs->through(function ($mcq, $key) use ($mcqs) {
+            // Calculate the serial number based on pagination
+            $mcq->serial_number = ($mcqs->currentPage() - 1) * $mcqs->perPage() + $key + 1;
+            return $mcq;
+        });
 
         return Inertia::render('Public/PaperMcqs', [
             'paper' => $paper,
@@ -136,10 +146,26 @@ class HomepageController extends Controller
     /**
      * Display Paper MCQ
      */
-    public function single_show_mcq(Mcq $mcq)
+    public function single_show_mcq(string $mcq)
     {
-        return Inertia::render('Public/Mcqs/Show', [
-            'mcq' => McqResource::make($mcq),
+        $newMcq = Mcq::where('slug', $mcq)->first();
+        if ($newMcq) {
+            return Inertia::render('Public/Mcqs/Show', [
+                'mcq' => McqResource::make($newMcq),
+            ]);
+        }
+
+        // $mcq = McqsRephrase::where('slug', $mcq)->first();
+
+        $mcq = OldMcq::query()
+            ->select('q_id', 'slug', 'q_statement', 'option_A', 'option_B', 'option_C', 'option_D', 'right_choice', 'paper_id', 'syllabus_id', 'testing_service_id', 'publish', 'created_at')
+            ->with([
+                'paper:paper_id,paper',
+                'subject:syllabus_id,syllabus',
+                'testingService:testing_service_id,testing_service',
+            ])->where('slug', $mcq)->firstOrFail();
+        return Inertia::render('Public/OldPapers/OldMcq', [
+            'mcq' => OldMcqResource::make($mcq),
         ]);
     }
 

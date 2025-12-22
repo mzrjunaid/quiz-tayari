@@ -19,13 +19,31 @@ class OldMcqResource extends JsonResource
             'slug' => $this->slug,
             'question' => $this->q_statement,
             'options' => $this->getFormattedOptions(),
-            'paper_id' => $this->paper_id,
             'correct_answer' => $this->right_choice,
             'question_type' => 'single',
-            'syllabus_id' => $this->syllabus_id,
-            'testing_service_id' => $this->testing_service_id,
+            'paper' => $this->whenLoaded('paper', function () {
+                return [
+                    'id' => $this->paper->paper_id,
+                    'title'    => $this->paper->paper,
+                    'department' => $this->paper->department,
+                    'year' => $this->paper->paper_year,
+                ];
+            }),
+            'subject' => $this->whenLoaded('subject', function () {
+                return [
+                    'id' => $this->subject->syllabus_id,
+                    'title'    => $this->subject->syllabus,
+                ];
+            }),
+            'testing_service' => $this->whenLoaded('testingService', function () {
+                return [
+                    'id' => $this->testingService->testing_service_id,
+                    'title'    => $this->testingService->testing_service,
+                ];
+            }),
             'publish' => $this->publish,
             'created_at' => $this->created_at,
+            'oldmcq' => true,
         ];
     }
 
