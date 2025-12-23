@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\McqsRephrase;
 use App\Models\Paper;
 use App\Models\Mcq;
+use App\Models\Old\OldPaper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -82,10 +83,20 @@ class SearchController extends Controller
             ->limit(3)
             ->get()
             ->map(fn($m) => [
-                'id' => $m->id,
                 'slug' => $m->slug,
                 'title' => $m->title,
                 'link' => route('public.papers.show', $m->slug),
+                'type' => 'Paper',
+            ]);
+
+        $old_papers = OldPaper::select('paper', 'slug')
+            ->where('paper', 'like', "%{$query}%")
+            ->limit(3)
+            ->get()
+            ->map(fn($m) => [
+                'slug' => $m->slug,
+                'title' => $m->paper,
+                'link' => route('public.old-papers.show', $m->slug),
                 'type' => 'Paper',
             ]);
 
@@ -94,26 +105,26 @@ class SearchController extends Controller
             ->limit(3)
             ->get()
             ->map(fn($m) => [
-                'id' => $m->id,
                 'slug' => $m->slug,
                 'title' => $m->question,
-                'link' => route('admin.mcqs.show', $m->slug),
+                'link' => route('public.mcqs.show', $m->slug),
                 'type' => 'MCQ',
             ]);
 
-        $old_mcqs = McqsRephrase::select('q_id', 'q_statement')
+        $old_mcqs = McqsRephrase::select('q_id', 'q_statement', 'slug')
             ->where('q_statement', 'like', "%{$query}%")
             ->limit(3)
             ->get()
             ->map(fn($m) => [
-                'id' => $m->q_id,
+                'slug' => $m->slug,
                 'title' => $m->q_statement,
-                'link' => route('admin.mcqs.show', $m->q_id),
+                'link' => route('public.mcqs.show', $m->slug),
                 'type' => 'Old MCQ',
             ]);
 
         return response()->json(
-            collect($papers)
+            collect($old_papers)
+                ->merge($papers)
                 ->merge($mcqs)
                 ->merge($old_mcqs)
                 ->take(9)
