@@ -1,0 +1,1 @@
+import{j as e}from"./app-B2A-v0L2.js";function l(){return e.jsxs("div",{children:[e.jsx("h1",{children:"Hello"}),e.jsx("p",{children:"Welcome to the Quiz Tayari application."})]})}export{l as default};
