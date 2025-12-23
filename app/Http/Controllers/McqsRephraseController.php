@@ -353,7 +353,7 @@ class McqsRephraseController extends Controller
         }
 
         try {
-            $model = Gemini::generativeModel(model: 'gemini-2.0-flash');
+            $model = Gemini::generativeModel(model: 'gemini-2.5-flash');
 
             // Single API call for better efficiency
             $combinedResult = $model->generateContent(

@@ -651,16 +651,16 @@
         },
         {
             "name": "google-gemini-php/laravel",
-            "version": "2.0.1",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/google-gemini-php/laravel.git",
-                "reference": "561c3921f449ede58ab89ad3e8017f2eef16aca7"
+                "reference": "0a438aa9aaae3e2ce8d6ca68afcd05f3542071ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google-gemini-php/laravel/zipball/561c3921f449ede58ab89ad3e8017f2eef16aca7",
-                "reference": "561c3921f449ede58ab89ad3e8017f2eef16aca7",
+                "url": "https://api.github.com/repos/google-gemini-php/laravel/zipball/0a438aa9aaae3e2ce8d6ca68afcd05f3542071ae",
+                "reference": "0a438aa9aaae3e2ce8d6ca68afcd05f3542071ae",
                 "shasum": ""
             },
             "require": {
@@ -713,9 +713,19 @@
             ],
             "support": {
                 "issues": "https://github.com/google-gemini-php/laravel/issues",
-                "source": "https://github.com/google-gemini-php/laravel/tree/2.0.1"
+                "source": "https://github.com/google-gemini-php/laravel/tree/2.0.3"
             },
-            "time": "2025-05-12T15:56:40+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/Plytas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/aydinfatih",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-25T15:34:02+00:00"
         },
         {
             "name": "graham-campbell/result-type",
