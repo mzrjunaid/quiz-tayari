@@ -1,0 +1,1 @@
+import{j as o}from"./app-2_0T3uol.js";import{a as i,b as s,c as n}from"./tooltip-CqiS_vRo.js";function a({text:t,children:r}){return o.jsxs(i,{children:[o.jsx(s,{children:r}),o.jsx(n,{children:t})]})}export{a as B};
