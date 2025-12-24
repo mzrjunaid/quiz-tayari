@@ -16,7 +16,7 @@
     <meta
         property="og:description"
         content="Prepare for government and private job tests with free MCQs and past papers. Updated daily." />
-    <meta property="og:image" content="https://pakquiz.com/logo.svg" />
+    <meta property="og:image" content="https://pakquiz.com/logo.png" />
     <meta property="og:url" content="https://www.pakquiz.com" />
     <meta property="og:type" content="website" />
 
@@ -26,7 +26,7 @@
     <meta
         name="twitter:description"
         content="Free MCQs, past papers, and job test quizzes. Prepare for government and private exams in Pakistan." />
-    <meta name="twitter:image" content="https://pakquiz.com/logo.svg" />
+    <meta name="twitter:image" content="https://pakquiz.com/logo.png" />
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>
