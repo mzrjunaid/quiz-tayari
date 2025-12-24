@@ -37,6 +37,10 @@ class HomepageController extends Controller
 
         return Inertia::render('welcome', [
             'mcqs' =>  McqResource::collection($mcqs),
+            'meta' => [
+                'title' => 'Pak Quiz – AI-Powered MCQs & Job Test Preparation',
+                'description' => 'Quiz Tayari offers a vast collection of free multiple-choice questions (MCQs) to help you prepare for various exams. Enhance your knowledge and boost your confidence with our comprehensive question bank.',
+            ],
         ]);
     }
 
