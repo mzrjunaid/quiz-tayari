@@ -4,30 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta
-        name="description"
-        content="Prepare for government and private job tests with PAK QUIZ. Access free MCQs, past papers, PPSC, FPSC, NTS, and entry test quizzes updated daily." />
-    <meta name="keywords" content="Pakistan MCQs, PPSC jobs test, FPSC, NTS, online quiz, test preparation, government jobs, PAK QUIZ" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.pakquiz.com" />
-
-    <meta property="og:title" content="PAK QUIZ - Pakistan’s #1 MCQs Preparation Website" />
-    <meta
-        property="og:description"
-        content="Prepare for government and private job tests with free MCQs and past papers. Updated daily." />
-    <meta property="og:image" content="https://pakquiz.com/logo.png" />
-    <meta property="og:url" content="https://www.pakquiz.com" />
-    <meta property="og:type" content="website" />
-
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PAK QUIZ - Pakistan’s #1 MCQs Preparation Website" />
-    <meta
-        name="twitter:description"
-        content="Free MCQs, past papers, and job test quizzes. Prepare for government and private exams in Pakistan." />
-    <meta name="twitter:image" content="https://pakquiz.com/logo.png" />
-
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>
         (function() {

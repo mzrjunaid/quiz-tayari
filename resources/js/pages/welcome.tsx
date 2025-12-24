@@ -83,7 +83,7 @@ export default function Welcome({ mcqs }: Props) {
                     property="og:description"
                     content="Prepare for government and private job tests with free MCQs and past papers. Updated daily."
                 />
-                <meta property="og:image" content="https://www.pakquiz.com/og-image.jpg" />
+                <meta property="og:image" content="https://www.pakquiz.com/logo.png" />
                 <meta property="og:url" content="https://www.pakquiz.com" />
                 <meta property="og:type" content="website" />
 
@@ -94,7 +94,7 @@ export default function Welcome({ mcqs }: Props) {
                     name="twitter:description"
                     content="Free MCQs, past papers, and job test quizzes. Prepare for government and private exams in Pakistan."
                 />
-                <meta name="twitter:image" content="https://www.pakquiz.com/og-image.jpg" />
+                <meta name="twitter:image" content="https://www.pakquiz.com/logo.png" />
 
                 {/* ✅ Structured Data */}
                 <script type="application/ld+json">{JSON.stringify(homepageSchema)}</script>
