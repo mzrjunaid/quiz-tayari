@@ -1,7 +1,7 @@
 import { SelectBySearch } from '@/components/combobox';
 import McqCard from '@/components/mcqComponents/SingleMcq';
 import PageSidebar from '@/components/page-sidebar';
-import { SearchBar } from '@/components/search-input';
+import SearchBar from '@/components/SearchBar';
 import { SitePagination } from '@/components/site-pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,7 +28,6 @@ const MCQHomepage = ({ mcqs }: Props) => {
     const subjects = ['All Subjects', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'English', 'History', 'Geography'];
     const jobTypes = ['All Jobs', 'Software Engineer', 'Data Scientist', 'Civil Service', 'Banking', 'Teaching', 'Medical', 'Engineering'];
     const testServices = ['All Services', 'UPSC', 'SSC', 'GATE', 'NET', 'JEE', 'NEET', 'CAT', 'GRE'];
-
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -158,7 +157,6 @@ const MCQHomepage = ({ mcqs }: Props) => {
                         {/* Sidebar */}
                         <PageSidebar />
                     </div>
-
                 </div>
             </section>
         </>

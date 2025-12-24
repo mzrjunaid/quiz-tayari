@@ -10,6 +10,17 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+
+    public const ROLE_ADMIN  = 'admin';
+    public const ROLE_EDITOR = 'editor';
+    public const ROLE_VIEWER = 'viewer';
+    public const ROLE_USER   = 'user';
+
+    public const STATUS_PENDING  = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
+
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -22,7 +33,54 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
     ];
+
+
+    /* =====================
+       Role Helpers
+    ====================== */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function isEditor(): bool
+    {
+        return $this->role === self::ROLE_EDITOR;
+    }
+
+    public function isViewer(): bool
+    {
+        return $this->role === self::ROLE_VIEWER;
+    }
+
+    /* =====================
+       Status Helpers
+    ====================== */
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+
 
     /**
      * The attributes that should be hidden for serialization.
