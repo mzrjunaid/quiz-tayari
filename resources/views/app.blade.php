@@ -13,7 +13,7 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.pakquiz.com" />
 
-    {{/* ✅ Open Graph (for sharing) */}}
+    {{-- ✅ Open Graph (for sharing) --}}
     <meta property="og:title" content="PAK QUIZ - Pakistan’s #1 MCQs Preparation Website" />
     <meta
         property="og:description"
@@ -22,7 +22,7 @@
     <meta property="og:url" content="https://www.pakquiz.com" />
     <meta property="og:type" content="website" />
 
-    {{/* ✅ Twitter Cards */}}
+    {{-- ✅ Twitter Cards --}}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="PAK QUIZ - Pakistan’s #1 MCQs Preparation Website" />
     <meta
