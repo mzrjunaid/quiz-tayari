@@ -40,7 +40,6 @@ class HomepageController extends Controller
             'meta' => [
                 'title' => 'Pak Quiz – AI-Powered MCQs & Job Test Preparation',
                 'description' => 'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)',
-                'url' => route('homepage'),
             ],
         ]);
     }
