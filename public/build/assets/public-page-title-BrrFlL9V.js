@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:public/build/assets/public-page-title-BrrFlL9V.js
-import{j as e}from"./app-BtHRxv9K.js";import{B as x}from"./breadcrumbs-BTnD_rEv.js";const i=({title:t,subtitle:l,breadcrumbs:s})=>e.jsxs("div",{className:"order-1 flex-1 lg:order-1",children:[s&&s.length>0&&e.jsx(x,{breadcrumbs:s}),e.jsx("div",{className:"space-y-6",children:e.jsxs("div",{className:"space-y-0",children:[e.jsx("h1",{className:"text-2xl leading-tight font-bold lg:text-3xl xl:text-4xl",children:t}),l&&e.jsx("p",{className:"mt-2 text-muted",children:l})]})})]});export{i as P};
-========
-import{j as e}from"./app-inF8Ls8d.js";import{B as x}from"./breadcrumbs-nFHgrWlv.js";const i=({title:t,subtitle:l,breadcrumbs:s})=>e.jsxs("div",{className:"order-1 flex-1 lg:order-1",children:[s&&s.length>0&&e.jsx(x,{breadcrumbs:s}),e.jsx("div",{className:"space-y-6",children:e.jsxs("div",{className:"space-y-0",children:[e.jsx("h1",{className:"text-2xl leading-tight font-bold lg:text-3xl xl:text-4xl",children:t}),l&&e.jsx("p",{className:"mt-2 text-muted",children:l})]})})]});export{i as P};
->>>>>>>> 78b7c94311996b1e32a87d24937892c74790bfe8:public/build/assets/public-page-title-ypkDzmzU.js

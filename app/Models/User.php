@@ -38,6 +38,18 @@ class User extends Authenticatable
     ];
 
 
+
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function hasStatus(string $status): bool
+    {
+        return $this->status === $status;
+    }
+
+
     /* =====================
        Role Helpers
     ====================== */

@@ -18,6 +18,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
+
         return Inertia::render('auth/login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
@@ -31,14 +32,6 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
-
-        if (Auth::user()->isApproved()) {
-            auth()->logout();
-
-            return back()->withErrors([
-                'email' => 'Your account is pending admin approval.',
-            ]);
-        }
 
         return redirect()->intended(route('admin.dashboard', absolute: false));
     }
