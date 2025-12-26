@@ -5,11 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>{{ $page['props']['meta']['title'] ?? 'Pak Quiz – AI-Powered MCQs & Job Test Preparation' }}</title>
+
     {{-- ✅ Primary Meta Tags --}}
     <meta
         name="description"
         content="{{ $page['props']['meta']['description']
-        ?? 'Prepare for government and private job tests with PAK QUIZ.' }}" />
+        ?? 'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)' }}" />
 
     <link
         rel="canonical"
@@ -19,12 +21,12 @@
     <meta
         property="og:title"
         content="{{ $page['props']['meta']['title']
-        ?? 'PAK QUIZ - Pakistan’s #1 MCQs Preparation Website' }}" />
+        ?? 'Pak Quiz – AI-Powered MCQs & Job Test Preparation' }}" />
 
     <meta
         property="og:description"
         content="{{ $page['props']['meta']['description']
-        ?? 'Prepare for government and private job tests with free MCQs.' }}" />
+        ?? 'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)' }}" />
 
     <meta
         property="og:image"
@@ -43,11 +45,11 @@
     <meta
         name="twitter:title"
         content="{{ $page['props']['meta']['title']
-        ?? 'PAK QUIZ - Pakistan’s #1 MCQs Preparation Website' }}" />
+        ?? 'Pak Quiz – AI-Powered MCQs & Job Test Preparation' }}" />
     <meta
         name="twitter:description"
         content="{{ $page['props']['meta']['description']
-        ?? 'Free MCQs and past papers for Pakistan exams.' }}" />
+        ?? 'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)' }}" />
     <meta
         name="twitter:image"
         content="{{ $page['props']['meta']['image']
@@ -80,7 +82,7 @@
         }
     </style>
 
-    <title inertia>{{ config('app.name', 'Pak Quiz - Pakistan’s #1 MCQs Preparation Website') }}</title>
+    <title inertia>{{ config('app.name', 'Pak Quiz – AI-Powered MCQs & Job Test Preparation') }}</title>
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">

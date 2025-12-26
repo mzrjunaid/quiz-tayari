@@ -18,7 +18,7 @@ export default function Welcome({ mcqs }: Props) {
                 url: 'https://www.pakquiz.com',
                 name: 'PAK QUIZ',
                 description:
-                    'PAK QUIZ is Pakistan’s leading MCQs preparation website. Practice government and private job tests, PPSC, FPSC, NTS, and entry test quizzes online.',
+                    'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)',
                 publisher: {
                     '@id': 'https://www.pakquiz.com/#organization',
                 },
@@ -52,14 +52,14 @@ export default function Welcome({ mcqs }: Props) {
                 '@type': 'WebPage',
                 '@id': 'https://www.pakquiz.com/#webpage',
                 url: 'https://www.pakquiz.com',
-                name: 'PAK QUIZ - Pakistan’s #1 MCQs Preparation Platform',
+                name: 'Pak Quiz – AI-Powered MCQs & Job Test Preparation',
                 description:
-                    'Prepare for government and private job tests with free MCQs, past papers, and online quizzes. Practice PPSC, FPSC, NTS, and entry test questions daily on PAK QUIZ.',
+                    'Pak Quiz offers a vast collection of AI-Enhanced multiple-choice questions (MCQs) to help you prepare for various exams (PPSC, NTS, FPSC, CSS, PMS,... etc.)',
                 inLanguage: 'en',
                 isPartOf: { '@id': 'https://www.pakquiz.com/#website' },
                 about: {
                     '@type': 'EducationalOrganization',
-                    name: 'PAK QUIZ',
+                    name: 'Pak Quiz',
                     sameAs: 'https://www.pakquiz.com',
                 },
             },
@@ -68,7 +68,7 @@ export default function Welcome({ mcqs }: Props) {
 
     return (
         <>
-            <Head title="Pakistan’s #1 MCQs Preparation Website">
+            <Head title="Pak Quiz – AI-Powered MCQs & Job Test Preparation">
                 {/* ✅ Structured Data */}
                 <script type="application/ld+json">{JSON.stringify(homepageSchema)}</script>
             </Head>
