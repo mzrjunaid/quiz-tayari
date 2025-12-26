@@ -1,7 +1,7 @@
 import PaperCard from '@/components/mcqComponents/paper-card';
 import PageSidebar from '@/components/page-sidebar';
 import PageTitle from '@/components/public-page-title';
-import SearchInput, { SearchBar } from '@/components/search-input';
+import SearchBar from '@/components/SearchBar';
 import { SitePagination } from '@/components/site-pagination';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MainSectionWithSidebarLayout from '@/layouts/frontend/main-section-layout';
@@ -84,7 +84,7 @@ const PapersList: React.FC<Props> = ({ papers }) => {
                 <MainSectionWithSidebarLayout>
                     <div className={`space-y-4 lg:col-span-2`}>
                         <PageTitle title="Past Papers" breadcrumbs={breadcrumbs} />
-                        {isMobile && <SearchInput />}
+                        {isMobile && <SearchBar />}
                         <div className="grid gap-4 sm:grid-cols-2">
                             {data.map((paper, index) => {
                                 return <PaperCard paper={paper} key={index} />;

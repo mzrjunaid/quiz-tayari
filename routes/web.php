@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 
 // Admin Routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/old-mcqs', [McqsRephraseController::class, 'old_mcqs'])->name('old-mcqs');
     Route::prefix('rephrase')->name('rephrase.')->group(function () {
